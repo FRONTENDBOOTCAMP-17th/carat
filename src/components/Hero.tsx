@@ -4,89 +4,70 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
+/* -----------------------------
+   easing
+------------------------------*/
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-function easeInOutCubic(t: number) {
-  return t < 0.5
-    ? 4 * t * t * t
-    : 1 - Math.pow(-2 * t + 2, 3) / 2;
-}
-
+/* -----------------------------
+   Ring
+------------------------------*/
 function Ring({ progress }: { progress: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const smooth = useRef(0);
 
   useFrame(() => {
     if (!meshRef.current) return;
 
-    // 0.3 ~ 0.6
-    const rotateProgress = Math.min(
-      Math.max((progress - 0.3) / 0.3, 0),
-      1
-    );
+    // smooth scroll (핵심)
+    smooth.current += (progress - smooth.current) * 0.06;
 
-    const easedRotation = easeOutCubic(rotateProgress);
+    const p = smooth.current;
 
-    meshRef.current.rotation.y =
-      easedRotation * Math.PI * 0.3;
+    // rotation phase
+    const rotateP = Math.min(Math.max((p - 0.3) / 0.3, 0), 1);
+    const moveP = Math.min(Math.max((p - 0.6) / 0.25, 0), 1);
 
-    // 0.6 ~ 0.8
-    const moveProgress = Math.min(
-      Math.max((progress - 0.6) / 0.2, 0),
-      1
-    );
+    const rot = easeOutCubic(rotateP) * Math.PI * 0.35;
+    const x = easeOutCubic(moveP) * 1.2;
 
-    const easedMove = easeInOutCubic(moveProgress);
-
-    meshRef.current.position.x =
-      easedMove * 2.5;
+    meshRef.current.rotation.y = rot;
+    meshRef.current.position.x = x;
   });
 
   return (
-    <mesh
-      ref={meshRef}
-      rotation={[Math.PI / 2, 0, 0]}
-    >
+    <mesh ref={meshRef} rotation={[Math.PI / 2, 0, 0]}>
       <torusGeometry args={[1, 0.3, 64, 128]} />
-
-      <meshStandardMaterial
-        metalness={1}
-        roughness={0.15}
-        color="#d4d4d4"
-      />
+      <meshStandardMaterial metalness={1} roughness={0.15} color="#d4d4d4" />
     </mesh>
   );
 }
 
+/* -----------------------------
+   Hero
+------------------------------*/
 export default function Hero() {
-  const targetProgress = useRef(0);
-
-  const [progress, setProgress] = useState(0);
+  const target = useRef(0);
+  const smooth = useRef(0);
+  const [, force] = useState(0);
 
   useEffect(() => {
     const onScroll = () => {
       const maxScroll = window.innerHeight * 3;
-
-      targetProgress.current = Math.min(
-        Math.max(window.scrollY / maxScroll, 0),
-        1
-      );
+      target.current = window.scrollY / maxScroll;
     };
 
     window.addEventListener("scroll", onScroll);
-
     onScroll();
 
     let frame: number;
 
     const animate = () => {
-      setProgress((prev) => {
-        return (
-          prev +
-          (targetProgress.current - prev) * 0.08
-        );
-      });
+      smooth.current += (target.current - smooth.current) * 0.08;
+
+      force(smooth.current);
 
       frame = requestAnimationFrame(animate);
     };
@@ -94,103 +75,75 @@ export default function Hero() {
     animate();
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        onScroll
-      );
-
+      window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(frame);
     };
   }, []);
 
-  const fadeProgress = Math.min(
-    progress / 0.3,
-    1
-  );
+  const progress = smooth.current;
 
-  const heroOpacity = 1 - fadeProgress;
+  /* -----------------------------
+     HERO → ESSENTIAL
+  ------------------------------*/
+  const heroFade = Math.min(progress / 0.3, 1);
+  const heroOpacity = 1 - heroFade;
+  const heroY = heroFade * -40;
 
-  const heroTranslateY =
-    fadeProgress * -40;
+  const essentialP = Math.min(Math.max((progress - 0.6) / 0.25, 0), 1);
 
-  const collectionProgress =
-    progress < 0.8
-      ? 0
-      : Math.min(
-          (progress - 0.8) / 0.2,
-          1
-        );
+  const essentialEase = easeOutCubic(essentialP);
 
-  const collectionOpacity =
-    easeOutCubic(collectionProgress);
+  const essentialOpacity = essentialEase;
+  const essentialY = (1 - essentialEase) * 0;
+  const essentialX = -essentialEase * 30;
 
-  const collectionTranslateY =
-    40 * (1 - collectionOpacity);
+  /* -----------------------------
+     BEST PIECES reveal (placeholder)
+  ------------------------------*/
+  const bestP = Math.min(Math.max((progress - 0.75) / 0.25, 0), 1);
+
+  const bestEase = easeOutCubic(bestP);
 
   return (
-    <section className="relative h-[400vh]">
-      <div className="sticky top-0 h-screen overflow-hidden bg-black">
-
+    <section className="relative h-[400vh] bg-black">
+      <div className="sticky top-0 h-screen overflow-hidden">
         {/* 3D */}
-
         <Canvas
           className="absolute inset-0"
-          camera={{
-            position: [0, 0, 4],
-            fov: 45,
-          }}
+          camera={{ position: [0, 0, 4], fov: 45 }}
         >
           <ambientLight intensity={1.5} />
-
-          <directionalLight
-            position={[5, 5, 5]}
-            intensity={3}
-          />
-
+          <directionalLight position={[5, 5, 5]} intensity={3} />
           <Ring progress={progress} />
         </Canvas>
 
         {/* DIM */}
-
         <div
           className="absolute inset-0 bg-black"
-          style={{
-            opacity:
-              heroOpacity * 0.4,
-          }}
+          style={{ opacity: heroOpacity * 0.4 }}
         />
 
         {/* HERO */}
-
         <div
           className="absolute inset-0 flex flex-col items-center justify-center text-white"
           style={{
             opacity: heroOpacity,
-            transform: `translateY(${heroTranslateY}px)`,
+            transform: `translateY(${heroY}px)`,
           }}
         >
-          <p className="mb-4 text-sm tracking-[0.4em]">
-            JEWELRY COLLECTION
-          </p>
-
-          <h1 className="text-7xl font-light tracking-[0.2em]">
-            PRISME
-          </h1>
+          <p className="mb-4 text-sm tracking-[0.4em]">JEWELRY COLLECTION</p>
+          <h1 className="text-7xl font-light tracking-[0.2em]">PRISME</h1>
         </div>
 
         {/* ESSENTIAL COLLECTION */}
-
         <div
-          className="absolute left-24 top-1/2 text-white"
+          className="absolute left-96 top-1/2 text-white"
           style={{
-            opacity:
-              collectionOpacity,
-            transform: `translateY(calc(-50% + ${collectionTranslateY}px))`,
+            opacity: essentialOpacity,
+            transform: `translate(-50%, ${essentialY}px) translateX(${essentialX}px)`,
           }}
         >
-          <p className="mb-4 text-sm tracking-[0.4em]">
-            COLLECTION
-          </p>
+          <p className="mb-4 text-sm tracking-[0.4em]">COLLECTION</p>
 
           <h2 className="mb-6 text-6xl font-light">
             ESSENTIAL
@@ -199,11 +152,8 @@ export default function Hero() {
           </h2>
 
           <p className="max-w-md text-white/70">
-            Every form begins with
-            simplicity.
-            <br />
-            Refined through balance
-            and proportion.
+            Every form begins with simplicity. Refined through balance and
+            proportion.
           </p>
         </div>
       </div>
