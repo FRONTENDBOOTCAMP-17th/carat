@@ -8,7 +8,7 @@ import "./globals.css";
 ------------------------------*/
 const cinzel = Cinzel({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-cinzel",
   display: "swap",
 });
@@ -80,10 +80,18 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
+      lang="ko"
       className={`${cinzel.variable} ${pretendard.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:text-sm focus:rounded"
+        >
+          본문으로 바로가기
+        </a>
+        {children}
+      </body>
     </html>
   );
 }
