@@ -1,16 +1,20 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 
-// 리뷰 전용 E2E 설정. 개발 서버(포트 3500)를 사용한다. carat은 템플릿 단계라 백엔드 불필요.
+// 리뷰 전용 Playwright 설정 (carat 3차)
+// 학생이 작성한 테스트가 아니라, 강사 리뷰용으로 별도 작성한 것입니다.
 export default defineConfig({
   testDir: "./tests",
   timeout: 30_000,
-  fullyParallel: false,
-  retries: 0,
-  reporter: [["list"]],
   use: {
-    baseURL: process.env.BASE_URL ?? "http://localhost:3500",
-    headless: true,
-    viewport: { width: 1280, height: 900 },
+    baseURL: "http://localhost:3105",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  reporter: [["list"]],
+  // Playwright가 dev 서버를 직접 띄우고 내립니다 (포트 3105).
+  webServer: {
+    command: "PORT=3105 npm run dev",
+    cwd: "../../",
+    url: "http://localhost:3105",
+    timeout: 60_000,
+    reuseExistingServer: true,
+  },
 });
