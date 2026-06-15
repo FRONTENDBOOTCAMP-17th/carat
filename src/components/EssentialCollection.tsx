@@ -1,7 +1,7 @@
 export default function EssentialCollection() {
   return (
     <section className="px-24 py-40">
-      <p className="mb-4 text-sm tracking-[0.4em]">
+      <p className="mb-4 text-sm tracking-descriptor">
         COLLECTION
       </p>
 

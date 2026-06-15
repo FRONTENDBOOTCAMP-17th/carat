@@ -10,18 +10,18 @@ const products = Array.from({ length: 12 }, (_, i) => ({
 
 export default function CollectionsPage() {
   return (
-    <main id="main-content" className="min-h-screen bg-black">
+    <main id="main-content" className="min-h-screen bg-surface-base">
       <Navbar />
 
       <div className="px-8 pt-12 pb-24">
         <header>
           <h1
-            className="mb-3 text-3xl tracking-[0.25em] text-white"
+            className="mb-3 text-3xl tracking-heading text-content-primary"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             COLLECTIONS
           </h1>
-          <p className="mb-16 text-xs leading-relaxed text-zinc-400">
+          <p className="mb-16 text-xs leading-relaxed text-content-faint">
             현대적인 조형성과 정교한 소재가 만나는 곳,
             <br />
             PRISME의 컬렉션을 만나보세요.

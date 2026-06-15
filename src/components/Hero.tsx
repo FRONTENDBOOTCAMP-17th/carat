@@ -155,7 +155,7 @@ export default function Hero() {
   const essentialX = -essentialEase * 20;
 
   return (
-    <section className="relative h-[400vh] bg-black" aria-label="PRISME 메인 히어로">
+    <section className="relative h-[400vh] bg-surface-base" aria-label="PRISME 메인 히어로">
       <div className="sticky top-0 h-screen overflow-hidden">
         <Canvas
           className="absolute inset-0"
@@ -168,43 +168,43 @@ export default function Hero() {
         </Canvas>
 
         <div
-          className="absolute inset-0 bg-black"
+          className="absolute inset-0 bg-surface-base"
           style={{ opacity: heroOpacity * 0.4 }}
           aria-hidden="true"
         />
 
         {/* Initial centered hero text */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center text-white"
+          className="absolute inset-0 flex flex-col items-center justify-center text-content-primary"
           style={{
             opacity: heroOpacity,
             transform: `translateY(${heroY}px)`,
           }}
         >
           <h1
-            className="mb-5 text-5xl sm:text-6xl lg:text-7xl font-[500]"
+            className="mb-5 text-5xl sm:text-6xl lg:text-7xl font-medium"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             PRISME
           </h1>
-          <p className="text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.35em] text-white/70 uppercase">
+          <p className="text-4xs sm:text-2xs tracking-link sm:tracking-hero text-content-tertiary uppercase">
             Shaped through balance, defined by elegance
           </p>
-          <p className="text-[8px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.35em] text-white/70 uppercase">
+          <p className="text-4xs sm:text-2xs tracking-link sm:tracking-hero text-content-tertiary uppercase">
             Contemporary jewelry dedicated to the essential expression
           </p>
         </div>
 
         {/* ESSENTIAL COLLECTION — full-bleed, no 1440px constraint */}
         <div
-          className="absolute top-0 bottom-0 left-[6%] sm:left-[7%] lg:left-[8%] flex flex-col text-white"
+          className="absolute top-0 bottom-0 left-[6%] sm:left-[7%] lg:left-[8%] flex flex-col text-content-primary"
           style={{
             opacity: essentialOpacity,
             transform: `translateX(${essentialX}px)`,
           }}
         >
           <div className="mt-[13%]">
-            <p className="mb-2 sm:mb-3 text-[9px] sm:text-[10px] tracking-[0.4em] text-white/50">
+            <p className="mb-2 sm:mb-3 text-2xs tracking-descriptor text-content-subtle">
               COLLECTION
             </p>
             <h2
@@ -218,7 +218,7 @@ export default function Hero() {
                 COLLECTION
               </span>
             </h2>
-            <p className="max-w-[160px] sm:max-w-[220px] md:max-w-[300px] text-xs sm:text-sm leading-relaxed text-white/60">
+            <p className="max-w-40 sm:max-w-55 md:max-w-75 text-xs sm:text-sm leading-relaxed text-content-muted">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
               enim ad minim veniam, quis nostrud exercitation
@@ -229,7 +229,7 @@ export default function Hero() {
 
           <a
             href="#"
-            className="mb-[10%] text-[10px] sm:text-xs tracking-[0.3em] text-white/80 hover:text-white transition-colors"
+            className="mb-[10%] text-2xs sm:text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
           >
             더 알아보기 &gt;
           </a>

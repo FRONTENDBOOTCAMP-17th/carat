@@ -10,18 +10,18 @@ const products = Array.from({ length: 12 }, (_, i) => ({
 
 export default function FwCollectionsPage() {
   return (
-    <main id="main-content" className="min-h-screen bg-black">
+    <main id="main-content" className="min-h-screen bg-surface-base">
       <Navbar />
 
       <div className="px-8 pt-12 pb-24">
         <header>
           <h1
-            className="mb-3 text-3xl tracking-[0.25em] text-white"
+            className="mb-3 text-3xl tracking-heading text-content-primary"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             2026 F/W COLLECTIONS
           </h1>
-          <p className="mb-16 text-xs leading-relaxed text-zinc-400">
+          <p className="mb-16 text-xs leading-relaxed text-content-faint">
             2026 가을·겨울 시즌의 새로운 컬렉션,
             <br />
             PRISME가 제안하는 계절의 정수를 만나보세요.

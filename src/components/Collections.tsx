@@ -32,19 +32,19 @@ const collections = [
 export default function Collections() {
   return (
     <section
-      className="max-w-[1440px] mx-auto bg-zinc-950 py-20"
+      className="max-w-container mx-auto bg-surface-darkest py-20"
       aria-labelledby="collections-heading"
     >
-      <p className="mb-3 text-[10px] tracking-[0.4em] text-zinc-500">
+      <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
         현대적인 조형성과 정교한 소재가 만나는 곳,
       </p>
-      <p className="mb-3 text-[10px] tracking-[0.4em] text-zinc-500">
+      <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
         PRISME의 컬렉션을 만나보세요.
       </p>
 
       <h2
         id="collections-heading"
-        className="mb-14 text-4xl tracking-[0.25em] text-white"
+        className="mb-14 text-4xl tracking-heading text-content-primary"
         style={{ fontFamily: "var(--font-cinzel)" }}
       >
         COLLECTIONS
@@ -64,7 +64,7 @@ export default function Collections() {
 
       <Link
         href="/collections"
-        className="text-xs tracking-[0.3em] text-white/60 hover:text-white transition-colors"
+        className="text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
       >
         더 알아보기 &gt;
       </Link>
