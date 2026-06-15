@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <footer className="max-w-container mx-auto bg-surface-darkest py-14">
-      <nav aria-label="Footer navigation" className="flex gap-24">
+    <footer className="max-w-container mx-auto bg-surface-darkest px-6 py-10 sm:px-8 sm:py-14">
+      <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 sm:gap-x-12 lg:gap-x-24">
         <section aria-labelledby="footer-collections" className="w-fit">
           <h3
             id="footer-collections"

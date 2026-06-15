@@ -128,12 +128,18 @@ export default function Hero() {
     onScroll();
 
     let frame: number;
-    const animate = () => {
-      smooth.current += (target.current - smooth.current) * 0.08;
-      force(smooth.current);
-      frame = requestAnimationFrame(animate);
-    };
-    animate();
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (!prefersReducedMotion) {
+      const animate = () => {
+        smooth.current += (target.current - smooth.current) * 0.08;
+        force(smooth.current);
+        frame = requestAnimationFrame(animate);
+      };
+      animate();
+    }
 
     return () => {
       window.removeEventListener("scroll", onScroll);

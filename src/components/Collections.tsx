@@ -32,7 +32,7 @@ const collections = [
 export default function Collections() {
   return (
     <section
-      className="max-w-container mx-auto bg-surface-darkest py-20"
+      className="max-w-container mx-auto bg-surface-darkest px-6 py-12 sm:px-8 lg:py-20"
       aria-labelledby="collections-heading"
     >
       <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
@@ -44,13 +44,16 @@ export default function Collections() {
 
       <h2
         id="collections-heading"
-        className="mb-14 text-4xl tracking-heading text-content-primary"
+        className="mb-8 text-3xl tracking-heading text-content-primary lg:mb-14 lg:text-4xl"
         style={{ fontFamily: "var(--font-cinzel)" }}
       >
         COLLECTIONS
       </h2>
 
-      <ul className="mb-12 grid grid-cols-5 gap-8" aria-label="컬렉션 목록">
+      <ul
+        className="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:mb-12 lg:grid-cols-5 lg:gap-8"
+        aria-label="컬렉션 목록"
+      >
         {collections.map((c, i) => (
           <li key={i}>
             <CollectionCard

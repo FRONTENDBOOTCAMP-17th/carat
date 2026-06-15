@@ -12,7 +12,7 @@ const products = [
 export default function BestPieces() {
   return (
     <section
-      className="max-w-container mx-auto bg-surface-darkest py-20"
+      className="max-w-container mx-auto bg-surface-darkest px-6 py-12 sm:px-8 lg:py-20"
       aria-labelledby="best-pieces-heading"
     >
       <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
@@ -24,14 +24,14 @@ export default function BestPieces() {
 
       <h2
         id="best-pieces-heading"
-        className="mb-14 text-4xl tracking-heading text-content-primary"
+        className="mb-8 text-3xl tracking-heading text-content-primary lg:mb-14 lg:text-4xl"
         style={{ fontFamily: "var(--font-cinzel)" }}
       >
         BEST PIECES
       </h2>
 
       <ul
-        className="mb-12 grid grid-cols-5 gap-8"
+        className="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:mb-12 lg:grid-cols-5 lg:gap-8"
         aria-label="베스트 상품 목록"
       >
         {products.map((p, i) => (

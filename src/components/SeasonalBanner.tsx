@@ -1,22 +1,24 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function SeasonalBanner() {
   return (
-    <section className="relative w-full aspect-4/3 overflow-hidden bg-surface-raised" aria-label="2026 F/W 컬렉션 배너">
-      {/* Background image */}
-      <img
+    <section className="relative w-full aspect-video md:aspect-4/3 overflow-hidden bg-surface-raised" aria-label="2026 F/W 컬렉션 배너">
+      <Image
         src="/images/fw-2026.jpg"
-        className="absolute inset-0 h-full w-full object-cover aspect-square"
-        alt="2026 F/W Collection"
+        alt="2026 F/W 시즌 컬렉션"
+        fill
+        className="object-cover"
+        priority
       />
 
       <div className="absolute inset-0 bg-surface-overlay" aria-hidden="true" />
 
       {/* Content */}
       <div className="relative z-10 flex h-full justify-center">
-        <div className="w-full max-w-container flex flex-col gap-y-180 py-32">
+        <div className="w-full max-w-container flex flex-col justify-between px-6 py-12 sm:px-8 sm:py-16 lg:py-32">
           <h2
-            className="text-content-primary text-5xl"
+            className="text-content-primary text-2xl sm:text-3xl lg:text-5xl"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             2026 F/W COLLECTIONS
