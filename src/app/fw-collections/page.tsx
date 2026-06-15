@@ -13,7 +13,7 @@ export default function FwCollectionsPage() {
     <main id="main-content" className="min-h-screen bg-surface-base">
       <Navbar />
 
-      <div className="px-8 pt-12 pb-24">
+      <div className="px-4 pt-12 pb-24 sm:px-6 lg:px-8">
         <header>
           <h1
             className="mb-3 text-3xl tracking-heading text-content-primary"
@@ -28,7 +28,7 @@ export default function FwCollectionsPage() {
           </p>
         </header>
 
-        <ul className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
           {products.map((p, i) => (
             <li key={i}>
               <ProductCard

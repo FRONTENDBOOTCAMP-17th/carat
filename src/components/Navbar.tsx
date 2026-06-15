@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav aria-label="주요 내비게이션" className="max-w-container mx-auto flex items-center justify-between px-8 py-5 bg-surface-base">
+    <nav aria-label="주요 내비게이션" className="max-w-container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-5 bg-surface-base">
       {/* Search */}
       <button className="text-content-tertiary hover:text-content-primary transition-colors" aria-label="검색">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">

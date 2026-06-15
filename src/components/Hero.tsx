@@ -129,7 +129,7 @@ export default function Hero() {
 
     let frame: number;
     const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (!prefersReducedMotion) {
@@ -158,10 +158,14 @@ export default function Hero() {
   const essentialP = Math.min(Math.max((progress - 0.6) / 0.25, 0), 1);
   const essentialEase = easeOutCubic(essentialP);
   const essentialOpacity = essentialEase;
-  const essentialX = -essentialEase * 20;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+  const essentialX = isMobile ? 0 : -essentialEase * 20;
 
   return (
-    <section className="relative h-[400vh] bg-surface-base" aria-label="PRISME 메인 히어로">
+    <section
+      className="relative h-[400vh] bg-surface-base"
+      aria-label="PRISME 메인 히어로"
+    >
       <div className="sticky top-0 h-screen overflow-hidden">
         <Canvas
           className="absolute inset-0"
@@ -193,23 +197,25 @@ export default function Hero() {
           >
             PRISME
           </h1>
-          <p className="text-4xs sm:text-2xs tracking-link sm:tracking-hero text-content-tertiary uppercase">
-            Shaped through balance, defined by elegance
-          </p>
-          <p className="text-4xs sm:text-2xs tracking-link sm:tracking-hero text-content-tertiary uppercase">
-            Contemporary jewelry dedicated to the essential expression
-          </p>
+          <div className="flex justify-center items flex-col">
+            <span className="block text-center">
+              Shaped through balance, defined by elegance.
+            </span>
+            <span className="block text-center">
+              Contemporary jewelry reduced to its essential expression.
+            </span>
+          </div>
         </div>
 
         {/* ESSENTIAL COLLECTION — full-bleed, no 1440px constraint */}
         <div
-          className="absolute top-0 bottom-0 left-[6%] sm:left-[7%] lg:left-[8%] flex flex-col text-content-primary"
+          className="absolute top-0 bottom-0 left-4 sm:left-[7%] lg:left-[8%] right-4 sm:right-6 lg:right-8 flex flex-col text-content-primary"
           style={{
             opacity: essentialOpacity,
             transform: `translateX(${essentialX}px)`,
           }}
         >
-          <div className="mt-[13%]">
+          <div className="mt-[13vh]">
             <p className="mb-2 sm:mb-3 text-2xs tracking-descriptor text-content-subtle">
               COLLECTION
             </p>
@@ -220,7 +226,7 @@ export default function Hero() {
               <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl">
                 ESSENTIAL
               </span>
-              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl pl-8 sm:pl-10 lg:pl-16 xl:pl-20">
+              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl pl-4 sm:pl-10 lg:pl-16 xl:pl-20">
                 COLLECTION
               </span>
             </h2>

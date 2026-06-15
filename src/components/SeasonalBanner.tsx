@@ -16,7 +16,7 @@ export default function SeasonalBanner() {
 
       {/* Content */}
       <div className="relative z-10 flex h-full justify-center">
-        <div className="w-full max-w-container flex flex-col justify-between px-6 py-12 sm:px-8 sm:py-16 lg:py-32">
+        <div className="w-full max-w-container flex flex-col justify-between px-4 py-12 sm:px-6 lg:px-8 lg:py-32">
           <h2
             className="text-content-primary text-2xl sm:text-3xl lg:text-5xl"
             style={{ fontFamily: "var(--font-cinzel)" }}

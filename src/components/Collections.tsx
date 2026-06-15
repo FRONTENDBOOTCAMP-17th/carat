@@ -32,7 +32,7 @@ const collections = [
 export default function Collections() {
   return (
     <section
-      className="max-w-container mx-auto bg-surface-darkest px-6 py-12 sm:px-8 lg:py-20"
+      className="max-w-container mx-auto bg-surface-darkest px-4 py-12 sm:px-6 lg:px-8 lg:py-20"
       aria-labelledby="collections-heading"
     >
       <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
@@ -51,7 +51,7 @@ export default function Collections() {
       </h2>
 
       <ul
-        className="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:mb-12 lg:grid-cols-5 lg:gap-8"
+        className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:mb-12 lg:grid-cols-5 lg:gap-6"
         aria-label="컬렉션 목록"
       >
         {collections.map((c, i) => (
