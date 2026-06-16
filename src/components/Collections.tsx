@@ -2,39 +2,17 @@ import Link from "next/link";
 import CollectionCard from "./CollectionCard";
 
 const collections = [
-  {
-    title: "Ring 01",
-    description: "Lorem ipsum dolor sit amet",
-    price: "₩10,000,000",
-  },
-  {
-    title: "Ring 01",
-    description: "Lorem ipsum dolor sit amet",
-    price: "₩10,000,000",
-  },
-  {
-    title: "Ring 01",
-    description: "Lorem ipsum dolor sit amet",
-    price: "₩10,000,000",
-  },
-  {
-    title: "Ring 01",
-    description: "Lorem ipsum dolor sit amet",
-    price: "₩10,000,000",
-  },
-  {
-    title: "Ring 01",
-    description: "Lorem ipsum dolor sit amet",
-    price: "₩10,000,000",
-  },
+  { title: "Ring 01", price: "₩10,000,000" },
+  { title: "Ring 01", price: "₩10,000,000" },
+  { title: "Ring 01", price: "₩10,000,000" },
+  { title: "Ring 01", price: "₩10,000,000" },
+  { title: "Ring 01", price: "₩10,000,000" },
 ];
 
 export default function Collections() {
   return (
-    <section
-      className="max-w-container mx-auto bg-surface-darkest px-4 py-12 sm:px-6 lg:px-8 lg:py-20"
-      aria-labelledby="collections-heading"
-    >
+    <section className="w-full bg-surface-darkest" aria-labelledby="collections-heading">
+      <div className="max-w-container mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
         현대적인 조형성과 정교한 소재가 만나는 곳,
       </p>
@@ -58,7 +36,6 @@ export default function Collections() {
           <li key={i}>
             <CollectionCard
               title={c.title}
-              description={c.description}
               price={c.price}
             />
           </li>
@@ -71,6 +48,7 @@ export default function Collections() {
       >
         더 알아보기 &gt;
       </Link>
+      </div>
     </section>
   );
 }

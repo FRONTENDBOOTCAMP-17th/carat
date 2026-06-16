@@ -1,15 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
+import bannerImage from "../../public/images/SeasonalBanner.png";
 
 export default function SeasonalBanner() {
   return (
-    <section className="relative w-full aspect-video md:aspect-4/3 overflow-hidden bg-surface-raised" aria-label="2026 F/W 컬렉션 배너">
+    <section className="relative w-full aspect-3/4 md:aspect-4/3 overflow-hidden bg-surface-raised" aria-label="2026 F/W 컬렉션 배너">
       <Image
-        src="/images/fw-2026.jpg"
+        src={bannerImage}
         alt="2026 F/W 시즌 컬렉션"
         fill
         className="object-cover"
         priority
+        sizes="100vw"
+        placeholder="blur"
+        quality={85}
       />
 
       <div className="absolute inset-0 bg-surface-overlay" aria-hidden="true" />

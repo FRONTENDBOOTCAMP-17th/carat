@@ -1,12 +1,10 @@
 type CollectionCardProps = {
   title: string;
-  description: string;
   price: string;
 };
 
 export default function CollectionCard({
   title,
-  description,
   price,
 }: CollectionCardProps) {
   return (
@@ -14,7 +12,6 @@ export default function CollectionCard({
       <figure className="mb-4 aspect-4/5 bg-surface-elevated" role="img" aria-label={`${title} 컬렉션 이미지`} />
       <p className="mb-1 text-2xs tracking-link text-content-dimmed">RING</p>
       <h3 className="mb-1 text-sm font-light text-content-primary">{title}</h3>
-      <p className="mb-1 text-xs text-content-dimmed">{description}</p>
       <p className="text-sm text-content-faint">{price}</p>
     </article>
   );

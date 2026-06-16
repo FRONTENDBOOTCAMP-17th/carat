@@ -10,7 +10,7 @@ const products = Array.from({ length: 12 }, (_, i) => ({
 
 export default function CollectionsPage() {
   return (
-    <main id="main-content" className="min-h-screen bg-surface-base">
+    <main id="main-content" className="min-h-screen bg-surface-darkest">
       <Navbar />
 
       <div className="px-4 pt-12 pb-24 sm:px-6 lg:px-8">

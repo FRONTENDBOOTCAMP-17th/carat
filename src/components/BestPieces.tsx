@@ -11,10 +11,8 @@ const products = [
 
 export default function BestPieces() {
   return (
-    <section
-      className="max-w-container mx-auto bg-surface-darkest px-4 py-12 sm:px-6 lg:px-8 lg:py-20"
-      aria-labelledby="best-pieces-heading"
-    >
+    <section className="w-full bg-surface-darkest" aria-labelledby="best-pieces-heading">
+      <div className="max-w-container mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
       <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
         현대적인 조형성과 정교한 소재가 만나는 곳,
       </p>
@@ -47,6 +45,7 @@ export default function BestPieces() {
       >
         더 알아보기 &gt;
       </Link>
+      </div>
     </section>
   );
 }
