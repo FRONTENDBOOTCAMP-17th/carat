@@ -1,6 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import bannerImage from "../../public/images/SeasonalBanner.png";
+import { fadeUp, transition, viewport } from "@/lib/motion";
 
 export default function SeasonalBanner() {
   return (
@@ -21,14 +25,26 @@ export default function SeasonalBanner() {
       {/* Content */}
       <div className="relative z-10 flex h-full justify-center">
         <div className="w-full max-w-container flex flex-col justify-between px-4 py-12 sm:px-6 lg:px-8 lg:py-32">
-          <h2
+          <motion.h2
             className="text-content-primary text-2xl sm:text-3xl lg:text-5xl"
             style={{ fontFamily: "var(--font-cinzel)" }}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            transition={transition}
           >
             2026 F/W COLLECTIONS
-          </h2>
+          </motion.h2>
 
-          <div className="flex flex-col items-start">
+          <motion.div
+            className="flex flex-col items-start"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewport}
+            transition={{ ...transition, delay: 0.15 }}
+          >
             <p className="mb-6 max-w-2xl text-sm leading-relaxed text-content-muted">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim
@@ -41,7 +57,7 @@ export default function SeasonalBanner() {
             >
               더 알아보기 &gt;
             </Link>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

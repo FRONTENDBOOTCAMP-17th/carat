@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 function easeOutCubic(t: number) {
@@ -29,30 +29,16 @@ function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
   return (
     <>
       <ambientLight intensity={0.2} />
-      <pointLight
-        ref={keyRef}
-        position={[-2.5, 4, 2]}
-        intensity={30}
-        color="#ffffff"
-      />
+      <pointLight ref={keyRef} position={[-2.5, 4, 2]} intensity={30} color="#ffffff" />
       <pointLight position={[3, 0, 2]} intensity={1.2} color="#c8d8ff" />
-      <pointLight
-        ref={rimMainRef}
-        position={[0, 2, -4]}
-        intensity={20}
-        color="#ffffff"
-      />
-      <pointLight
-        ref={rimSideRef}
-        position={[2, 1, -3]}
-        intensity={10}
-        color="#ddeeff"
-      />
+      <pointLight ref={rimMainRef} position={[0, 2, -4]} intensity={20} color="#ffffff" />
+      <pointLight ref={rimSideRef} position={[2, 1, -3]} intensity={10} color="#ddeeff" />
     </>
   );
 }
 
-function Ring({ progress }: { progress: number }) {
+// progressRef를 prop으로 받아 useFrame 안에서 직접 읽음 — 부모 리렌더 불필요
+function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const smooth = useRef(0);
   const { viewport } = useThree();
@@ -60,14 +46,12 @@ function Ring({ progress }: { progress: number }) {
   useFrame(() => {
     if (!meshRef.current) return;
 
-    smooth.current += (progress - smooth.current) * 0.06;
+    smooth.current += (progressRef.current - smooth.current) * 0.06;
     const p = smooth.current;
 
     const revealP = easeOutCubic(Math.min(Math.max(p / 0.55, 0), 1));
     const moveP = easeOutCubic(Math.min(Math.max((p - 0.5) / 0.4, 0), 1));
 
-    // 반지 회전 애니메이션 영역
-    // end: rotX ≈ 47deg (overhead tilt showing ring face), rotY ≈ 40deg (3/4 side view)
     const rotX = Math.PI * 0.32 - revealP * Math.PI * 0.2;
     const rotY = revealP * Math.PI * 0.1 + moveP * Math.PI * 0.12;
     const rotZ = Math.sin(revealP * Math.PI) * 0.06;
@@ -98,13 +82,17 @@ function Ring({ progress }: { progress: number }) {
 export default function Hero() {
   const target = useRef(0);
   const smooth = useRef(0);
-  const [, force] = useState(0);
+  const progressRef = useRef(0);
   const mouseRef = useRef<MousePos>({ x: 0, y: 0 });
+
+  // HTML 오버레이 요소 — React 리렌더 없이 직접 style 조작
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const heroTextRef = useRef<HTMLDivElement>(null);
+  const essentialTextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => {
-      const maxScroll = window.innerHeight * 3;
-      target.current = window.scrollY / maxScroll;
+      target.current = window.scrollY / (window.innerHeight * 3);
     };
 
     const onMouseMove = (e: MouseEvent) => {
@@ -122,20 +110,42 @@ export default function Hero() {
       };
     };
 
+    // resize마다 재계산해서 클로저 변수로 유지 — 60fps 읽기 제거
+    let isMobile = window.innerWidth < 640;
+    const onResize = () => { isMobile = window.innerWidth < 640; };
+
     window.addEventListener("scroll", onScroll);
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     onScroll();
 
     let frame: number;
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (!prefersReducedMotion) {
       const animate = () => {
         smooth.current += (target.current - smooth.current) * 0.08;
-        force(smooth.current);
+        const p = smooth.current;
+        progressRef.current = p;
+
+        const heroFade = Math.min(p / 0.3, 1);
+
+        // React setState 없이 DOM style 직접 변경 — compositor 속성만 건드림
+        if (overlayRef.current) {
+          overlayRef.current.style.opacity = String(heroFade * 0.4);
+        }
+        if (heroTextRef.current) {
+          heroTextRef.current.style.opacity = String(1 - heroFade);
+          heroTextRef.current.style.transform = `translateY(${heroFade * -40}px)`;
+        }
+        if (essentialTextRef.current) {
+          const essentialP = Math.min(Math.max((p - 0.6) / 0.25, 0), 1);
+          const essentialEase = easeOutCubic(essentialP);
+          essentialTextRef.current.style.opacity = String(essentialEase);
+          essentialTextRef.current.style.transform = `translateX(${isMobile ? 0 : -essentialEase * 20}px)`;
+        }
+
         frame = requestAnimationFrame(animate);
       };
       animate();
@@ -145,21 +155,10 @@ export default function Hero() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("resize", onResize);
       cancelAnimationFrame(frame);
     };
   }, []);
-
-  const progress = smooth.current;
-
-  const heroFade = Math.min(progress / 0.3, 1);
-  const heroOpacity = 1 - heroFade;
-  const heroY = heroFade * -40;
-
-  const essentialP = Math.min(Math.max((progress - 0.6) / 0.25, 0), 1);
-  const essentialEase = easeOutCubic(essentialP);
-  const essentialOpacity = essentialEase;
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
-  const essentialX = isMobile ? 0 : -essentialEase * 20;
 
   return (
     <section
@@ -174,22 +173,20 @@ export default function Hero() {
           aria-label="스크롤에 반응하는 반지 3D 애니메이션"
         >
           <Lights mouseRef={mouseRef} />
-          <Ring progress={progress} />
+          <Ring progressRef={progressRef} />
         </Canvas>
 
         <div
+          ref={overlayRef}
           className="absolute inset-0 bg-surface-base"
-          style={{ opacity: heroOpacity * 0.4 }}
+          style={{ opacity: 0.4 }}
           aria-hidden="true"
         />
 
         {/* Initial centered hero text */}
         <div
+          ref={heroTextRef}
           className="absolute inset-0 flex flex-col items-center justify-center text-content-primary"
-          style={{
-            opacity: heroOpacity,
-            transform: `translateY(${heroY}px)`,
-          }}
         >
           <h1
             className="mb-5 text-5xl sm:text-6xl lg:text-7xl font-medium"
@@ -209,11 +206,9 @@ export default function Hero() {
 
         {/* ESSENTIAL COLLECTION — full-bleed, no 1440px constraint */}
         <div
+          ref={essentialTextRef}
           className="absolute top-0 bottom-0 left-4 sm:left-[7%] lg:left-[8%] right-4 sm:right-6 lg:right-8 flex flex-col text-content-primary"
-          style={{
-            opacity: essentialOpacity,
-            transform: `translateX(${essentialX}px)`,
-          }}
+          style={{ opacity: 0 }}
         >
           <div className="mt-[13vh]">
             <p className="mb-2 sm:mb-3 text-2xs tracking-descriptor text-content-subtle">
