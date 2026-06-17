@@ -53,7 +53,7 @@ export default function Collections() {
               variants={fadeUp}
               transition={transition}
             >
-              <CollectionCard title={c.title} price={c.price} />
+              <CollectionCard id={`collection-${i}`} title={c.title} price={c.price} />
             </motion.li>
           ))}
         </motion.ul>
@@ -69,7 +69,7 @@ export default function Collections() {
             href="/collections"
             className="text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
           >
-            더 알아보기 &gt;
+            전체 컬렉션 보기 →
           </Link>
         </motion.div>
       </div>

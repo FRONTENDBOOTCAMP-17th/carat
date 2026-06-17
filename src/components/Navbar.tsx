@@ -11,6 +11,11 @@ export default function Navbar() {
   const { user, openLoginModal, logout } = useAuth();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
+  // 로그아웃 시 드롭다운 상태 초기화 (이벤트 리스너 누수 방지)
+  useEffect(() => {
+    if (!user) setIsUserMenuOpen(false);
+  }, [user]);
+
   // 외부 클릭 시 유저 메뉴 닫기
   useEffect(() => {
     if (!isUserMenuOpen) return;

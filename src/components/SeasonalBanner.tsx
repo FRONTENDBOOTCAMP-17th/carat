@@ -55,7 +55,7 @@ export default function SeasonalBanner() {
               href="/fw-collections"
               className="text-xs tracking-link text-content-secondary transition-colors hover:text-content-primary"
             >
-              더 알아보기 &gt;
+              2026 F/W 컬렉션 살펴보기 →
             </Link>
           </motion.div>
         </div>

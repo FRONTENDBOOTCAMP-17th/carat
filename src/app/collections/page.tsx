@@ -34,6 +34,7 @@ export default function CollectionsPage() {
             {products.map((p, i) => (
               <li key={i}>
                 <ProductCard
+                  id={`collections-${i}`}
                   name={p.name}
                   description={p.description}
                   price={p.price}

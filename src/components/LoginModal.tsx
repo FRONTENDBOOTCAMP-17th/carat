@@ -4,76 +4,172 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
+/* ── Types ──────────────────────────────────────────────── */
+type FieldKey = "name" | "email" | "password" | "confirmPassword";
+type FieldErrors = Partial<Record<FieldKey, string>>;
+type Touched = Partial<Record<FieldKey, boolean>>;
+
+/* ── Validation ─────────────────────────────────────────── */
+function validateField(
+  field: FieldKey,
+  value: string,
+  { isSignup, password }: { isSignup: boolean; password: string }
+): string | undefined {
+  switch (field) {
+    case "name":
+      if (!isSignup) return undefined;
+      return value.trim() ? undefined : "이름을 입력해주세요.";
+    case "email":
+      if (!value) return "이메일 주소를 입력해주세요.";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+        return "올바른 이메일 형식으로 입력해주세요. (예: name@domain.com)";
+      return undefined;
+    case "password":
+      if (!value) return "비밀번호를 입력해주세요.";
+      if (isSignup && value.length < 8) return "비밀번호를 8자 이상으로 설정해주세요.";
+      return undefined;
+    case "confirmPassword":
+      if (!isSignup) return undefined;
+      if (!value) return "비밀번호 확인을 입력해주세요.";
+      if (value !== password) return "비밀번호가 일치하지 않습니다.";
+      return undefined;
+  }
+}
+
+/* ── Input class helper ─────────────────────────────────── */
+const BASE =
+  "w-full bg-surface-input text-content-primary text-sm px-3 py-2.5 border focus:outline-none transition-colors placeholder:text-content-muted";
+
+function inputCls(hasError: boolean, extra?: string) {
+  return [
+    BASE,
+    hasError
+      ? "border-red-700 focus:border-red-500"
+      : "border-surface-elevated focus:border-content-tertiary",
+    extra,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/* ── Icons ──────────────────────────────────────────────── */
+const EyeIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+const EyeOffIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+    <line x1="1" y1="1" x2="23" y2="23" />
+  </svg>
+);
+
+/* ── Component ──────────────────────────────────────────── */
 export default function LoginModal() {
   const { isLoginModalOpen, modalMode, closeLoginModal, login, signup } = useAuth();
 
   const [mode, setMode] = useState(modalMode);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<Touched>({});
+  const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 모달이 열릴 때 컨텍스트의 초기 모드를 동기화
+  const isLogin = mode === "login";
+  const ctx = { isSignup: !isLogin, password };
+
   useEffect(() => {
-    if (isLoginModalOpen) setMode(modalMode);
+    if (isLoginModalOpen) {
+      setMode(modalMode);
+      setName(""); setEmail(""); setPassword(""); setConfirmPassword("");
+      setShowPassword(false); setFieldErrors({}); setTouched({}); setServerError(null);
+    }
   }, [isLoginModalOpen, modalMode]);
 
   const reset = () => {
-    setError(null);
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    setName("");
-    setShowPassword(false);
+    setName(""); setEmail(""); setPassword(""); setConfirmPassword("");
+    setShowPassword(false); setFieldErrors({}); setTouched({}); setServerError(null);
   };
 
-  const handleClose = () => {
-    closeLoginModal();
-    reset();
-  };
+  const handleClose = () => { closeLoginModal(); reset(); };
 
   const switchMode = () => {
     setMode((m) => (m === "login" ? "signup" : "login"));
-    setError(null);
+    setFieldErrors({}); setTouched({}); setServerError(null);
+  };
+
+  const handleBlur = (field: FieldKey, value: string) => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setFieldErrors((prev) => ({ ...prev, [field]: validateField(field, value, ctx) }));
+  };
+
+  const handleChange = (field: FieldKey, value: string) => {
+    const setters: Record<FieldKey, () => void> = {
+      name: () => setName(value),
+      email: () => setEmail(value),
+      password: () => setPassword(value),
+      confirmPassword: () => setConfirmPassword(value),
+    };
+    setters[field]();
+
+    const updates: FieldErrors = {};
+
+    if (touched[field]) {
+      const fieldCtx = field === "password" ? { ...ctx, password: value } : ctx;
+      updates[field] = validateField(field, value, fieldCtx);
+    }
+    // confirmPassword 재검증 — password 변경 시
+    if (field === "password" && touched.confirmPassword) {
+      updates.confirmPassword = validateField("confirmPassword", confirmPassword, {
+        ...ctx,
+        password: value,
+      });
+    }
+
+    if (Object.keys(updates).length) setFieldErrors((prev) => ({ ...prev, ...updates }));
+    if (serverError) setServerError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setServerError(null);
 
-    if (mode === "signup" && password !== confirmPassword) {
-      setError("비밀번호가 일치하지 않습니다.");
+    const keys: FieldKey[] = isLogin
+      ? ["email", "password"]
+      : ["name", "email", "password", "confirmPassword"];
+    const vals: Record<FieldKey, string> = { name, email, password, confirmPassword };
+
+    const newErrors: FieldErrors = {};
+    let hasError = false;
+    for (const k of keys) {
+      const err = validateField(k, vals[k], ctx);
+      if (err) { newErrors[k] = err; hasError = true; }
+    }
+    if (hasError) {
+      setFieldErrors(newErrors);
+      setTouched(Object.fromEntries(keys.map((k) => [k, true])) as Touched);
       return;
     }
 
     setIsLoading(true);
-    const { error: err } =
-      mode === "login"
-        ? await login(email, password)
-        : await signup(email, password, name);
+    const { error } = isLogin
+      ? await login(email, password)
+      : await signup(email, password, name);
     setIsLoading(false);
-    if (err) setError(err);
-    else reset();
+
+    if (error) setServerError(error);
+    else { closeLoginModal(); reset(); }
   };
 
-  const isLogin = mode === "login";
-
-  const eyeIcon = (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-  const eyeOffIcon = (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-      <line x1="1" y1="1" x2="23" y2="23" />
-    </svg>
-  );
+  // touched된 필드의 에러만 노출
+  const err = (field: FieldKey) => (touched[field] ? fieldErrors[field] : undefined);
 
   return (
     <AnimatePresence>
@@ -127,7 +223,7 @@ export default function LoginModal() {
 
               {/* Form */}
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-                {/* 이름 — 회원가입 전용 */}
+                {/* Name — signup only */}
                 {!isLogin && (
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="signup-name" className="text-2xs tracking-label text-content-faint">
@@ -138,15 +234,23 @@ export default function LoginModal() {
                       type="text"
                       autoComplete="name"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="bg-surface-input text-content-primary text-sm px-3 py-2.5 border border-surface-elevated focus:outline-none focus:border-content-tertiary transition-colors placeholder:text-content-muted"
+                      onChange={(e) => handleChange("name", e.target.value)}
+                      onBlur={(e) => handleBlur("name", e.target.value)}
+                      className={inputCls(!!err("name"))}
                       placeholder="홍길동"
                       required
+                      aria-invalid={!!err("name")}
+                      aria-describedby={err("name") ? "error-name" : undefined}
                     />
+                    {err("name") && (
+                      <p id="error-name" className="text-2xs text-red-400" role="alert">
+                        {err("name")}
+                      </p>
+                    )}
                   </div>
                 )}
 
-                {/* 이메일 */}
+                {/* Email */}
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="auth-email" className="text-2xs tracking-label text-content-faint">
                     EMAIL
@@ -156,14 +260,22 @@ export default function LoginModal() {
                     type="email"
                     autoComplete="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-surface-input text-content-primary text-sm px-3 py-2.5 border border-surface-elevated focus:outline-none focus:border-content-tertiary transition-colors placeholder:text-content-muted"
-                    placeholder="your@email.com"
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    onBlur={(e) => handleBlur("email", e.target.value)}
+                    className={inputCls(!!err("email"))}
+                    placeholder="name@domain.com"
                     required
+                    aria-invalid={!!err("email")}
+                    aria-describedby={err("email") ? "error-email" : undefined}
                   />
+                  {err("email") && (
+                    <p id="error-email" className="text-2xs text-red-400" role="alert">
+                      {err("email")}
+                    </p>
+                  )}
                 </div>
 
-                {/* 비밀번호 */}
+                {/* Password */}
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="auth-password" className="text-2xs tracking-label text-content-faint">
                     PASSWORD
@@ -174,10 +286,13 @@ export default function LoginModal() {
                       type={showPassword ? "text" : "password"}
                       autoComplete={isLogin ? "current-password" : "new-password"}
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-surface-input text-content-primary text-sm px-3 py-2.5 pr-10 border border-surface-elevated focus:outline-none focus:border-content-tertiary transition-colors placeholder:text-content-muted"
+                      onChange={(e) => handleChange("password", e.target.value)}
+                      onBlur={(e) => handleBlur("password", e.target.value)}
+                      className={inputCls(!!err("password"), "pr-10")}
                       placeholder="••••••••"
                       required
+                      aria-invalid={!!err("password")}
+                      aria-describedby={err("password") ? "error-password" : undefined}
                     />
                     <button
                       type="button"
@@ -185,12 +300,17 @@ export default function LoginModal() {
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-content-subtle hover:text-content-primary transition-colors"
                       aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 표시"}
                     >
-                      {showPassword ? eyeOffIcon : eyeIcon}
+                      {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                     </button>
                   </div>
+                  {err("password") && (
+                    <p id="error-password" className="text-2xs text-red-400" role="alert">
+                      {err("password")}
+                    </p>
+                  )}
                 </div>
 
-                {/* 비밀번호 확인 — 회원가입 전용 */}
+                {/* Confirm password — signup only */}
                 {!isLogin && (
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="signup-confirm" className="text-2xs tracking-label text-content-faint">
@@ -201,16 +321,25 @@ export default function LoginModal() {
                       type={showPassword ? "text" : "password"}
                       autoComplete="new-password"
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full bg-surface-input text-content-primary text-sm px-3 py-2.5 border border-surface-elevated focus:outline-none focus:border-content-tertiary transition-colors placeholder:text-content-muted"
+                      onChange={(e) => handleChange("confirmPassword", e.target.value)}
+                      onBlur={(e) => handleBlur("confirmPassword", e.target.value)}
+                      className={inputCls(!!err("confirmPassword"))}
                       placeholder="••••••••"
                       required
+                      aria-invalid={!!err("confirmPassword")}
+                      aria-describedby={err("confirmPassword") ? "error-confirm" : undefined}
                     />
+                    {err("confirmPassword") && (
+                      <p id="error-confirm" className="text-2xs text-red-400" role="alert">
+                        {err("confirmPassword")}
+                      </p>
+                    )}
                   </div>
                 )}
 
-                {error && (
-                  <p className="text-xs text-red-400" role="alert">{error}</p>
+                {/* Server error */}
+                {serverError && (
+                  <p className="text-2xs text-red-400" role="alert">{serverError}</p>
                 )}
 
                 <button
@@ -223,7 +352,7 @@ export default function LoginModal() {
                     : (isLogin ? "LOGIN" : "SIGN UP")}
                 </button>
 
-                {/* 모드 전환 */}
+                {/* Mode switch */}
                 <p className="text-center text-2xs text-content-faint">
                   {isLogin ? "계정이 없으신가요?" : "이미 계정이 있으신가요?"}
                   {" "}

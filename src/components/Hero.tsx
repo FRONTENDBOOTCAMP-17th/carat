@@ -238,7 +238,7 @@ export default function Hero() {
             href="#"
             className="mb-[10%] text-2xs sm:text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
           >
-            더 알아보기 &gt;
+            컬렉션 살펴보기 →
           </a>
         </div>
       </div>

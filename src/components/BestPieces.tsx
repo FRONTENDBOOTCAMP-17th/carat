@@ -25,10 +25,10 @@ export default function BestPieces() {
           transition={transition}
         >
           <p className="mb-3 text-2xs tracking-descriptor text-content-faint">
-            현대적인 조형성과 정교한 소재가 만나는 곳,
+            가장 많은 사랑을 받은,
           </p>
           <p className="mb-3 text-2xs tracking-descriptor text-content-faint">
-            PRISME의 컬렉션을 만나보세요.
+            PRISME의 시그니처 피스입니다.
           </p>
           <h2
             id="best-pieces-heading"
@@ -53,7 +53,7 @@ export default function BestPieces() {
               variants={fadeUp}
               transition={transition}
             >
-              <ProductCard name={p.name} category={p.category} price={p.price} />
+              <ProductCard id={`best-${i}`} name={p.name} category={p.category} price={p.price} />
             </motion.li>
           ))}
         </motion.ul>
@@ -69,7 +69,7 @@ export default function BestPieces() {
             href="/best-pieces"
             className="text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
           >
-            더 알아보기 &gt;
+            전체 상품 보기 →
           </Link>
         </motion.div>
       </div>

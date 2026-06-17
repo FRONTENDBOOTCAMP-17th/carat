@@ -34,6 +34,7 @@ export default function FwCollectionsPage() {
             {products.map((p, i) => (
               <li key={i}>
                 <ProductCard
+                  id={`fw-${i}`}
                   name={p.name}
                   description={p.description}
                   price={p.price}

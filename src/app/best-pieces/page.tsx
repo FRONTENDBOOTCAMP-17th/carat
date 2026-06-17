@@ -24,9 +24,7 @@ export default function BestPiecesPage() {
               BEST PIECES
             </h1>
             <p className="mb-16 text-xs leading-relaxed text-content-faint">
-              현대적인 조형성과 정교한 소재가 만나는 곳,
-              <br />
-              PRISME의 컬렉션을 만나보세요.
+              가장 많은 사랑을 받은 PRISME의 시그니처 피스를 만나보세요.
             </p>
           </header>
 
@@ -34,6 +32,7 @@ export default function BestPiecesPage() {
             {products.map((p, i) => (
               <li key={i}>
                 <ProductCard
+                  id={`best-pieces-${i}`}
                   name={p.name}
                   description={p.description}
                   price={p.price}
