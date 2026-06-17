@@ -24,10 +24,10 @@ export default function BestPieces() {
           viewport={viewport}
           transition={transition}
         >
-          <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
+          <p className="mb-3 text-2xs tracking-descriptor text-content-faint">
             현대적인 조형성과 정교한 소재가 만나는 곳,
           </p>
-          <p className="mb-3 text-2xs tracking-descriptor text-content-dimmed">
+          <p className="mb-3 text-2xs tracking-descriptor text-content-faint">
             PRISME의 컬렉션을 만나보세요.
           </p>
           <h2

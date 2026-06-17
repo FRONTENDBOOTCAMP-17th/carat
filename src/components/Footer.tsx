@@ -9,7 +9,7 @@ export default function Footer() {
           >
             COLLECTIONS
           </h3>
-          <ul className="space-y-3 text-xs text-content-dimmed">
+          <ul className="space-y-3 text-xs text-content-faint">
             <li>
               <a
                 href="/collections"
@@ -44,7 +44,7 @@ export default function Footer() {
           >
             EXPLORE
           </h3>
-          <ul className="space-y-3 text-xs text-content-dimmed">
+          <ul className="space-y-3 text-xs text-content-faint">
             <li>
               <a href="#" className="hover:text-content-primary transition-colors">
                 Materials
@@ -70,7 +70,7 @@ export default function Footer() {
           >
             SUPPORT
           </h3>
-          <ul className="space-y-3 text-xs text-content-dimmed">
+          <ul className="space-y-3 text-xs text-content-faint">
             <li>
               <a href="#" className="hover:text-content-primary transition-colors">
                 FAQ
@@ -96,7 +96,7 @@ export default function Footer() {
           >
             CONTACT
           </h3>
-          <ul className="space-y-3 text-xs text-content-dimmed">
+          <ul className="space-y-3 text-xs text-content-faint">
             <li>
               <a href="#" className="hover:text-content-primary transition-colors">
                 E-mail

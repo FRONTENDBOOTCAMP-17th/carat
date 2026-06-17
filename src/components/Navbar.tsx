@@ -69,7 +69,7 @@ export default function Navbar() {
               {/* 드롭다운 */}
               {isUserMenuOpen && user && (
                 <div className="absolute top-11 left-0 z-50 w-44 bg-surface-raised border border-surface-elevated py-3">
-                  <p className="px-4 py-1 text-2xs text-content-dimmed truncate">
+                  <p className="px-4 py-1 text-2xs text-content-faint truncate">
                     {user.email}
                   </p>
                   <div className="my-2 h-px bg-surface-elevated" />

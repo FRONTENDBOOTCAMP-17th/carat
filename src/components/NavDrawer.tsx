@@ -131,7 +131,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
                 <a
                   href={href}
                   onClick={onClose}
-                  className="text-xs tracking-link text-content-dimmed hover:text-content-primary transition-colors"
+                  className="text-xs tracking-link text-content-faint hover:text-content-primary transition-colors"
                 >
                   {label}
                 </a>
