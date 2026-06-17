@@ -28,3 +28,7 @@ Navbar 는 홈이 아니라 `/collections` 등 서브페이지에서 렌더됨.
   콘솔: `The requested resource isn't a valid image for /images/fw-2026.jpg received null`.
   → 2026 F/W 배너가 검은 빈 영역으로 표시됨(D1/D2/D3 중단부 큰 여백). 이미지 추가 또는 경로 수정 필요.
 - 빌드: `tsc --noEmit` 통과, `next build` 통과(모든 라우트 Static ○).
+
+## 7차 (2026-06-17)
+- D1~D6 통과. 6차 [필수] SeasonalBanner 404 해소(이미지 추가→F/W COLLECTIONS 배너 정상). 모바일390 가로오버플로 0(반응형 유지). tsc 0.
+- 새 [필수]: SeasonalBanner.png 34MB(과대) → 최적화 필요. [사소] next.config images.qualities 미설정(Next16 quality 85 경고).
