@@ -56,9 +56,12 @@ export default function CustomCursor() {
         ringY = mouseY;
         currentScale = targetScale;
       } else {
-        ringX += (mouseX - ringX) * 0.12;
-        ringY += (mouseY - ringY) * 0.12;
-        currentScale += (targetScale - currentScale) * 0.15;
+        const dx = mouseX - ringX;
+        const dy = mouseY - ringY;
+        const ds = targetScale - currentScale;
+        ringX = Math.abs(dx) < 0.08 ? mouseX : ringX + dx * 0.12;
+        ringY = Math.abs(dy) < 0.08 ? mouseY : ringY + dy * 0.12;
+        currentScale = Math.abs(ds) < 0.0008 ? targetScale : currentScale + ds * 0.15;
       }
 
       ring.style.transform = `translate(${ringX - halfRing}px, ${ringY - halfRing}px) scale(${currentScale})`;
