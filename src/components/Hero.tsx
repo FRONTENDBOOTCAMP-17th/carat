@@ -171,6 +171,7 @@ export default function Hero() {
           camera={{ position: [0, 0, 4], fov: 45 }}
           role="img"
           aria-label="스크롤에 반응하는 반지 3D 애니메이션"
+          onCreated={() => window.dispatchEvent(new Event("prisme:hero-ready"))}
         >
           <Lights mouseRef={mouseRef} />
           <Ring progressRef={progressRef} />

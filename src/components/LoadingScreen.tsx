@@ -3,12 +3,40 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const MIN_DISPLAY_MS = 1600;
+const CANVAS_TIMEOUT_MS = 8000;
+
 export default function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(false), 1600);
-    return () => clearTimeout(timer);
+    const isHomepage = window.location.pathname === "/";
+    let fallbackTimer: ReturnType<typeof setTimeout>;
+    let cancelled = false;
+
+    const minDelay = new Promise<void>((r) => setTimeout(r, MIN_DISPLAY_MS));
+
+    // 홈페이지에서만 3D 캔버스 준비 신호를 기다림
+    // 다른 페이지는 minDelay만으로 충분 (3D 콘텐츠 없음)
+    const canvasReady = isHomepage
+      ? new Promise<void>((r) => {
+          fallbackTimer = setTimeout(r, CANVAS_TIMEOUT_MS);
+          window.addEventListener(
+            "prisme:hero-ready",
+            () => { clearTimeout(fallbackTimer); r(); },
+            { once: true }
+          );
+        })
+      : Promise.resolve();
+
+    Promise.all([minDelay, canvasReady]).then(() => {
+      if (!cancelled) setIsVisible(false);
+    });
+
+    return () => {
+      cancelled = true;
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   return (
