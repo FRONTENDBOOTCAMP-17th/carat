@@ -6,7 +6,7 @@ import { test, expect } from "@playwright/test";
 // 3D Hero(react-three-fiber)는 렌더/애니메이션에 시간이 필요하므로
 // networkidle 대신 domcontentloaded + waitForTimeout 사용.
 
-const IMG = "../images/2026-06-18";
+const IMG = "../images/2026-06-19";
 
 // 3D 캔버스가 한 프레임 이상 그려질 시간을 확보
 async function settle(page: import("@playwright/test").Page) {
@@ -100,17 +100,40 @@ test.describe("carat 랜딩 반응형 검증", () => {
     }
   });
 
-  test("D8 로그인/회원가입 모달(신규)", async ({ page }) => {
+  test("D8 로그인/회원가입 모달(서브페이지 Navbar에서)", async ({ page }) => {
+    // 로그인 트리거는 서브페이지 Navbar의 "로그인" 버튼이다.
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.goto("/collections", { waitUntil: "domcontentloaded" });
     await settle(page);
-    // 로그인 트리거(텍스트/aria 추정) 클릭 → 모달
-    const trigger = page.getByRole("button", { name: /로그인|login|account|마이/i }).first();
-    if (await trigger.count()) {
+
+    const trigger = page.getByRole("button", { name: "로그인" }).first();
+    const hasTrigger = (await trigger.count()) > 0;
+    console.log(`[D8] login trigger present=${hasTrigger}`);
+    if (hasTrigger) {
       await trigger.click().catch(() => {});
-      await page.waitForTimeout(800);
+      await page.waitForTimeout(700);
     }
-    await page.screenshot({ path: `${IMG}/carat-D8-login-modal.png` });
+    // 로그인 모달
+    await page.screenshot({ path: `${IMG}/carat-D8a-login-modal-desktop.png` });
+
+    // 회원가입으로 전환
+    const toSignup = page.getByRole("button", { name: "회원가입" }).first();
+    if (await toSignup.count()) {
+      await toSignup.click().catch(() => {});
+      await page.waitForTimeout(500);
+    }
+    await page.screenshot({ path: `${IMG}/carat-D8b-signup-modal-desktop.png` });
+
+    // 모바일 로그인 모달
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/collections", { waitUntil: "domcontentloaded" });
+    await settle(page);
+    const mTrigger = page.getByRole("button", { name: "로그인" }).first();
+    if (await mTrigger.count()) {
+      await mTrigger.click().catch(() => {});
+      await page.waitForTimeout(700);
+    }
+    await page.screenshot({ path: `${IMG}/carat-D8c-login-modal-mobile.png` });
   });
 
   test("D9 위시리스트(신규) — 비로그인 가드 + 로그인 시드 후", async ({ page }) => {

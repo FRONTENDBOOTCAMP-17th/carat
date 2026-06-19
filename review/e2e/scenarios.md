@@ -42,3 +42,24 @@ Navbar 는 홈이 아니라 `/collections` 등 서브페이지에서 렌더됨.
 - [칭찬] 인증/위시리스트 가드(AuthGuard), 리스트 완성도, 접근성(색상대비·터치타겟), 반응형 우수.
 - [제안] 인증 localStorage 전용(데모) — AuthContext 인터페이스 유지로 백엔드 전환 용이.
 - tsc 0(framer-motion 6건은 강사 로컬 stale node_modules, install 후 0). env 불필요.
+
+## 9차 갱신 (2026-06-19, PORT=3501) — 시연 전 점검
+
+8차(864cfd1) 이후 앱 코드 변경 0건(신규 페이지·라우트 없음). 라우트 6개 유지.
+D8 로그인 트리거를 서브페이지 Navbar 기준으로 고쳐 로그인/회원가입 모달을 실제로 캡처.
+
+| ID | 시나리오 | 대상 | 기대 | 결과 (2026-06-19) |
+|----|----------|------|------|------|
+| D1~D6 | 랜딩 데스크톱/태블릿/모바일 + 히어로 + Navbar | / , /collections | 레이아웃 정상, 모바일 오버플로0, 햄버거 존재 | 통과 (모바일 scrollWidth=390) |
+| D7 | 리스트 3종 데스크톱/모바일 | /best-pieces·/collections·/fw-collections | 오버플로 없음 | 통과 (3종 모두 모바일 오버플로0) |
+| D8a | 로그인 모달(데스크톱) | /collections Navbar "로그인" | 모달 렌더 | 통과 (LOGIN 모달) |
+| D8b | 회원가입 모달(데스크톱) | 모달 내 "회원가입" 전환 | NAME/CONFIRM 필드 추가 | 통과 (SIGN UP) |
+| D8c | 로그인 모달(모바일 390) | 동일, 390 폭 | 모달 폭 맞음, 오버플로 없음 | 통과 |
+| D9a | 위시리스트 비로그인 가드 | /wishlist | 로그인 모달 | 통과 |
+| D9b | 위시리스트 로그인(시드) | localStorage prisme_user 시드 | 빈상태 화면 | 통과 |
+
+발견(9차):
+- 10 passed (40.7s). 모든 화면 데스크톱·모바일 정상, 가로 오버플로 0.
+- [필수·이월] SeasonalBanner.png 여전히 34MB. 원본 해상도 7952×5304(웹 표시폭 ~1440 대비 과대). 리사이즈+WebP 필요.
+- [사소·이월] dev 런타임 콘솔에 `images.qualities [75]` 미설정 경고 실제 발생(quality 85 사용). next.config 설정 필요.
+- tsc 0 / build 통과(6 라우트 모두 Static). THREE.Clock deprecated는 three.js 내부(학생 코드 아님).
