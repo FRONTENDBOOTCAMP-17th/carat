@@ -6,8 +6,15 @@ import { test, expect } from "@playwright/test";
 // 3D Hero(react-three-fiber)는 렌더/애니메이션에 시간이 필요하므로
 // networkidle 대신 domcontentloaded + waitForTimeout 사용.
 
+<<<<<<< HEAD
 const IMG = "../images/2026-06-18";
+<<<<<<< Updated upstream
 const IMG = "../images/2026-06-17";
+=======
+=======
+const IMG = "../images/2026-06-17";
+>>>>>>> main
+>>>>>>> Stashed changes
 
 // 3D 캔버스가 한 프레임 이상 그려질 시간을 확보
 async function settle(page: import("@playwright/test").Page) {
