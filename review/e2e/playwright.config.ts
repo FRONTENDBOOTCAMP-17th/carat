@@ -6,15 +6,15 @@ export default defineConfig({
   testDir: "./tests",
   timeout: 30_000,
   use: {
-    baseURL: "http://localhost:3105",
+    baseURL: "http://localhost:3501",
   },
   reporter: [["list"]],
-  // Playwright가 dev 서버를 직접 띄우고 내립니다 (포트 3105).
+  // Playwright가 dev 서버를 직접 띄우고 내립니다 (포트 3501).
   webServer: {
-    command: "PORT=3105 npm run dev",
+    command: "PORT=3501 npm run dev",
     cwd: "../../",
-    url: "http://localhost:3105",
-    timeout: 60_000,
+    url: "http://localhost:3501",
+    timeout: 120_000,
     reuseExistingServer: true,
   },
 });
