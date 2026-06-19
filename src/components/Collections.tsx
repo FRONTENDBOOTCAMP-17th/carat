@@ -4,14 +4,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import CollectionCard from "./CollectionCard";
 import { fadeUp, staggerContainer, transition, viewport } from "@/lib/motion";
+import { getProductsByCategory } from "@/lib/products";
 
-const collections = [
-  { title: "Ring 01", price: "₩10,000,000" },
-  { title: "Ring 01", price: "₩10,000,000" },
-  { title: "Ring 01", price: "₩10,000,000" },
-  { title: "Ring 01", price: "₩10,000,000" },
-  { title: "Ring 01", price: "₩10,000,000" },
-];
+const collections = getProductsByCategory("collections").slice(0, 5);
 
 export default function Collections() {
   return (
@@ -47,13 +42,13 @@ export default function Collections() {
           whileInView="visible"
           viewport={viewport}
         >
-          {collections.map((c, i) => (
+          {collections.map((c) => (
             <motion.li
-              key={i}
+              key={c.id}
               variants={fadeUp}
               transition={transition}
             >
-              <CollectionCard id={`collection-${i}`} title={c.title} price={c.price} />
+              <CollectionCard id={c.id} title={c.name} price={c.price} />
             </motion.li>
           ))}
         </motion.ul>

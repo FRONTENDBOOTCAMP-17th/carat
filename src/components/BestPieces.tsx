@@ -4,14 +4,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import ProductCard from "./ProductCard";
 import { fadeUp, staggerContainer, transition, viewport } from "@/lib/motion";
+import { getProductsByCategory } from "@/lib/products";
 
-const products = [
-  { name: "Ring 01", category: "RING", price: "₩10,000,000" },
-  { name: "Ring 01", category: "RING", price: "₩10,000,000" },
-  { name: "Ring 01", category: "RING", price: "₩10,000,000" },
-  { name: "Ring 01", category: "RING", price: "₩10,000,000" },
-  { name: "Ring 01", category: "RING", price: "₩10,000,000" },
-];
+const products = getProductsByCategory("best-pieces").slice(0, 5);
 
 export default function BestPieces() {
   return (
@@ -47,13 +42,13 @@ export default function BestPieces() {
           whileInView="visible"
           viewport={viewport}
         >
-          {products.map((p, i) => (
+          {products.map((p) => (
             <motion.li
-              key={i}
+              key={p.id}
               variants={fadeUp}
               transition={transition}
             >
-              <ProductCard id={`best-${i}`} name={p.name} category={p.category} price={p.price} />
+              <ProductCard id={p.id} name={p.name} description={p.description} price={p.price} />
             </motion.li>
           ))}
         </motion.ul>
