@@ -6,6 +6,7 @@ import { test, expect } from "@playwright/test";
 // 3D Hero(react-three-fiber)는 렌더/애니메이션에 시간이 필요하므로
 // networkidle 대신 domcontentloaded + waitForTimeout 사용.
 
+const IMG = "../images/2026-06-18";
 const IMG = "../images/2026-06-17";
 
 // 3D 캔버스가 한 프레임 이상 그려질 시간을 확보
@@ -78,5 +79,62 @@ test.describe("carat 랜딩 반응형 검증", () => {
     } else {
       console.log("[NAVBAR /collections] present=false");
     }
+  });
+
+  // ===== 8차 신규: 리스트 페이지·로그인/회원가입 모달·위시리스트 =====
+
+  test("D7 리스트 페이지(best-pieces·collections·fw-collections) 데스크톱/모바일", async ({ page }) => {
+    for (const path of ["/best-pieces", "/collections", "/fw-collections"]) {
+      const name = path.replace("/", "");
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      await settle(page);
+      await page.screenshot({ path: `${IMG}/carat-D7-${name}-desktop.png`, fullPage: true });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      await settle(page);
+      const noOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+      );
+      console.log(`[D7 ${path}] mobile noHorizontalOverflow=${noOverflow}`);
+      await page.screenshot({ path: `${IMG}/carat-D7-${name}-mobile.png`, fullPage: true });
+    }
+  });
+
+  test("D8 로그인/회원가입 모달(신규)", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await settle(page);
+    // 로그인 트리거(텍스트/aria 추정) 클릭 → 모달
+    const trigger = page.getByRole("button", { name: /로그인|login|account|마이/i }).first();
+    if (await trigger.count()) {
+      await trigger.click().catch(() => {});
+      await page.waitForTimeout(800);
+    }
+    await page.screenshot({ path: `${IMG}/carat-D8-login-modal.png` });
+  });
+
+  test("D9 위시리스트(신규) — 비로그인 가드 + 로그인 시드 후", async ({ page }) => {
+    // 비로그인: AuthGuard 동작 확인
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/wishlist", { waitUntil: "domcontentloaded" });
+    await settle(page);
+    await page.screenshot({ path: `${IMG}/carat-D9a-wishlist-guest.png`, fullPage: true });
+
+    // localStorage 기반 인증을 시드해 로그인 상태 재현
+    await page.evaluate(() => {
+      localStorage.setItem(
+        "prisme_user",
+        JSON.stringify({ email: "review@prisme.test", name: "리뷰" }),
+      );
+      localStorage.setItem("prisme_wishlist", JSON.stringify([]));
+    });
+    await page.goto("/wishlist", { waitUntil: "domcontentloaded" });
+    await settle(page);
+    await page.screenshot({ path: `${IMG}/carat-D9b-wishlist-loggedin.png`, fullPage: true });
+    const noOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+    );
+    console.log(`[D9] wishlist desktop noHorizontalOverflow=${noOverflow}`);
   });
 });
