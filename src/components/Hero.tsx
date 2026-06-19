@@ -236,7 +236,7 @@ export default function Hero() {
           <div className="flex-1" />
 
           <a
-            href="#"
+            href="/essential"
             className="mb-[10%] text-2xs sm:text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
           >
             컬렉션 살펴보기 →

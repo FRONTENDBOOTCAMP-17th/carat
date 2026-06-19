@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 type ProductCardProps = {
@@ -26,6 +27,7 @@ const HeartIcon = ({ filled }: { filled: boolean }) => (
 );
 
 export default function ProductCard({ id, name, description, category, price }: ProductCardProps) {
+  const router = useRouter();
   const { user, wishlist, toggleWishlist, openLoginModal } = useAuth();
   const inWishlist = wishlist.some((w) => w.id === id);
 
@@ -42,6 +44,7 @@ export default function ProductCard({ id, name, description, category, price }: 
     <article
       className="group cursor-pointer"
       aria-label={`${name}${category ? `, ${category}` : ""}, ${price}`}
+      onClick={() => router.push(`/products/${id}`)}
     >
       <div className="relative mb-4">
         <div

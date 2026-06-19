@@ -18,7 +18,7 @@ function validateField(
   switch (field) {
     case "name":
       if (!isSignup) return undefined;
-      return value.trim() ? undefined : "이름을 입력해주세요.";
+      return value.trim() ? undefined : "이름을 입력해주세요. (예: 홍길동)";
     case "email":
       if (!value) return "이메일 주소를 입력해주세요.";
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
@@ -26,12 +26,12 @@ function validateField(
       return undefined;
     case "password":
       if (!value) return "비밀번호를 입력해주세요.";
-      if (isSignup && value.length < 8) return "비밀번호를 8자 이상으로 설정해주세요.";
+      if (isSignup && value.length < 8) return "비밀번호는 8자 이상으로 설정해주세요. (예: mypass123)";
       return undefined;
     case "confirmPassword":
       if (!isSignup) return undefined;
       if (!value) return "비밀번호 확인을 입력해주세요.";
-      if (value !== password) return "비밀번호가 일치하지 않습니다.";
+      if (value !== password) return "비밀번호가 일치하지 않습니다. 다시 확인해주세요.";
       return undefined;
   }
 }
@@ -182,7 +182,6 @@ export default function LoginModal() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            onClick={handleClose}
             aria-hidden="true"
           />
 
@@ -196,8 +195,9 @@ export default function LoginModal() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
+            onClick={!isLoading ? handleClose : undefined}
           >
-            <div className="w-full max-w-sm bg-surface-raised p-8">
+            <div className="w-full max-w-sm bg-surface-raised p-8" onClick={(e) => e.stopPropagation()}>
               {/* Header */}
               <div className="flex items-start justify-between mb-8">
                 <div>
@@ -243,7 +243,7 @@ export default function LoginModal() {
                       aria-describedby={err("name") ? "error-name" : undefined}
                     />
                     {err("name") && (
-                      <p id="error-name" className="text-2xs text-red-400" role="alert">
+                      <p id="error-name" className="text-xs text-red-400" role="alert">
                         {err("name")}
                       </p>
                     )}
@@ -269,7 +269,7 @@ export default function LoginModal() {
                     aria-describedby={err("email") ? "error-email" : undefined}
                   />
                   {err("email") && (
-                    <p id="error-email" className="text-2xs text-red-400" role="alert">
+                    <p id="error-email" className="text-xs text-red-400" role="alert">
                       {err("email")}
                     </p>
                   )}
@@ -304,7 +304,7 @@ export default function LoginModal() {
                     </button>
                   </div>
                   {err("password") && (
-                    <p id="error-password" className="text-2xs text-red-400" role="alert">
+                    <p id="error-password" className="text-xs text-red-400" role="alert">
                       {err("password")}
                     </p>
                   )}
@@ -330,7 +330,7 @@ export default function LoginModal() {
                       aria-describedby={err("confirmPassword") ? "error-confirm" : undefined}
                     />
                     {err("confirmPassword") && (
-                      <p id="error-confirm" className="text-2xs text-red-400" role="alert">
+                      <p id="error-confirm" className="text-xs text-red-400" role="alert">
                         {err("confirmPassword")}
                       </p>
                     )}
@@ -339,7 +339,7 @@ export default function LoginModal() {
 
                 {/* Server error */}
                 {serverError && (
-                  <p className="text-2xs text-red-400" role="alert">{serverError}</p>
+                  <p className="text-xs text-red-400" role="alert">{serverError}</p>
                 )}
 
                 <button

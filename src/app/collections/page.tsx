@@ -1,12 +1,9 @@
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
+import { getProductsByCategory } from "@/lib/products";
 
-const products = Array.from({ length: 12 }, (_, i) => ({
-  name: `Ring ${String(i + 1).padStart(2, "0")}`,
-  description: "Lorem ipsum dolor sit amet",
-  price: "₩ 10,000,000",
-}));
+const products = getProductsByCategory("collections");
 
 export default function CollectionsPage() {
   return (
@@ -31,10 +28,10 @@ export default function CollectionsPage() {
           </header>
 
           <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
-            {products.map((p, i) => (
-              <li key={i}>
+            {products.map((p) => (
+              <li key={p.id}>
                 <ProductCard
-                  id={`collections-${i}`}
+                  id={p.id}
                   name={p.name}
                   description={p.description}
                   price={p.price}

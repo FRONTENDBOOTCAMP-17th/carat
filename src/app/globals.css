@@ -33,12 +33,12 @@
 
   /* --- Letter-spacing: 원시 스케일 ---
      1(좁음) → 6(넓음) */
-  --tracking-1: 0.1em;
-  --tracking-2: 0.25em;
-  --tracking-3: 0.3em;
-  --tracking-4: 0.35em;
-  --tracking-5: 0.4em;
-  --tracking-6: 0.45em;
+  --tracking-1: 0.07em;
+  --tracking-2: 0.18em;
+  --tracking-3: 0.2em;
+  --tracking-4: 0.22em;
+  --tracking-5: 0.26em;
+  --tracking-6: 0.3em;
 
   /* --- Letter-spacing: 시맨틱 토큰 (원시 스케일 참조) --- */
   --tracking-label: var(--tracking-1); /* 섹션 레이블 헤더 (Footer h3 등) */

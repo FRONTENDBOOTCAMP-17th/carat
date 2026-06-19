@@ -143,13 +143,13 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
         {/* Bottom */}
         <div className="mt-auto px-6 pb-8">
           <div className="h-px bg-surface-elevated mb-6" aria-hidden="true" />
-          <a
-            href="#"
+          <Link
+            href="/contact"
             onClick={onClose}
             className="text-2xs tracking-label text-content-subtle hover:text-content-primary transition-colors"
           >
             CONTACT
-          </a>
+          </Link>
         </div>
       </div>
     </>
