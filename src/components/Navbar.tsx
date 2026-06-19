@@ -10,6 +10,8 @@ export default function Navbar() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, openLoginModal, logout } = useAuth();
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const userButtonRef = useRef<HTMLButtonElement>(null);
+  const wishlistLinkRef = useRef<HTMLAnchorElement>(null);
 
   // 로그아웃 시 드롭다운 상태 초기화 (이벤트 리스너 누수 방지)
   useEffect(() => {
@@ -26,6 +28,26 @@ export default function Navbar() {
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [isUserMenuOpen]);
+
+  // Escape로 드롭다운 닫기 + 포커스 복원 (WCAG 2.1 — keyboard accessible)
+  useEffect(() => {
+    if (!isUserMenuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsUserMenuOpen(false);
+        userButtonRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isUserMenuOpen]);
+
+  // 드롭다운 열릴 때 첫 번째 항목으로 포커스 이동
+  useEffect(() => {
+    if (!isUserMenuOpen) return;
+    const timer = setTimeout(() => wishlistLinkRef.current?.focus(), 50);
+    return () => clearTimeout(timer);
   }, [isUserMenuOpen]);
 
   const handleUserClick = () => {
@@ -45,10 +67,12 @@ export default function Navbar() {
             {/* User */}
             <div ref={userMenuRef} className="relative">
               <button
+                ref={userButtonRef}
                 onClick={handleUserClick}
                 className="relative flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
                 aria-label={user ? "계정 메뉴" : "로그인"}
                 aria-expanded={isUserMenuOpen}
+                aria-haspopup="menu"
               >
                 <svg
                   width="18"
@@ -79,6 +103,7 @@ export default function Navbar() {
                   </p>
                   <div className="my-2 h-px bg-surface-elevated" />
                   <Link
+                    ref={wishlistLinkRef}
                     href="/wishlist"
                     onClick={() => setIsUserMenuOpen(false)}
                     className="flex items-center min-h-11 px-4 text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"

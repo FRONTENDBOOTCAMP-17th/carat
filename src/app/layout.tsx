@@ -3,7 +3,6 @@ import { Cinzel } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
-import LoadingScreen from "@/components/LoadingScreen";
 import LoginModal from "@/components/LoginModal";
 import { AuthProvider } from "@/context/AuthContext";
 
@@ -89,7 +88,6 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
-          <LoadingScreen />
           <CustomCursor />
           <LoginModal />
           <a

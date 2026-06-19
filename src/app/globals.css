@@ -162,8 +162,25 @@
 }
 
 /* -----------------------------
+   FOCUS
+   — @layer 외부 선언: Tailwind utilities(focus:outline-none 등)보다
+     cascade 우선순위가 높아 키보드 포커스 링이 항상 표시됨
+------------------------------*/
+:focus-visible {
+  outline: 0.5px solid white;
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* -----------------------------
    BASE
 ------------------------------*/
+@layer base {
+  html {
+    word-break: keep-all;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

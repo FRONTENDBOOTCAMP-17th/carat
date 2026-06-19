@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
@@ -81,24 +81,58 @@ export default function LoginModal() {
   const [touched, setTouched] = useState<Touched>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmClose, setShowConfirmClose] = useState(false);
+
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const confirmCancelRef = useRef<HTMLButtonElement>(null);
+  const prevShowConfirmRef = useRef(false);
 
   const isLogin = mode === "login";
   const ctx = { isSignup: !isLogin, password };
+  const isDirty = name !== "" || email !== "" || password !== "" || confirmPassword !== "";
 
   useEffect(() => {
     if (isLoginModalOpen) {
       setMode(modalMode);
       setName(""); setEmail(""); setPassword(""); setConfirmPassword("");
       setShowPassword(false); setFieldErrors({}); setTouched({}); setServerError(null);
+      setShowConfirmClose(false);
     }
   }, [isLoginModalOpen, modalMode]);
+
+  // 모달 열릴 때 첫 번째 입력 필드로 포커스 (애니메이션 후)
+  useEffect(() => {
+    if (!isLoginModalOpen) return;
+    const timer = setTimeout(() => {
+      panelRef.current?.querySelector<HTMLInputElement>("input:not([disabled])")?.focus();
+    }, 320);
+    return () => clearTimeout(timer);
+  }, [isLoginModalOpen]);
+
+  // 닫기 확인 오버레이가 나타나면 "계속 작성하기"로 포커스,
+  // 사라지면 X 닫기 버튼으로 포커스 복원
+  useEffect(() => {
+    if (showConfirmClose) {
+      confirmCancelRef.current?.focus();
+    } else if (prevShowConfirmRef.current && isLoginModalOpen) {
+      closeButtonRef.current?.focus();
+    }
+    prevShowConfirmRef.current = showConfirmClose;
+  }, [showConfirmClose, isLoginModalOpen]);
 
   const reset = () => {
     setName(""); setEmail(""); setPassword(""); setConfirmPassword("");
     setShowPassword(false); setFieldErrors({}); setTouched({}); setServerError(null);
+    setShowConfirmClose(false);
   };
 
   const handleClose = () => { closeLoginModal(); reset(); };
+
+  const attemptClose = () => {
+    if (isLoading) return;
+    if (isDirty) { setShowConfirmClose(true); } else { handleClose(); }
+  };
 
   const switchMode = () => {
     setMode((m) => (m === "login" ? "signup" : "login"));
@@ -137,7 +171,7 @@ export default function LoginModal() {
     if (serverError) setServerError(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setServerError(null);
 
@@ -171,6 +205,29 @@ export default function LoginModal() {
   // touched된 필드의 에러만 노출
   const err = (field: FieldKey) => (touched[field] ? fieldErrors[field] : undefined);
 
+  // 포커스 트랩 + Escape 핸들러 (WCAG 2.1 — keyboard accessible)
+  const handlePanelKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      if (showConfirmClose) { setShowConfirmClose(false); } else { attemptClose(); }
+      return;
+    }
+    if (e.key !== "Tab" || !panelRef.current) return;
+    const focusable = Array.from(
+      panelRef.current.querySelectorAll<HTMLElement>(
+        "button:not([disabled]), input:not([disabled]), a[href]"
+      )
+    ).filter((el) => !el.closest("[inert]"));
+    if (focusable.length < 2) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  };
+
   return (
     <AnimatePresence>
       {isLoginModalOpen && (
@@ -195,9 +252,44 @@ export default function LoginModal() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            onClick={!isLoading ? handleClose : undefined}
+            onClick={attemptClose}
           >
-            <div className="w-full max-w-sm bg-surface-raised p-8" onClick={(e) => e.stopPropagation()}>
+            <div
+              ref={panelRef}
+              className="relative w-full max-w-sm bg-surface-raised p-8"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={handlePanelKeyDown}
+            >
+              {/* Confirm-close overlay — 오버레이가 활성화된 동안 아래 폼은 inert */}
+              {showConfirmClose && (
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-surface-raised px-8">
+                  <p className="text-center text-sm leading-relaxed text-content-primary">
+                    입력 중인 내용이 사라져요.
+                    <br />
+                    그래도 닫으시겠어요?
+                  </p>
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      ref={confirmCancelRef}
+                      onClick={() => setShowConfirmClose(false)}
+                      className="text-xs tracking-link text-content-secondary transition-colors hover:text-content-primary"
+                    >
+                      계속 작성하기
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleClose}
+                      className="text-xs tracking-link text-content-faint transition-colors hover:text-content-primary"
+                    >
+                      닫기
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* 헤더 + 폼 — 오버레이 활성화 시 inert로 키보드/스크린리더 접근 차단 */}
+              <div inert={showConfirmClose || undefined}>
               {/* Header */}
               <div className="flex items-start justify-between mb-8">
                 <div>
@@ -210,7 +302,8 @@ export default function LoginModal() {
                   </h2>
                 </div>
                 <button
-                  onClick={handleClose}
+                  ref={closeButtonRef}
+                  onClick={attemptClose}
                   className="flex items-center justify-center size-11 -mr-3 -mt-2 text-content-tertiary hover:text-content-primary transition-colors"
                   aria-label="닫기"
                 >
@@ -365,6 +458,7 @@ export default function LoginModal() {
                   </button>
                 </p>
               </form>
+              </div>{/* /inert wrapper */}
             </div>
           </motion.div>
         </>

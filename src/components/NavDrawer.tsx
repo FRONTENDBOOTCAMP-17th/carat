@@ -10,9 +10,9 @@ const PRIMARY_LINKS = [
 ];
 
 const SECONDARY_LINKS = [
-  { label: "Materials", href: "#" },
-  { label: "Process", href: "#" },
-  { label: "Archive", href: "#" },
+  { label: "Materials", href: "/materials" },
+  { label: "Process", href: "/process" },
+  { label: "Archive", href: "/archive" },
 ];
 
 interface NavDrawerProps {
@@ -128,13 +128,13 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
           <ul className="space-y-4">
             {SECONDARY_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <a
+                <Link
                   href={href}
                   onClick={onClose}
                   className="text-xs tracking-link text-content-faint hover:text-content-primary transition-colors"
                 >
                   {label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

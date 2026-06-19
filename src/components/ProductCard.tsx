@@ -44,7 +44,12 @@ export default function ProductCard({ id, name, description, category, price }: 
     <article
       className="group cursor-pointer"
       aria-label={`${name}${category ? `, ${category}` : ""}, ${price}`}
+      role="link"
+      tabIndex={0}
       onClick={() => router.push(`/products/${id}`)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") router.push(`/products/${id}`);
+      }}
     >
       <div className="relative mb-4">
         <div
@@ -57,7 +62,7 @@ export default function ProductCard({ id, name, description, category, price }: 
           className={`absolute top-2 right-2 size-11 flex items-center justify-center transition-[opacity,color] duration-200 ${
             inWishlist
               ? "opacity-100 text-content-primary"
-              : "opacity-0 group-hover:opacity-100 text-content-tertiary hover:text-content-primary"
+              : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 focus-visible:opacity-100 text-content-tertiary hover:text-content-primary"
           }`}
           aria-label={inWishlist ? "위시리스트에서 제거" : "위시리스트에 추가"}
           aria-pressed={inWishlist}
