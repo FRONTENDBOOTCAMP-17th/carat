@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 const PRIMARY_LINKS = [
+  { label: "Essential", href: "/essential" },
   { label: "Collections", href: "/collections" },
   { label: "Best Pieces", href: "/best-pieces" },
   { label: "FW Collections", href: "/fw-collections" },

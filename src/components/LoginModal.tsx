@@ -77,6 +77,7 @@ export default function LoginModal() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [touched, setTouched] = useState<Touched>({});
   const [serverError, setServerError] = useState<string | null>(null);
@@ -96,7 +97,8 @@ export default function LoginModal() {
     if (isLoginModalOpen) {
       setMode(modalMode);
       setName(""); setEmail(""); setPassword(""); setConfirmPassword("");
-      setShowPassword(false); setFieldErrors({}); setTouched({}); setServerError(null);
+      setShowPassword(false); setShowConfirmPassword(false);
+      setFieldErrors({}); setTouched({}); setServerError(null);
       setShowConfirmClose(false);
     }
   }, [isLoginModalOpen, modalMode]);
@@ -123,7 +125,8 @@ export default function LoginModal() {
 
   const reset = () => {
     setName(""); setEmail(""); setPassword(""); setConfirmPassword("");
-    setShowPassword(false); setFieldErrors({}); setTouched({}); setServerError(null);
+    setShowPassword(false); setShowConfirmPassword(false);
+    setFieldErrors({}); setTouched({}); setServerError(null);
     setShowConfirmClose(false);
   };
 
@@ -409,19 +412,29 @@ export default function LoginModal() {
                     <label htmlFor="signup-confirm" className="text-2xs tracking-label text-content-faint">
                       CONFIRM PASSWORD
                     </label>
-                    <input
-                      id="signup-confirm"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="new-password"
-                      value={confirmPassword}
-                      onChange={(e) => handleChange("confirmPassword", e.target.value)}
-                      onBlur={(e) => handleBlur("confirmPassword", e.target.value)}
-                      className={inputCls(!!err("confirmPassword"))}
-                      placeholder="••••••••"
-                      required
-                      aria-invalid={!!err("confirmPassword")}
-                      aria-describedby={err("confirmPassword") ? "error-confirm" : undefined}
-                    />
+                    <div className="relative">
+                      <input
+                        id="signup-confirm"
+                        type={showConfirmPassword ? "text" : "password"}
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={(e) => handleChange("confirmPassword", e.target.value)}
+                        onBlur={(e) => handleBlur("confirmPassword", e.target.value)}
+                        className={inputCls(!!err("confirmPassword"), "pr-10")}
+                        placeholder="••••••••"
+                        required
+                        aria-invalid={!!err("confirmPassword")}
+                        aria-describedby={err("confirmPassword") ? "error-confirm" : undefined}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((v) => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-content-subtle hover:text-content-primary transition-colors"
+                        aria-label={showConfirmPassword ? "비밀번호 확인 숨기기" : "비밀번호 확인 표시"}
+                      >
+                        {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      </button>
+                    </div>
                     {err("confirmPassword") && (
                       <p id="error-confirm" className="text-xs text-red-400" role="alert">
                         {err("confirmPassword")}

@@ -46,10 +46,8 @@ export default function SeasonalBanner() {
             transition={{ ...transition, delay: 0.15 }}
           >
             <p className="mb-6 max-w-2xl text-sm leading-relaxed text-content-muted">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim
-              ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat.
+              깊어지는 계절, 차갑고 단단해지는 빛.
+              2026 가을·겨울 컬렉션은 어둠 속에서 반짝이는 소재의 이면을 탐구합니다.
             </p>
             <Link
               href="/fw-collections"

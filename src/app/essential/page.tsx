@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WishlistButton from "@/components/WishlistButton";
+import BackButton from "@/components/BackButton";
 
 const COLORS = [
   {
@@ -55,13 +56,8 @@ export default function EssentialPage() {
       <Navbar />
 
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
-        <nav aria-label="메인으로 돌아가기">
-          <Link
-            href="/"
-            className="text-2xs tracking-link text-content-subtle hover:text-content-primary transition-colors"
-          >
-            ← PRISME
-          </Link>
+        <nav aria-label="이전 페이지로 돌아가기">
+          <BackButton href="/" label="PRISME" />
         </nav>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">

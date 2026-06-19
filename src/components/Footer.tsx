@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="w-full bg-surface-darkest">
@@ -11,28 +13,28 @@ export default function Footer() {
           </h2>
           <ul className="space-y-3 text-xs text-content-faint">
             <li>
-              <a
+              <Link
                 href="/essential"
                 className="hover:text-content-primary transition-colors"
               >
-                Essential Collection
-              </a>
+                Essential Ring
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/best-pieces"
                 className="hover:text-content-primary transition-colors"
               >
                 Best Pieces
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/collections"
                 className="hover:text-content-primary transition-colors"
               >
                 All Collections
-              </a>
+              </Link>
             </li>
           </ul>
         </section>
@@ -46,19 +48,19 @@ export default function Footer() {
           </h2>
           <ul className="space-y-3 text-xs text-content-faint">
             <li>
-              <a href="/materials" className="hover:text-content-primary transition-colors">
+              <Link href="/materials" className="hover:text-content-primary transition-colors">
                 Materials
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/process" className="hover:text-content-primary transition-colors">
+              <Link href="/process" className="hover:text-content-primary transition-colors">
                 Process
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/archive" className="hover:text-content-primary transition-colors">
+              <Link href="/archive" className="hover:text-content-primary transition-colors">
                 Archive
-              </a>
+              </Link>
             </li>
           </ul>
         </section>
@@ -72,19 +74,19 @@ export default function Footer() {
           </h2>
           <ul className="space-y-3 text-xs text-content-faint">
             <li>
-              <a href="/faq" className="hover:text-content-primary transition-colors">
+              <Link href="/faq" className="hover:text-content-primary transition-colors">
                 FAQ
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/shipping" className="hover:text-content-primary transition-colors">
+              <Link href="/shipping" className="hover:text-content-primary transition-colors">
                 Shipping &amp; Returns
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/care-guide" className="hover:text-content-primary transition-colors">
+              <Link href="/care-guide" className="hover:text-content-primary transition-colors">
                 Care Guide
-              </a>
+              </Link>
             </li>
           </ul>
         </section>
@@ -98,9 +100,9 @@ export default function Footer() {
           </h2>
           <ul className="space-y-3 text-xs text-content-faint">
             <li>
-              <a href="/contact" className="hover:text-content-primary transition-colors">
+              <Link href="/contact" className="hover:text-content-primary transition-colors">
                 E-mail
-              </a>
+              </Link>
             </li>
             <li>
               <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="hover:text-content-primary transition-colors">

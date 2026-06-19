@@ -3,19 +3,25 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import NavDrawer from "./NavDrawer";
+import SearchModal from "./SearchModal";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { user, openLoginModal, logout } = useAuth();
   const userMenuRef = useRef<HTMLDivElement>(null);
   const userButtonRef = useRef<HTMLButtonElement>(null);
   const wishlistLinkRef = useRef<HTMLAnchorElement>(null);
 
-  // 로그아웃 시 드롭다운 상태 초기화 (이벤트 리스너 누수 방지)
+  // 로그아웃 시 드롭다운 상태 초기화
   useEffect(() => {
-    if (!user) setIsUserMenuOpen(false);
+    if (!user) {
+      setIsUserMenuOpen(false);
+      setShowLogoutConfirm(false);
+    }
   }, [user]);
 
   // 외부 클릭 시 유저 메뉴 닫기
@@ -24,18 +30,20 @@ export default function Navbar() {
     const onPointerDown = (e: PointerEvent) => {
       if (!userMenuRef.current?.contains(e.target as Node)) {
         setIsUserMenuOpen(false);
+        setShowLogoutConfirm(false);
       }
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [isUserMenuOpen]);
 
-  // Escape로 드롭다운 닫기 + 포커스 복원 (WCAG 2.1 — keyboard accessible)
+  // Escape로 드롭다운 닫기 + 포커스 복원
   useEffect(() => {
     if (!isUserMenuOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsUserMenuOpen(false);
+        setShowLogoutConfirm(false);
         userButtonRef.current?.focus();
       }
     };
@@ -62,88 +70,8 @@ export default function Navbar() {
     <>
       <nav aria-label="주요 내비게이션" className="w-full bg-surface-base">
         <div className="max-w-container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-5">
-          {/* Left: User + Search */}
-          <div className="flex items-center gap-4">
-            {/* User */}
-            <div ref={userMenuRef} className="relative">
-              <button
-                ref={userButtonRef}
-                onClick={handleUserClick}
-                className="relative flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
-                aria-label={user ? "계정 메뉴" : "로그인"}
-                aria-expanded={isUserMenuOpen}
-                aria-haspopup="menu"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                >
-                  <circle cx="12" cy="8" r="3.5" />
-                  <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-                </svg>
-                {/* 로그인 상태 표시 dot */}
-                {user && (
-                  <span
-                    className="absolute bottom-3.25 right-3.25 w-1.5 h-1.5 rounded-full bg-content-primary"
-                    aria-hidden="true"
-                  />
-                )}
-              </button>
 
-              {/* 드롭다운 */}
-              {isUserMenuOpen && user && (
-                <div className="absolute top-11 left-0 z-50 w-44 bg-surface-raised border border-surface-elevated py-3">
-                  <p className="px-4 py-1 text-2xs text-content-faint truncate">
-                    {user.email}
-                  </p>
-                  <div className="my-2 h-px bg-surface-elevated" />
-                  <Link
-                    ref={wishlistLinkRef}
-                    href="/wishlist"
-                    onClick={() => setIsUserMenuOpen(false)}
-                    className="flex items-center min-h-11 px-4 text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
-                  >
-                    Wishlist
-                  </Link>
-                  <button
-                    onClick={() => {
-                      logout();
-                      setIsUserMenuOpen(false);
-                    }}
-                    className="flex items-center w-full min-h-11 px-4 text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
-                  >
-                    로그아웃
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Search */}
-            <button
-              className="flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
-              aria-label="검색"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Logo */}
+          {/* Logo — LEFT (표준 럭셔리 브랜드 레이아웃) */}
           <Link
             href="/"
             aria-label="PRISME 홈"
@@ -163,33 +91,147 @@ export default function Navbar() {
             </svg>
           </Link>
 
-          {/* Menu */}
-          <button
-            onClick={() => setIsDrawerOpen(true)}
-            className="flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
-            aria-label="메뉴 열기"
-            aria-haspopup="dialog"
-            aria-expanded={isDrawerOpen}
-            aria-controls="primary-menu"
-          >
-            <svg
-              width="20"
-              height="14"
-              viewBox="0 0 20 14"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
+          {/* Right: Search + User + Menu */}
+          <div className="flex items-center gap-1">
+            {/* Search */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
+              aria-label="검색"
+              aria-haspopup="dialog"
+              aria-expanded={isSearchOpen}
             >
-              <line x1="0" y1="1" x2="20" y2="1" />
-              <line x1="0" y1="7" x2="20" y2="7" />
-              <line x1="0" y1="13" x2="20" y2="13" />
-            </svg>
-          </button>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </button>
+            {/* User */}
+            <div ref={userMenuRef} className="relative">
+              <button
+                ref={userButtonRef}
+                onClick={handleUserClick}
+                className="relative flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
+                aria-label={user ? "계정 메뉴" : "로그인"}
+                aria-haspopup={user ? "menu" : "dialog"}
+                aria-expanded={user ? isUserMenuOpen : undefined}
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                >
+                  <circle cx="12" cy="8" r="3.5" />
+                  <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                </svg>
+                {user && (
+                  <span
+                    className="absolute bottom-3.25 right-3.25 w-1.5 h-1.5 rounded-full bg-content-primary"
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+
+              {/* 드롭다운 — 오른쪽 정렬 (버튼이 우측에 위치) */}
+              {isUserMenuOpen && user && (
+                <div className="absolute top-11 right-0 z-50 w-44 bg-surface-raised border border-surface-elevated py-3">
+                  <p className="px-4 py-1 text-2xs text-content-faint truncate">
+                    {user.email}
+                  </p>
+                  <div className="my-2 h-px bg-surface-elevated" />
+
+                  {showLogoutConfirm ? (
+                    /* 로그아웃 확인 — 인라인 (NN/G #5 Error Prevention) */
+                    <div className="px-4 py-2">
+                      <p className="mb-3 text-2xs leading-relaxed text-content-muted">
+                        로그아웃하면 위시리스트가
+                        <br />삭제됩니다. 계속하시겠어요?
+                      </p>
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setShowLogoutConfirm(false)}
+                          className="text-2xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
+                        >
+                          취소
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            logout();
+                            setIsUserMenuOpen(false);
+                            setShowLogoutConfirm(false);
+                          }}
+                          className="text-2xs tracking-link text-content-faint hover:text-content-primary transition-colors"
+                        >
+                          로그아웃
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <Link
+                        ref={wishlistLinkRef}
+                        href="/wishlist"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center min-h-11 px-4 text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
+                      >
+                        Wishlist
+                      </Link>
+                      <button
+                        onClick={() => setShowLogoutConfirm(true)}
+                        className="flex items-center w-full min-h-11 px-4 text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
+                      >
+                        로그아웃
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Menu */}
+            <button
+              onClick={() => setIsDrawerOpen(true)}
+              className="flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
+              aria-label="메뉴 열기"
+              aria-haspopup="dialog"
+              aria-expanded={isDrawerOpen}
+              aria-controls="primary-menu"
+            >
+              <svg
+                width="20"
+                height="14"
+                viewBox="0 0 20 14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              >
+                <line x1="0" y1="1" x2="20" y2="1" />
+                <line x1="0" y1="7" x2="20" y2="7" />
+                <line x1="0" y1="13" x2="20" y2="13" />
+              </svg>
+            </button>
+          </div>
         </div>
       </nav>
 
       <NavDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   );
 }

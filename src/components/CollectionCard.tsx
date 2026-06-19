@@ -1,11 +1,13 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 type CollectionCardProps = {
   id: string;
   title: string;
   price: string;
+  category?: string;
 };
 
 const HeartIcon = ({ filled }: { filled: boolean }) => (
@@ -23,7 +25,8 @@ const HeartIcon = ({ filled }: { filled: boolean }) => (
   </svg>
 );
 
-export default function CollectionCard({ id, title, price }: CollectionCardProps) {
+export default function CollectionCard({ id, title, price, category }: CollectionCardProps) {
+  const router = useRouter();
   const { user, wishlist, toggleWishlist, openLoginModal } = useAuth();
   const inWishlist = wishlist.some((w) => w.id === id);
 
@@ -33,13 +36,19 @@ export default function CollectionCard({ id, title, price }: CollectionCardProps
       openLoginModal("login");
       return;
     }
-    toggleWishlist({ id, name: title, price, category: "RING" });
+    toggleWishlist({ id, name: title, price, category });
   };
 
   return (
     <article
       className="group cursor-pointer"
       aria-label={`${title}, ${price}`}
+      role="link"
+      tabIndex={0}
+      onClick={() => router.push(`/products/${id}`)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") router.push(`/products/${id}`);
+      }}
     >
       <div className="relative mb-4">
         <div
@@ -52,7 +61,7 @@ export default function CollectionCard({ id, title, price }: CollectionCardProps
           className={`absolute top-2 right-2 size-11 flex items-center justify-center transition-[opacity,color] duration-200 ${
             inWishlist
               ? "opacity-100 text-content-primary"
-              : "opacity-0 group-hover:opacity-100 text-content-tertiary hover:text-content-primary"
+              : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 focus-visible:opacity-100 text-content-tertiary hover:text-content-primary"
           }`}
           aria-label={inWishlist ? "위시리스트에서 제거" : "위시리스트에 추가"}
           aria-pressed={inWishlist}
@@ -60,7 +69,9 @@ export default function CollectionCard({ id, title, price }: CollectionCardProps
           <HeartIcon filled={inWishlist} />
         </button>
       </div>
-      <p className="mb-1 text-2xs tracking-link text-content-faint">RING</p>
+      {category && (
+        <p className="mb-1 text-2xs tracking-link text-content-faint">{category}</p>
+      )}
       <h3 className="mb-1 text-sm font-light text-content-primary">{title}</h3>
       <p className="text-sm text-content-faint">{price}</p>
     </article>

@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WishlistButton from "@/components/WishlistButton";
+import BackButton from "@/components/BackButton";
 import { getProductById } from "@/lib/products";
 
 export default async function ProductPage({
@@ -29,12 +29,7 @@ export default async function ProductPage({
 
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
         <nav aria-label="이전 페이지로 돌아가기">
-          <Link
-            href={product.backHref}
-            className="text-2xs tracking-link text-content-subtle hover:text-content-primary transition-colors"
-          >
-            ← {product.categoryLabel}
-          </Link>
+          <BackButton href={product.backHref} label={product.categoryLabel} />
         </nav>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">

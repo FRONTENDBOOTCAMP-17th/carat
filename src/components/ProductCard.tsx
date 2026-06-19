@@ -9,6 +9,7 @@ type ProductCardProps = {
   description?: string;
   category?: string;
   price: string;
+  href?: string;  // custom navigation override (e.g. /essential for Essential Ring)
 };
 
 const HeartIcon = ({ filled }: { filled: boolean }) => (
@@ -26,10 +27,11 @@ const HeartIcon = ({ filled }: { filled: boolean }) => (
   </svg>
 );
 
-export default function ProductCard({ id, name, description, category, price }: ProductCardProps) {
+export default function ProductCard({ id, name, description, category, price, href }: ProductCardProps) {
   const router = useRouter();
   const { user, wishlist, toggleWishlist, openLoginModal } = useAuth();
   const inWishlist = wishlist.some((w) => w.id === id);
+  const navigateTo = href ?? `/products/${id}`;
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,9 +48,9 @@ export default function ProductCard({ id, name, description, category, price }: 
       aria-label={`${name}${category ? `, ${category}` : ""}, ${price}`}
       role="link"
       tabIndex={0}
-      onClick={() => router.push(`/products/${id}`)}
+      onClick={() => router.push(navigateTo)}
       onKeyDown={(e) => {
-        if (e.key === "Enter") router.push(`/products/${id}`);
+        if (e.key === "Enter") router.push(navigateTo);
       }}
     >
       <div className="relative mb-4">

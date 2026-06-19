@@ -90,6 +90,7 @@ export default function Hero() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const essentialTextRef = useRef<HTMLDivElement>(null);
+  const scrollHintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -151,6 +152,10 @@ export default function Hero() {
           const essentialEase = easeOutCubic(essentialP);
           essentialTextRef.current.style.opacity = String(essentialEase);
           essentialTextRef.current.style.transform = `translateX(${isMobile ? 0 : -essentialEase * 20}px)`;
+        }
+
+        if (scrollHintRef.current) {
+          scrollHintRef.current.style.opacity = String(Math.max(0, 1 - p / 0.04));
         }
 
         frame = requestAnimationFrame(animate);
@@ -234,9 +239,8 @@ export default function Hero() {
               </span>
             </h2>
             <p className="max-w-40 sm:max-w-55 md:max-w-75 text-xs sm:text-sm leading-relaxed text-content-muted">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation
+              절제와 정밀이 만나는 지점.
+              가장 단순한 형태 안에 소재의 본질을 담았습니다.
             </p>
           </div>
 
@@ -248,6 +252,29 @@ export default function Hero() {
           >
             컬렉션 살펴보기 →
           </a>
+        </div>
+
+        {/* 스크롤 힌트 — 스크롤 시작 즉시 fade-out */}
+        <div
+          ref={scrollHintRef}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-content-subtle pointer-events-none"
+          aria-hidden="true"
+        >
+          <span className="text-2xs tracking-link">SCROLL</span>
+          <svg
+            width="14"
+            height="20"
+            viewBox="0 0 14 22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="motion-safe:animate-bounce"
+          >
+            <line x1="7" y1="0" x2="7" y2="16" />
+            <polyline points="2,12 7,17 12,12" />
+          </svg>
         </div>
       </div>
     </section>
