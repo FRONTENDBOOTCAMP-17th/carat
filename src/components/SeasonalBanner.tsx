@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import bannerImage from "../../public/images/SeasonalBanner.png";
+import bannerImage from "../../public/images/SeasonalBanner.webp";
 import { fadeUp, transition, viewport } from "@/lib/motion";
 
 export default function SeasonalBanner() {
