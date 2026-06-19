@@ -84,6 +84,7 @@ export default function Hero() {
   const smooth = useRef(0);
   const progressRef = useRef(0);
   const mouseRef = useRef<MousePos>({ x: 0, y: 0 });
+  const navRevealedRef = useRef(false);
 
   // HTML 오버레이 요소 — React 리렌더 없이 직접 style 조작
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -123,7 +124,9 @@ export default function Hero() {
     let frame: number;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!prefersReducedMotion) {
+    if (prefersReducedMotion) {
+      window.dispatchEvent(new Event("prisme:nav-reveal"));
+    } else {
       const animate = () => {
         smooth.current += (target.current - smooth.current) * 0.08;
         const p = smooth.current;
@@ -141,6 +144,10 @@ export default function Hero() {
         }
         if (essentialTextRef.current) {
           const essentialP = Math.min(Math.max((p - 0.6) / 0.25, 0), 1);
+          if (essentialP >= 1 && !navRevealedRef.current) {
+            navRevealedRef.current = true;
+            window.dispatchEvent(new Event("prisme:nav-reveal"));
+          }
           const essentialEase = easeOutCubic(essentialP);
           essentialTextRef.current.style.opacity = String(essentialEase);
           essentialTextRef.current.style.transform = `translateX(${isMobile ? 0 : -essentialEase * 20}px)`;
