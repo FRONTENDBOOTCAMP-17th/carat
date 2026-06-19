@@ -42,3 +42,6 @@ Navbar 는 홈이 아니라 `/collections` 등 서브페이지에서 렌더됨.
 - [칭찬] 인증/위시리스트 가드(AuthGuard), 리스트 완성도, 접근성(색상대비·터치타겟), 반응형 우수.
 - [제안] 인증 localStorage 전용(데모) — AuthContext 인터페이스 유지로 백엔드 전환 용이.
 - tsc 0(framer-motion 6건은 강사 로컬 stale node_modules, install 후 0). env 불필요.
+## 7차 (2026-06-17)
+- D1~D6 통과. 6차 [필수] SeasonalBanner 404 해소(이미지 추가→F/W COLLECTIONS 배너 정상). 모바일390 가로오버플로 0(반응형 유지). tsc 0.
+- 새 [필수]: SeasonalBanner.png 34MB(과대) → 최적화 필요. [사소] next.config images.qualities 미설정(Next16 quality 85 경고).

@@ -7,6 +7,7 @@ import { test, expect } from "@playwright/test";
 // networkidle 대신 domcontentloaded + waitForTimeout 사용.
 
 const IMG = "../images/2026-06-18";
+const IMG = "../images/2026-06-17";
 
 // 3D 캔버스가 한 프레임 이상 그려질 시간을 확보
 async function settle(page: import("@playwright/test").Page) {
