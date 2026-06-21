@@ -143,7 +143,9 @@ export default function Hero() {
         const heroFade = Math.min(p / 0.3, 1);
         if (overlayRef.current) {
           const isLight = document.documentElement.dataset.theme === "light";
-          overlayRef.current.style.opacity = isLight ? "0" : String(heroFade * 0.4);
+          overlayRef.current.style.opacity = isLight
+            ? "0"
+            : String(heroFade * 0.4);
         }
         if (heroTextRef.current) {
           heroTextRef.current.style.opacity = String(1 - heroFade);
