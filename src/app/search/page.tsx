@@ -26,17 +26,17 @@ function SearchContent() {
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
         {/* Header */}
         <header className="mb-12">
-          <p className="mb-3 text-2xs tracking-descriptor text-content-faint">
+          <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
             {p.section}
           </p>
           <h1
-            className="text-3xl sm:text-4xl tracking-heading text-content-primary font-light"
+            className="text-3xl sm:text-4xl tracking-label text-content-primary font-light"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             {query ? `"${query}"` : "SEARCH"}
           </h1>
           {query && (
-            <p className="mt-3 text-xs text-content-subtle">
+            <p className="mt-3 text-xs text-content-secondary">
               {direct.length > 0 ? p.resultCount(direct.length) : p.noResults}
             </p>
           )}
@@ -45,7 +45,7 @@ function SearchContent() {
         {/* Typo suggestion */}
         {suggestion && (
           <div className="mb-10 px-4 py-3 border border-surface-elevated">
-            <p className="text-xs text-content-muted">
+            <p className="text-xs text-content-secondary">
               {p.suggestionPrefix}
               <Link
                 href={`/search?q=${encodeURIComponent(suggestion)}`}
@@ -63,7 +63,7 @@ function SearchContent() {
           <section aria-labelledby="search-direct-heading" className="mb-16">
             <h2
               id="search-direct-heading"
-              className="mb-8 text-2xs tracking-label text-content-faint"
+              className="mb-8 text-2xs tracking-label text-content-faint font-normal"
             >
               {p.sectionDirect}
             </h2>
@@ -89,7 +89,7 @@ function SearchContent() {
           <section aria-labelledby="search-related-heading">
             <h2
               id="search-related-heading"
-              className="mb-8 text-2xs tracking-label text-content-faint"
+              className="mb-8 text-2xs tracking-label text-content-faint font-normal"
             >
               {direct.length > 0 ? p.sectionRelated : p.sectionRelatedNoExact}
             </h2>
@@ -113,11 +113,11 @@ function SearchContent() {
         {/* No results */}
         {query && direct.length === 0 && related.length === 0 && !suggestion && (
           <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
-            <p className="text-sm text-content-muted">{p.noMatch(query)}</p>
-            <p className="text-xs text-content-subtle">{p.tryOther}</p>
+            <p className="text-sm text-content-secondary">{p.noMatch(query)}</p>
+            <p className="text-xs text-content-secondary">{p.tryOther}</p>
             <Link
               href="/collections"
-              className="mt-4 text-2xs tracking-link text-content-muted hover:text-content-primary transition-colors underline underline-offset-4"
+              className="mt-4 text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors underline underline-offset-4"
             >
               {p.viewAll}
             </Link>
@@ -126,7 +126,7 @@ function SearchContent() {
 
         {/* Empty query */}
         {!query && (
-          <p className="text-xs text-content-subtle text-center py-24">
+          <p className="text-xs text-content-secondary text-center py-24">
             {p.emptyQuery}
           </p>
         )}

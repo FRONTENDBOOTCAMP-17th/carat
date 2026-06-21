@@ -20,7 +20,7 @@ export default function BestPiecesPage() {
           <header>
             <h1
               id="best-pieces-heading"
-              className="mb-3 text-3xl tracking-heading text-content-primary"
+              className="mb-3 text-3xl tracking-label text-content-primary"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
               {p.title}

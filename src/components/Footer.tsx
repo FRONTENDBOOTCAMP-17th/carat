@@ -13,9 +13,9 @@ export default function Footer() {
         <section aria-labelledby="footer-collections" className="w-fit">
           <h2 id="footer-collections" className="mb-5 text-2xs tracking-label text-content-primary">{f.collections}</h2>
           <ul className="space-y-3 text-xs text-content-faint">
-            <li><Link href="/essential" className="hover:text-content-primary transition-colors">{f.essentialRing}</Link></li>
-            <li><Link href="/best-pieces" className="hover:text-content-primary transition-colors">{f.bestPieces}</Link></li>
-            <li><Link href="/collections" className="hover:text-content-primary transition-colors">{f.allCollections}</Link></li>
+            <li><Link href="/essential" lang="en" className="hover:text-content-primary transition-colors">{f.essentialRing}</Link></li>
+            <li><Link href="/best-pieces" lang="en" className="hover:text-content-primary transition-colors">{f.bestPieces}</Link></li>
+            <li><Link href="/collections" lang="en" className="hover:text-content-primary transition-colors">{f.allCollections}</Link></li>
           </ul>
         </section>
 

@@ -20,7 +20,7 @@ function WishlistContent() {
       <div className="flex-1 flex flex-col px-4 pt-12 pb-24 sm:px-6 lg:px-8 max-w-container mx-auto w-full">
         <header>
           <h1
-            className="mb-3 text-3xl tracking-heading text-content-primary"
+            className="mb-3 text-3xl tracking-label text-content-primary"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             {p.title}
@@ -54,16 +54,16 @@ function WishlistContent() {
               stroke="currentColor"
               strokeWidth="1"
               strokeLinecap="round"
-              className="text-content-subtle"
+              className="text-content-secondary"
               aria-label={p.heartLabel}
             >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
-            <p className="text-xs tracking-link text-content-faint">{p.emptyTitle}</p>
-            <p className="text-2xs text-content-subtle">{p.emptySub}</p>
+            <p className="text-xs tracking-label text-content-faint">{p.emptyTitle}</p>
+            <p className="text-2xs text-content-secondary">{p.emptySub}</p>
             <Link
               href="/collections"
-              className="mt-2 text-2xs tracking-link text-content-muted hover:text-content-primary transition-colors underline underline-offset-4"
+              className="mt-2 text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors underline underline-offset-4"
             >
               {p.browseLink}
             </Link>

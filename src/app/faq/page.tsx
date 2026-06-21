@@ -10,7 +10,10 @@ export default function FaqPage() {
   const p = t.pages.faq;
 
   return (
-    <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
+    <main
+      id="main-content"
+      className="min-h-screen bg-surface-darkest flex flex-col"
+    >
       <Navbar />
 
       <section className="flex-1 w-full" aria-labelledby="faq-heading">
@@ -18,14 +21,14 @@ export default function FaqPage() {
           <nav aria-label={p.backNav}>
             <Link
               href="/"
-              className="text-2xs tracking-link text-content-subtle hover:text-content-primary transition-colors"
+              className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
             >
               ← PRISME
             </Link>
           </nav>
 
           <header className="mt-10 mb-16">
-            <p className="mb-3 text-2xs tracking-descriptor text-content-faint">
+            <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
               {p.section}
             </p>
             <h1
@@ -35,7 +38,7 @@ export default function FaqPage() {
             >
               {p.title}
             </h1>
-            <p className="max-w-xl text-xs leading-relaxed text-content-muted">
+            <p className="max-w-xl text-xs leading-relaxed text-content-secondary">
               {p.intro}{" "}
               <Link
                 href="/contact"
@@ -59,7 +62,7 @@ export default function FaqPage() {
                     +
                   </span>
                 </summary>
-                <p className="mt-4 text-xs leading-relaxed text-content-muted">
+                <p className="mt-4 text-xs leading-relaxed text-content-secondary">
                   {faq.a}
                 </p>
               </details>

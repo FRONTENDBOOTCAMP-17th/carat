@@ -69,7 +69,7 @@ export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onCl
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={t.search.placeholder}
-                  className="flex-1 bg-transparent text-xl text-content-primary placeholder:text-content-subtle outline-none"
+                  className="flex-1 bg-transparent text-xl text-content-primary placeholder:text-content-muted outline-none"
                   style={{ fontFamily: "var(--font-pretendard)" }}
                 />
                 <button
@@ -83,7 +83,7 @@ export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onCl
                   </svg>
                 </button>
               </div>
-              <p className="mt-3 text-2xs text-content-subtle tracking-link">{t.search.escHint}</p>
+              <p className="mt-3 text-2xs text-content-secondary tracking-label">{t.search.escHint}</p>
             </form>
           </motion.div>
         </motion.div>

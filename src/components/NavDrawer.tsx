@@ -113,7 +113,8 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
                 <Link
                   href={href}
                   onClick={onClose}
-                  className="text-2xl tracking-heading text-content-primary hover:text-content-secondary transition-colors"
+                  lang="en"
+                  className="text-2xl tracking-label text-content-primary hover:text-content-secondary transition-colors"
                   style={{ fontFamily: "var(--font-cinzel)" }}
                 >
                   {label}
@@ -133,7 +134,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
                 <Link
                   href={href}
                   onClick={onClose}
-                  className="text-xs tracking-link text-content-faint hover:text-content-primary transition-colors"
+                  className="text-xs tracking-label text-content-faint hover:text-content-primary transition-colors"
                 >
                   {label}
                 </Link>
@@ -148,15 +149,15 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
 
           {/* Theme toggle */}
           <div className="flex items-center justify-between mb-5">
-            <span className="text-2xs tracking-label text-content-subtle">{t.drawer.theme.label}</span>
+            <span className="text-2xs tracking-label text-content-secondary">{t.drawer.theme.label}</span>
             <div className="flex items-center gap-0.5" role="group" aria-label={t.drawer.theme.label}>
               <button
                 onClick={() => setTheme("dark")}
                 aria-pressed={theme === "dark"}
-                className={`px-3 py-1.5 text-2xs tracking-link transition-colors ${
+                className={`px-3 py-1.5 text-2xs tracking-label transition-colors ${
                   theme === "dark"
                     ? "text-content-primary bg-surface-elevated"
-                    : "text-content-subtle hover:text-content-muted"
+                    : "text-content-muted hover:text-content-secondary"
                 }`}
               >
                 {t.drawer.theme.dark}
@@ -164,10 +165,10 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
               <button
                 onClick={() => setTheme("light")}
                 aria-pressed={theme === "light"}
-                className={`px-3 py-1.5 text-2xs tracking-link transition-colors ${
+                className={`px-3 py-1.5 text-2xs tracking-label transition-colors ${
                   theme === "light"
                     ? "text-content-primary bg-surface-elevated"
-                    : "text-content-subtle hover:text-content-muted"
+                    : "text-content-muted hover:text-content-secondary"
                 }`}
               >
                 {t.drawer.theme.light}
@@ -178,7 +179,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
           <Link
             href="/contact"
             onClick={onClose}
-            className="text-2xs tracking-label text-content-subtle hover:text-content-primary transition-colors"
+            className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
           >
             {t.drawer.links.contact}
           </Link>

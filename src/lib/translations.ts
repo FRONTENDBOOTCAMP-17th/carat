@@ -21,10 +21,10 @@ const ko = {
       collections: "Collections",
       bestPieces: "Best Pieces",
       fwCollections: "FW Collections",
-      materials: "Materials",
-      process: "Process",
-      archive: "Archive",
-      contact: "CONTACT",
+      materials: "소재",
+      process: "제작 공정",
+      archive: "아카이브",
+      contact: "문의",
     },
     theme: {
       label: "테마",
@@ -58,11 +58,13 @@ const ko = {
     errors: {
       nameRequired: "이름을 입력해주세요. (예: 홍길동)",
       emailRequired: "이메일 주소를 입력해주세요.",
-      emailInvalid: "올바른 이메일 형식으로 입력해주세요. (예: name@domain.com)",
+      emailInvalid:
+        "올바른 이메일 형식으로 입력해주세요. (예: name@domain.com)",
       passwordRequired: "비밀번호를 입력해주세요.",
       passwordTooShort: "비밀번호는 8자 이상으로 설정해주세요. (예: mypass123)",
       confirmPasswordRequired: "비밀번호 확인을 입력해주세요.",
-      confirmPasswordMismatch: "비밀번호가 일치하지 않습니다. 다시 확인해주세요.",
+      confirmPasswordMismatch:
+        "비밀번호가 일치하지 않습니다. 다시 확인해주세요.",
       loginFailed: "이메일 또는 비밀번호를 확인해주세요.",
       emailInvalidSignup: "올바른 이메일 주소를 입력해주세요.",
       passwordTooShortSignup: "비밀번호는 8자 이상이어야 합니다.",
@@ -92,24 +94,22 @@ const ko = {
   hero: {
     sectionLabel: "PRISME 메인 히어로",
     canvasLabel: "스크롤에 반응하는 반지 3D 애니메이션",
-    tagline1: "Shaped through balance, defined by elegance.",
-    tagline2: "Contemporary jewelry reduced to its essential expression.",
+    tagline1: "현대 주얼리의 본질을 가장 순수한 형태와 완벽한 균형으로.",
     collectionLabel: "COLLECTION",
     essentialLine1: "ESSENTIAL",
     essentialLine2: "COLLECTION",
-    essentialDesc: "절제와 정밀이 만나는 지점.\n가장 단순한 형태 안에 소재의 본질을 담았습니다.",
+    essentialDesc:
+      "절제와 정밀이 만나는 지점.\n가장 단순한 형태 안에 소재의 본질을 담았습니다.",
     cta: "컬렉션 살펴보기 →",
     scroll: "SCROLL",
   },
   bestPiecesSection: {
-    sub1: "가장 많은 사랑을 받은,",
-    sub2: "PRISME의 시그니처 피스입니다.",
+    sub: "가장 많은 사랑을 받은, PRISME의 시그니처 피스입니다.",
     listLabel: "베스트 상품 목록",
     viewAll: "전체 상품 보기 →",
   },
   collectionsSection: {
-    sub1: "현대적인 조형성과 정교한 소재가 만나는 곳,",
-    sub2: "PRISME의 컬렉션을 만나보세요.",
+    sub: "현대적인 조형성과 정교한 소재가 만나는 곳, PRISME의 컬렉션을 만나보세요.",
     listLabel: "컬렉션 목록",
     viewAll: "전체 컬렉션 보기 →",
   },
@@ -149,11 +149,27 @@ const ko = {
       dimensionValue: "내경 16.5mm",
       viewAll: "컬렉션 전체 보기 →",
       colors: [
-        { id: "silver" as const, label: "실버", sublabel: "Sterling Silver", material: "스털링 실버 / 다이아몬드" },
-        { id: "gold" as const, label: "골드", sublabel: "18K Yellow Gold", material: "18K 옐로우 골드 / 다이아몬드" },
-        { id: "rose-gold" as const, label: "로즈 골드", sublabel: "18K Rose Gold", material: "18K 로즈 골드 / 다이아몬드" },
+        {
+          id: "silver" as const,
+          label: "실버",
+          sublabel: "Sterling Silver",
+          material: "스털링 실버 / 다이아몬드",
+        },
+        {
+          id: "gold" as const,
+          label: "골드",
+          sublabel: "18K Yellow Gold",
+          material: "18K 옐로우 골드 / 다이아몬드",
+        },
+        {
+          id: "rose-gold" as const,
+          label: "로즈 골드",
+          sublabel: "18K Rose Gold",
+          material: "18K 로즈 골드 / 다이아몬드",
+        },
       ],
-      wishlistItemName: (colorLabel: string) => `Essential Ring — ${colorLabel}`,
+      wishlistItemName: (colorLabel: string) =>
+        `Essential Ring — ${colorLabel}`,
     },
     bestPieces: {
       title: "BEST PIECES",
@@ -178,24 +194,36 @@ const ko = {
       now: "NOW",
       seasons: [
         {
-          year: "2026", season: "F/W", name: "COLLECTIONS",
+          year: "2026",
+          season: "F/W",
+          name: "COLLECTIONS",
           desc: "현대적인 조형성과 정교한 소재가 만나는 PRISME의 2026 가을·겨울 컬렉션. 계절의 깊이를 담아낸 시그니처 피스들.",
-          href: "/fw-collections", status: "current",
+          href: "/fw-collections",
+          status: "current",
         },
         {
-          year: "2026", season: "S/S", name: "FORME",
+          year: "2026",
+          season: "S/S",
+          name: "FORME",
           desc: "빛과 형태의 관계를 탐구한 컬렉션. 기하학적 구조 위에 유기적인 선을 더해, 착용자의 움직임에 따라 변화하는 작품들을 선보였습니다.",
-          href: null, status: "closed",
+          href: null,
+          status: "closed",
         },
         {
-          year: "2025", season: "F/W", name: "LUMIÈRE",
+          year: "2025",
+          season: "F/W",
+          name: "LUMIÈRE",
           desc: "빛의 굴절과 산란에서 영감을 받아, 금속 표면의 마감 방식만으로 빛의 다양한 표정을 담아낸 시즌 컬렉션입니다.",
-          href: null, status: "closed",
+          href: null,
+          status: "closed",
         },
         {
-          year: "2025", season: "S/S", name: "ÉCLAT",
+          year: "2025",
+          season: "S/S",
+          name: "ÉCLAT",
           desc: "여백의 미를 주제로, 최소한의 선과 면으로 구성된 데뷔 컬렉션. PRISME의 미학적 언어가 처음으로 제시된 시즌입니다.",
-          href: null, status: "closed",
+          href: null,
+          status: "closed",
         },
       ],
     },
@@ -262,7 +290,8 @@ const ko = {
       errors: {
         nameRequired: "이름을 입력해주세요. (예: 홍길동)",
         emailRequired: "이메일 주소를 입력해주세요.",
-        emailInvalid: "올바른 이메일 형식으로 입력해주세요. (예: name@domain.com)",
+        emailInvalid:
+          "올바른 이메일 형식으로 입력해주세요. (예: name@domain.com)",
         messageRequired: "문의 내용을 입력해주세요.",
       },
     },
@@ -306,12 +335,36 @@ const ko = {
       title: "MATERIALS",
       desc: "PRISME는 소재 선택에서부터 완성까지, 모든 과정을 정직하게 다룹니다.\n사용하는 귀금속과 원석 하나하나가 작품의 품격을 결정한다고 믿기 때문입니다.",
       items: [
-        { name: "18K 옐로우 골드", sub: "18K Yellow Gold", desc: "75% 순금에 구리·은을 합금해 제작됩니다. 따뜻한 황금빛이 오랜 시간이 지나도 변색 없이 유지되며, PRISME 시그니처 컬렉션 대부분에 사용됩니다." },
-        { name: "18K 화이트 골드", sub: "18K White Gold", desc: "순금에 팔라듐 또는 니켈을 합금하고 로듐 도금을 더해 차가운 실버 톤을 완성합니다. 다이아몬드와 함께했을 때 빛의 반사를 극대화합니다." },
-        { name: "18K 로즈 골드", sub: "18K Rose Gold", desc: "구리 함량을 높여 따뜻하고 은은한 핑크 빛을 냅니다. 피부 톤과 자연스럽게 어우러지는 색감으로 에센셜 라인에서 즐겨 사용됩니다." },
-        { name: "스털링 실버", sub: "Sterling Silver", desc: "은 함량 92.5%의 스털링 실버를 사용합니다. 섬세한 조형 표현에 적합하며, 시간이 지날수록 고유한 산화 패티나가 더해져 독특한 질감을 형성합니다." },
-        { name: "다이아몬드", sub: "Diamond", desc: "GIA 인증 기준에 따라 선별된 다이아몬드만을 사용합니다. 컷·컬러·클래리티·캐럿(4C)을 기준으로 엄격하게 심사하여, 최적의 광채를 발산하는 원석을 선택합니다." },
-        { name: "천연 원석", sub: "Precious Gemstones", desc: "에메랄드, 루비, 사파이어 등 천연 원석을 시즌 리미티드 컬렉션에 한정 적용합니다. 원석 특유의 내포물과 불균일성은 결함이 아닌 자연의 흔적입니다." },
+        {
+          name: "18K 옐로우 골드",
+          sub: "18K Yellow Gold",
+          desc: "75% 순금에 구리·은을 합금해 제작됩니다. 따뜻한 황금빛이 오랜 시간이 지나도 변색 없이 유지되며, PRISME 시그니처 컬렉션 대부분에 사용됩니다.",
+        },
+        {
+          name: "18K 화이트 골드",
+          sub: "18K White Gold",
+          desc: "순금에 팔라듐 또는 니켈을 합금하고 로듐 도금을 더해 차가운 실버 톤을 완성합니다. 다이아몬드와 함께했을 때 빛의 반사를 극대화합니다.",
+        },
+        {
+          name: "18K 로즈 골드",
+          sub: "18K Rose Gold",
+          desc: "구리 함량을 높여 따뜻하고 은은한 핑크 빛을 냅니다. 피부 톤과 자연스럽게 어우러지는 색감으로 에센셜 라인에서 즐겨 사용됩니다.",
+        },
+        {
+          name: "스털링 실버",
+          sub: "Sterling Silver",
+          desc: "은 함량 92.5%의 스털링 실버를 사용합니다. 섬세한 조형 표현에 적합하며, 시간이 지날수록 고유한 산화 패티나가 더해져 독특한 질감을 형성합니다.",
+        },
+        {
+          name: "다이아몬드",
+          sub: "Diamond",
+          desc: "GIA 인증 기준에 따라 선별된 다이아몬드만을 사용합니다. 컷·컬러·클래리티·캐럿(4C)을 기준으로 엄격하게 심사하여, 최적의 광채를 발산하는 원석을 선택합니다.",
+        },
+        {
+          name: "천연 원석",
+          sub: "Precious Gemstones",
+          desc: "에메랄드, 루비, 사파이어 등 천연 원석을 시즌 리미티드 컬렉션에 한정 적용합니다. 원석 특유의 내포물과 불균일성은 결함이 아닌 자연의 흔적입니다.",
+        },
       ],
     },
     process: {
@@ -321,12 +374,42 @@ const ko = {
       desc: "하나의 반지가 완성되기까지, PRISME의 아틀리에에서는 여섯 단계의 손길이 더해집니다. 어떤 단계도 기계로 대체하지 않습니다.",
       listLabel: "제작 공정",
       steps: [
-        { step: "01", title: "DESIGN", sub: "디자인 스케치", desc: "모든 작품은 손으로 그린 스케치에서 시작됩니다. 조형적 균형, 착용감, 빛의 반사각을 고려한 설계도가 완성되기까지 수차례의 수정을 거칩니다." },
-        { step: "02", title: "WAX MODELING", sub: "왁스 조형", desc: "스케치를 바탕으로 왁스를 정밀 조각합니다. 0.1mm 단위의 세부 디테일까지 수공으로 다듬어, 실제 금속 주조 전 최종 형태를 확인합니다." },
-        { step: "03", title: "CASTING", sub: "주조", desc: "완성된 왁스 모형을 석고에 매립하고 고온으로 소성한 뒤, 용융 금속을 주입합니다. 주조 후에는 기포와 표면 결함을 전수 검사합니다." },
-        { step: "04", title: "SETTING", sub: "세팅", desc: "다이아몬드 또는 원석을 설정된 포지션에 정밀 세팅합니다. 프롱(Prong), 베젤(Bezel), 파베(Pavé) 등 작품 디자인에 최적화된 방식으로 고정합니다." },
-        { step: "05", title: "POLISHING", sub: "폴리싱", desc: "여러 단계의 연마 과정을 통해 표면을 완성합니다. 하이폴리시, 새틴, 헤어라인 등 각 작품에 지정된 마감 처리를 수작업으로 진행합니다." },
-        { step: "06", title: "QUALITY CHECK", sub: "품질 검수", desc: "출하 전 중량, 치수, 세팅 안정성, 표면 상태를 최종 점검합니다. 기준을 충족하지 못한 제품은 재작업하며, 합격 인증 후에만 포장됩니다." },
+        {
+          step: "01",
+          title: "DESIGN",
+          sub: "디자인 스케치",
+          desc: "모든 작품은 손으로 그린 스케치에서 시작됩니다. 조형적 균형, 착용감, 빛의 반사각을 고려한 설계도가 완성되기까지 수차례의 수정을 거칩니다.",
+        },
+        {
+          step: "02",
+          title: "WAX MODELING",
+          sub: "왁스 조형",
+          desc: "스케치를 바탕으로 왁스를 정밀 조각합니다. 0.1mm 단위의 세부 디테일까지 수공으로 다듬어, 실제 금속 주조 전 최종 형태를 확인합니다.",
+        },
+        {
+          step: "03",
+          title: "CASTING",
+          sub: "주조",
+          desc: "완성된 왁스 모형을 석고에 매립하고 고온으로 소성한 뒤, 용융 금속을 주입합니다. 주조 후에는 기포와 표면 결함을 전수 검사합니다.",
+        },
+        {
+          step: "04",
+          title: "SETTING",
+          sub: "세팅",
+          desc: "다이아몬드 또는 원석을 설정된 포지션에 정밀 세팅합니다. 프롱(Prong), 베젤(Bezel), 파베(Pavé) 등 작품 디자인에 최적화된 방식으로 고정합니다.",
+        },
+        {
+          step: "05",
+          title: "POLISHING",
+          sub: "폴리싱",
+          desc: "여러 단계의 연마 과정을 통해 표면을 완성합니다. 하이폴리시, 새틴, 헤어라인 등 각 작품에 지정된 마감 처리를 수작업으로 진행합니다.",
+        },
+        {
+          step: "06",
+          title: "QUALITY CHECK",
+          sub: "품질 검수",
+          desc: "출하 전 중량, 치수, 세팅 안정성, 표면 상태를 최종 점검합니다. 기준을 충족하지 못한 제품은 재작업하며, 합격 인증 후에만 포장됩니다.",
+        },
       ],
     },
     product: {
@@ -362,9 +445,18 @@ const ko = {
           title: "배송 안내",
           items: [
             { label: "배송사", value: "CJ대한통운 (일반 택배)" },
-            { label: "출고 기준", value: "결제 확인 후 영업일 기준 2–3일 이내 출고" },
-            { label: "배송 기간", value: "출고 후 1–2일 소요 (도서산간 지역 추가 1–2일)" },
-            { label: "배송비", value: "50,000원 이상 구매 시 무료 / 미만 시 3,000원" },
+            {
+              label: "출고 기준",
+              value: "결제 확인 후 영업일 기준 2–3일 이내 출고",
+            },
+            {
+              label: "배송 기간",
+              value: "출고 후 1–2일 소요 (도서산간 지역 추가 1–2일)",
+            },
+            {
+              label: "배송비",
+              value: "50,000원 이상 구매 시 무료 / 미만 시 3,000원",
+            },
             { label: "배송 불가 지역", value: "해외 배송 현재 미지원" },
           ],
         },
@@ -372,25 +464,49 @@ const ko = {
           title: "반품 정책",
           items: [
             { label: "반품 신청 기간", value: "제품 수령 후 7일 이내" },
-            { label: "반품 배송비", value: "고객 변심: 왕복 배송비 고객 부담 / 제품 하자: 전액 무료" },
-            { label: "반품 불가 사항", value: "착용 후 변형·손상된 제품 / 구성품 누락 또는 포장 훼손 / 맞춤 제작(각인 포함) 제품" },
+            {
+              label: "반품 배송비",
+              value: "고객 변심: 왕복 배송비 고객 부담 / 제품 하자: 전액 무료",
+            },
+            {
+              label: "반품 불가 사항",
+              value:
+                "착용 후 변형·손상된 제품 / 구성품 누락 또는 포장 훼손 / 맞춤 제작(각인 포함) 제품",
+            },
           ],
         },
         {
           title: "교환 정책",
           items: [
             { label: "교환 신청 기간", value: "제품 수령 후 7일 이내" },
-            { label: "교환 가능 사유", value: "사이즈 불일치 / 제품 하자 / 오배송" },
-            { label: "교환 배송비", value: "고객 변심: 왕복 배송비 고객 부담 / 제품 하자·오배송: 전액 무료" },
-            { label: "재고 부족 시", value: "교환 재고 없을 경우 반품 처리 후 전액 환불" },
+            {
+              label: "교환 가능 사유",
+              value: "사이즈 불일치 / 제품 하자 / 오배송",
+            },
+            {
+              label: "교환 배송비",
+              value:
+                "고객 변심: 왕복 배송비 고객 부담 / 제품 하자·오배송: 전액 무료",
+            },
+            {
+              label: "재고 부족 시",
+              value: "교환 재고 없을 경우 반품 처리 후 전액 환불",
+            },
           ],
         },
         {
           title: "환불 안내",
           items: [
-            { label: "환불 처리 기간", value: "반품 확인 후 영업일 기준 3–5일 이내" },
+            {
+              label: "환불 처리 기간",
+              value: "반품 확인 후 영업일 기준 3–5일 이내",
+            },
             { label: "환불 수단", value: "결제 수단과 동일한 방법으로 환불" },
-            { label: "카드 취소", value: "카드사 정책에 따라 청구 취소까지 3–5 영업일 소요될 수 있음" },
+            {
+              label: "카드 취소",
+              value:
+                "카드사 정책에 따라 청구 취소까지 3–5 영업일 소요될 수 있음",
+            },
           ],
         },
       ],
@@ -472,9 +588,11 @@ const en: typeof ko = {
     errors: {
       nameRequired: "Please enter your name. (e.g., Jane Smith)",
       emailRequired: "Please enter your email address.",
-      emailInvalid: "Please enter a valid email address. (e.g., name@domain.com)",
+      emailInvalid:
+        "Please enter a valid email address. (e.g., name@domain.com)",
       passwordRequired: "Please enter your password.",
-      passwordTooShort: "Password must be at least 8 characters. (e.g., mypass123)",
+      passwordTooShort:
+        "Password must be at least 8 characters. (e.g., mypass123)",
       confirmPasswordRequired: "Please confirm your password.",
       confirmPasswordMismatch: "Passwords do not match. Please try again.",
       loginFailed: "Please check your email or password.",
@@ -506,24 +624,22 @@ const en: typeof ko = {
   hero: {
     sectionLabel: "PRISME hero section",
     canvasLabel: "3D ring animation responding to scroll",
-    tagline1: "Shaped through balance, defined by elegance.",
-    tagline2: "Contemporary jewelry reduced to its essential expression.",
+    tagline1: "The essence of contemporary jewelry, in its purest form and perfect balance.",
     collectionLabel: "COLLECTION",
     essentialLine1: "ESSENTIAL",
     essentialLine2: "COLLECTION",
-    essentialDesc: "Where restraint meets precision.\nThe essence of material, held within the simplest form.",
+    essentialDesc:
+      "Where restraint meets precision.\nThe essence of material, held within the simplest form.",
     cta: "Explore the collection →",
     scroll: "SCROLL",
   },
   bestPiecesSection: {
-    sub1: "Our most beloved pieces,",
-    sub2: "signature works from PRISME.",
+    sub: "Our most beloved pieces, signature works from PRISME.",
     listLabel: "Best pieces list",
     viewAll: "View all pieces →",
   },
   collectionsSection: {
-    sub1: "Where contemporary form meets refined material,",
-    sub2: "discover the PRISME collection.",
+    sub: "Where contemporary form meets refined material, discover the PRISME collection.",
     listLabel: "Collections list",
     viewAll: "View all collections →",
   },
@@ -563,11 +679,27 @@ const en: typeof ko = {
       dimensionValue: "Inner diameter 16.5mm",
       viewAll: "View all collections →",
       colors: [
-        { id: "silver" as const, label: "Silver", sublabel: "Sterling Silver", material: "Sterling Silver / Diamond" },
-        { id: "gold" as const, label: "Gold", sublabel: "18K Yellow Gold", material: "18K Yellow Gold / Diamond" },
-        { id: "rose-gold" as const, label: "Rose Gold", sublabel: "18K Rose Gold", material: "18K Rose Gold / Diamond" },
+        {
+          id: "silver" as const,
+          label: "Silver",
+          sublabel: "Sterling Silver",
+          material: "Sterling Silver / Diamond",
+        },
+        {
+          id: "gold" as const,
+          label: "Gold",
+          sublabel: "18K Yellow Gold",
+          material: "18K Yellow Gold / Diamond",
+        },
+        {
+          id: "rose-gold" as const,
+          label: "Rose Gold",
+          sublabel: "18K Rose Gold",
+          material: "18K Rose Gold / Diamond",
+        },
       ],
-      wishlistItemName: (colorLabel: string) => `Essential Ring — ${colorLabel}`,
+      wishlistItemName: (colorLabel: string) =>
+        `Essential Ring — ${colorLabel}`,
     },
     bestPieces: {
       title: "BEST PIECES",
@@ -592,24 +724,36 @@ const en: typeof ko = {
       now: "NOW",
       seasons: [
         {
-          year: "2026", season: "F/W", name: "COLLECTIONS",
+          year: "2026",
+          season: "F/W",
+          name: "COLLECTIONS",
           desc: "PRISME's 2026 Autumn/Winter Collection — where contemporary form meets refined material. Signature pieces that capture the depth of the season.",
-          href: "/fw-collections", status: "current",
+          href: "/fw-collections",
+          status: "current",
         },
         {
-          year: "2026", season: "S/S", name: "FORME",
+          year: "2026",
+          season: "S/S",
+          name: "FORME",
           desc: "A collection exploring the relationship between light and form. Geometric structures layered with organic lines — pieces that transform with the wearer's movement.",
-          href: null, status: "closed",
+          href: null,
+          status: "closed",
         },
         {
-          year: "2025", season: "F/W", name: "LUMIÈRE",
+          year: "2025",
+          season: "F/W",
+          name: "LUMIÈRE",
           desc: "Inspired by the refraction and scattering of light, this collection captures the many expressions of light through metal surface finish alone.",
-          href: null, status: "closed",
+          href: null,
+          status: "closed",
         },
         {
-          year: "2025", season: "S/S", name: "ÉCLAT",
+          year: "2025",
+          season: "S/S",
+          name: "ÉCLAT",
           desc: "On the beauty of negative space — a debut collection composed of minimal lines and planes. The first season in which PRISME's aesthetic language was proposed.",
-          href: null, status: "closed",
+          href: null,
+          status: "closed",
         },
       ],
     },
@@ -671,12 +815,14 @@ const en: typeof ko = {
       submit: "SEND MESSAGE",
       sending: "SENDING...",
       thankYou: "THANK YOU",
-      successMsg: "Your message has been sent.\nWe will get back to you shortly.",
+      successMsg:
+        "Your message has been sent.\nWe will get back to you shortly.",
       newInquiry: "Write a new inquiry →",
       errors: {
         nameRequired: "Please enter your name. (e.g., Jane Smith)",
         emailRequired: "Please enter your email address.",
-        emailInvalid: "Please enter a valid email address. (e.g., name@domain.com)",
+        emailInvalid:
+          "Please enter a valid email address. (e.g., name@domain.com)",
         messageRequired: "Please enter your message.",
       },
     },
@@ -684,7 +830,8 @@ const en: typeof ko = {
       backNav: "Back to home",
       section: "SUPPORT",
       title: "FAQ",
-      intro: "A collection of frequently asked questions. For anything else, please use our",
+      intro:
+        "A collection of frequently asked questions. For anything else, please use our",
       introLink: "Contact",
       introSuffix: "page.",
       items: [
@@ -720,12 +867,36 @@ const en: typeof ko = {
       title: "MATERIALS",
       desc: "From material selection to the finished piece, PRISME handles every step with honesty.\nWe believe that each precious metal and gemstone determines the quality of the work.",
       items: [
-        { name: "18K Yellow Gold", sub: "18K Yellow Gold", desc: "Crafted from 75% pure gold alloyed with copper and silver. The warm golden hue remains unchanged over time, and is used in the majority of PRISME's signature collections." },
-        { name: "18K White Gold", sub: "18K White Gold", desc: "Pure gold alloyed with palladium or nickel, finished with rhodium plating to achieve a cool silver tone. Maximizes the reflection of light when paired with diamonds." },
-        { name: "18K Rose Gold", sub: "18K Rose Gold", desc: "A higher copper content lends a warm, subtle pink hue. Its color blends naturally with the skin tone, and is a favored choice in the Essential line." },
-        { name: "Sterling Silver", sub: "Sterling Silver", desc: "We use sterling silver with 92.5% silver content. Ideal for delicate forms, it develops a unique oxidized patina over time, adding depth and texture." },
-        { name: "Diamond", sub: "Diamond", desc: "Only GIA-certified diamonds are used, rigorously assessed by Cut, Color, Clarity, and Carat (4C), to ensure each stone emits its optimal brilliance." },
-        { name: "Precious Gemstones", sub: "Precious Gemstones", desc: "Emeralds, rubies, sapphires, and other natural gemstones are applied exclusively to seasonal limited collections. The inclusions and irregularities of natural stones are not flaws — they are traces of nature." },
+        {
+          name: "18K Yellow Gold",
+          sub: "18K Yellow Gold",
+          desc: "Crafted from 75% pure gold alloyed with copper and silver. The warm golden hue remains unchanged over time, and is used in the majority of PRISME's signature collections.",
+        },
+        {
+          name: "18K White Gold",
+          sub: "18K White Gold",
+          desc: "Pure gold alloyed with palladium or nickel, finished with rhodium plating to achieve a cool silver tone. Maximizes the reflection of light when paired with diamonds.",
+        },
+        {
+          name: "18K Rose Gold",
+          sub: "18K Rose Gold",
+          desc: "A higher copper content lends a warm, subtle pink hue. Its color blends naturally with the skin tone, and is a favored choice in the Essential line.",
+        },
+        {
+          name: "Sterling Silver",
+          sub: "Sterling Silver",
+          desc: "We use sterling silver with 92.5% silver content. Ideal for delicate forms, it develops a unique oxidized patina over time, adding depth and texture.",
+        },
+        {
+          name: "Diamond",
+          sub: "Diamond",
+          desc: "Only GIA-certified diamonds are used, rigorously assessed by Cut, Color, Clarity, and Carat (4C), to ensure each stone emits its optimal brilliance.",
+        },
+        {
+          name: "Precious Gemstones",
+          sub: "Precious Gemstones",
+          desc: "Emeralds, rubies, sapphires, and other natural gemstones are applied exclusively to seasonal limited collections. The inclusions and irregularities of natural stones are not flaws — they are traces of nature.",
+        },
       ],
     },
     process: {
@@ -735,12 +906,42 @@ const en: typeof ko = {
       desc: "Before a single ring is complete, six stages of craftsmanship take place in the PRISME atelier. No step is replaced by machine.",
       listLabel: "Crafting process",
       steps: [
-        { step: "01", title: "DESIGN", sub: "Design sketch", desc: "Every piece begins with a hand-drawn sketch. The design goes through multiple revisions to account for structural balance, wearability, and the angle of light reflection." },
-        { step: "02", title: "WAX MODELING", sub: "Wax modeling", desc: "The sketch is translated into a precisely carved wax model. Details as fine as 0.1mm are refined by hand, confirming the final form before metal casting." },
-        { step: "03", title: "CASTING", sub: "Casting", desc: "The completed wax model is embedded in plaster and fired at high temperature, then molten metal is poured in. Each cast piece is inspected for air bubbles and surface defects." },
-        { step: "04", title: "SETTING", sub: "Setting", desc: "Diamonds or gemstones are set precisely in their designated positions using the method best suited to each design — prong, bezel, pavé, and others." },
-        { step: "05", title: "POLISHING", sub: "Polishing", desc: "The surface is refined through multiple stages of polishing. High polish, satin, and hairline finishes are each applied by hand according to the piece's specification." },
-        { step: "06", title: "QUALITY CHECK", sub: "Quality check", desc: "Weight, dimensions, setting stability, and surface condition are all verified before shipment. Any piece that does not meet standards is returned for rework and certified before packaging." },
+        {
+          step: "01",
+          title: "DESIGN",
+          sub: "Design sketch",
+          desc: "Every piece begins with a hand-drawn sketch. The design goes through multiple revisions to account for structural balance, wearability, and the angle of light reflection.",
+        },
+        {
+          step: "02",
+          title: "WAX MODELING",
+          sub: "Wax modeling",
+          desc: "The sketch is translated into a precisely carved wax model. Details as fine as 0.1mm are refined by hand, confirming the final form before metal casting.",
+        },
+        {
+          step: "03",
+          title: "CASTING",
+          sub: "Casting",
+          desc: "The completed wax model is embedded in plaster and fired at high temperature, then molten metal is poured in. Each cast piece is inspected for air bubbles and surface defects.",
+        },
+        {
+          step: "04",
+          title: "SETTING",
+          sub: "Setting",
+          desc: "Diamonds or gemstones are set precisely in their designated positions using the method best suited to each design — prong, bezel, pavé, and others.",
+        },
+        {
+          step: "05",
+          title: "POLISHING",
+          sub: "Polishing",
+          desc: "The surface is refined through multiple stages of polishing. High polish, satin, and hairline finishes are each applied by hand according to the piece's specification.",
+        },
+        {
+          step: "06",
+          title: "QUALITY CHECK",
+          sub: "Quality check",
+          desc: "Weight, dimensions, setting stability, and surface condition are all verified before shipment. Any piece that does not meet standards is returned for rework and certified before packaging.",
+        },
       ],
     },
     product: {
@@ -768,7 +969,8 @@ const en: typeof ko = {
       backNav: "Back to home",
       section: "SUPPORT",
       title: "SHIPPING & RETURNS",
-      intro: "Information on our shipping and returns policy. For further inquiries, please visit our",
+      intro:
+        "Information on our shipping and returns policy. For further inquiries, please visit our",
       introLink: "Contact",
       introSuffix: "page.",
       sections: [
@@ -776,35 +978,83 @@ const en: typeof ko = {
           title: "Shipping",
           items: [
             { label: "Carrier", value: "CJ Logistics (Standard parcel)" },
-            { label: "Dispatch", value: "Within 2–3 business days of payment confirmation" },
-            { label: "Delivery", value: "1–2 days after dispatch (additional 1–2 days for remote areas)" },
-            { label: "Shipping fee", value: "Free on orders ₩50,000 and above / ₩3,000 below" },
-            { label: "International", value: "International shipping is not currently available" },
+            {
+              label: "Dispatch",
+              value: "Within 2–3 business days of payment confirmation",
+            },
+            {
+              label: "Delivery",
+              value:
+                "1–2 days after dispatch (additional 1–2 days for remote areas)",
+            },
+            {
+              label: "Shipping fee",
+              value: "Free on orders ₩50,000 and above / ₩3,000 below",
+            },
+            {
+              label: "International",
+              value: "International shipping is not currently available",
+            },
           ],
         },
         {
           title: "Returns",
           items: [
-            { label: "Return window", value: "Within 7 days of receiving the product" },
-            { label: "Return shipping", value: "Change of mind: round-trip shipping at customer's expense / Defective item: fully covered" },
-            { label: "Non-returnable", value: "Items altered or damaged after use / Missing components or damaged packaging / Custom-made items (including engraving)" },
+            {
+              label: "Return window",
+              value: "Within 7 days of receiving the product",
+            },
+            {
+              label: "Return shipping",
+              value:
+                "Change of mind: round-trip shipping at customer's expense / Defective item: fully covered",
+            },
+            {
+              label: "Non-returnable",
+              value:
+                "Items altered or damaged after use / Missing components or damaged packaging / Custom-made items (including engraving)",
+            },
           ],
         },
         {
           title: "Exchanges",
           items: [
-            { label: "Exchange window", value: "Within 7 days of receiving the product" },
-            { label: "Eligible reasons", value: "Size mismatch / Defective item / Wrong item received" },
-            { label: "Exchange shipping", value: "Change of mind: round-trip shipping at customer's expense / Defective or wrong item: fully covered" },
-            { label: "Out of stock", value: "If exchange stock is unavailable, a full refund will be issued" },
+            {
+              label: "Exchange window",
+              value: "Within 7 days of receiving the product",
+            },
+            {
+              label: "Eligible reasons",
+              value: "Size mismatch / Defective item / Wrong item received",
+            },
+            {
+              label: "Exchange shipping",
+              value:
+                "Change of mind: round-trip shipping at customer's expense / Defective or wrong item: fully covered",
+            },
+            {
+              label: "Out of stock",
+              value:
+                "If exchange stock is unavailable, a full refund will be issued",
+            },
           ],
         },
         {
           title: "Refunds",
           items: [
-            { label: "Processing time", value: "Within 3–5 business days of return confirmation" },
-            { label: "Refund method", value: "Refunded via the original payment method" },
-            { label: "Card cancellation", value: "Card cancellation may take 3–5 business days depending on your card issuer" },
+            {
+              label: "Processing time",
+              value: "Within 3–5 business days of return confirmation",
+            },
+            {
+              label: "Refund method",
+              value: "Refunded via the original payment method",
+            },
+            {
+              label: "Card cancellation",
+              value:
+                "Card cancellation may take 3–5 business days depending on your card issuer",
+            },
           ],
         },
       ],

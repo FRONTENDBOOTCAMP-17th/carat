@@ -53,7 +53,7 @@ export default function CollectionCard({ id, title, price, category }: Collectio
           <HeartIcon filled={inWishlist} />
         </button>
       </div>
-      {category && <p className="mb-1 text-2xs tracking-link text-content-faint">{category}</p>}
+      {category && <p className="mb-1 text-2xs tracking-label text-content-faint">{category}</p>}
       <h3 className="mb-1 text-sm font-light text-content-primary">{title}</h3>
       <p className="text-sm text-content-faint">{price}</p>
     </article>

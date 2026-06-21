@@ -95,23 +95,23 @@ export default function Navbar() {
             <div className="flex items-center mr-1" role="group" aria-label="Language">
               <button
                 onClick={() => setLang("ko")}
-                className={`text-2xs tracking-link px-1.5 py-1 transition-colors ${
+                className={`text-2xs tracking-label px-1.5 py-1 transition-colors ${
                   lang === "ko"
                     ? "text-content-primary"
-                    : "text-content-subtle hover:text-content-muted"
+                    : "text-content-muted hover:text-content-secondary"
                 }`}
                 aria-pressed={lang === "ko"}
                 aria-label="한국어"
               >
                 KO
               </button>
-              <span className="text-2xs text-content-subtle" aria-hidden="true">|</span>
+              <span className="text-2xs text-content-secondary" aria-hidden="true">|</span>
               <button
                 onClick={() => setLang("en")}
-                className={`text-2xs tracking-link px-1.5 py-1 transition-colors ${
+                className={`text-2xs tracking-label px-1.5 py-1 transition-colors ${
                   lang === "en"
                     ? "text-content-primary"
-                    : "text-content-subtle hover:text-content-muted"
+                    : "text-content-muted hover:text-content-secondary"
                 }`}
                 aria-pressed={lang === "en"}
                 aria-label="English"
@@ -160,21 +160,21 @@ export default function Navbar() {
 
                   {showLogoutConfirm ? (
                     <div className="px-4 py-2">
-                      <p className="mb-3 text-2xs leading-relaxed text-content-muted">
+                      <p className="mb-3 text-2xs leading-relaxed text-content-secondary">
                         {t.auth.logoutWarning}
                       </p>
                       <div className="flex gap-3">
                         <button
                           type="button"
                           onClick={() => setShowLogoutConfirm(false)}
-                          className="text-2xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
+                          className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
                         >
                           {t.auth.cancel}
                         </button>
                         <button
                           type="button"
                           onClick={() => { logout(); setIsUserMenuOpen(false); setShowLogoutConfirm(false); }}
-                          className="text-2xs tracking-link text-content-faint hover:text-content-primary transition-colors"
+                          className="text-2xs tracking-label text-content-faint hover:text-content-primary transition-colors"
                         >
                           {t.auth.logout}
                         </button>
@@ -186,13 +186,13 @@ export default function Navbar() {
                         ref={wishlistLinkRef}
                         href="/wishlist"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center min-h-11 px-4 text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
+                        className="flex items-center min-h-11 px-4 text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
                       >
                         {t.auth.wishlist}
                       </Link>
                       <button
                         onClick={() => setShowLogoutConfirm(true)}
-                        className="flex items-center w-full min-h-11 px-4 text-xs tracking-link text-content-muted hover:text-content-primary transition-colors"
+                        className="flex items-center w-full min-h-11 px-4 text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
                       >
                         {t.auth.logout}
                       </button>

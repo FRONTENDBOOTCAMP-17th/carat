@@ -20,7 +20,7 @@ export default function FwCollectionsPage() {
           <header>
             <h1
               id="fw-collections-heading"
-              className="mb-3 text-3xl tracking-heading text-content-primary"
+              className="mb-3 text-3xl tracking-label text-content-primary"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
               {p.title}

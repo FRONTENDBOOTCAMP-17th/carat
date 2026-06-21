@@ -47,28 +47,28 @@ export default function ProductPage({
           />
 
           <div className="flex flex-col">
-            <p className="mb-3 text-2xs tracking-link text-content-faint">
+            <p className="mb-3 text-2xs tracking-label text-content-faint">
               {product.categoryLabel}
             </p>
             <h1
-              className="mb-6 text-4xl sm:text-5xl tracking-heading text-content-primary font-light"
+              className="mb-6 text-4xl sm:text-5xl tracking-label text-content-primary font-light"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
               {product.name}
             </h1>
-            <p className="mb-8 text-xs leading-relaxed text-content-muted">
+            <p className="mb-8 text-xs leading-relaxed text-content-secondary">
               {product.description}
             </p>
 
             <dl className="mb-8 space-y-3">
               <div className="flex gap-8">
-                <dt className="text-2xs tracking-link text-content-subtle shrink-0 w-8">
+                <dt className="text-2xs tracking-label text-content-secondary shrink-0 w-16">
                   {p.material}
                 </dt>
                 <dd className="text-2xs text-content-secondary">{p.materialValue}</dd>
               </div>
               <div className="flex gap-8">
-                <dt className="text-2xs tracking-link text-content-subtle shrink-0 w-8">
+                <dt className="text-2xs tracking-label text-content-secondary shrink-0 w-16">
                   {p.dimensions}
                 </dt>
                 <dd className="text-2xs text-content-secondary">{p.dimensionsValue}</dd>

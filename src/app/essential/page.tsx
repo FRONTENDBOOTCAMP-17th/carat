@@ -58,7 +58,7 @@ export default function EssentialPage() {
 
           {/* Info */}
           <div className="flex flex-col">
-            <p className="mb-3 text-2xs tracking-descriptor text-content-faint">
+            <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
               {p.sectionLabel}
             </p>
             <h1
@@ -68,14 +68,14 @@ export default function EssentialPage() {
               {p.title}
             </h1>
 
-            <p className="mb-10 text-xs leading-relaxed text-content-muted max-w-sm">
+            <p className="mb-10 text-xs leading-relaxed text-content-secondary max-w-sm">
               {p.desc}
             </p>
 
             {/* Color Selection */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-2xs tracking-link text-content-subtle">
+                <p className="text-2xs tracking-label text-content-secondary">
                   {p.materialSelect}
                 </p>
                 <p className="text-2xs text-content-secondary transition-all duration-200">
@@ -113,7 +113,7 @@ export default function EssentialPage() {
                       className={`block w-full text-center text-xs transition-colors duration-200 ${
                         selected === c.id
                           ? "text-content-primary"
-                          : "text-content-subtle group-hover:text-content-secondary"
+                          : "text-content-muted group-hover:text-content-secondary"
                       }`}
                     >
                       {c.label}
@@ -125,7 +125,7 @@ export default function EssentialPage() {
 
             <dl className="mb-8 space-y-3">
               <div className="flex gap-8">
-                <dt className="text-xs tracking-link text-content-subtle shrink-0 w-8">
+                <dt className="text-xs tracking-label text-content-secondary shrink-0 w-16">
                   {p.material}
                 </dt>
                 <dd className="text-xs text-content-secondary transition-all duration-200">
@@ -133,7 +133,7 @@ export default function EssentialPage() {
                 </dd>
               </div>
               <div className="flex gap-8">
-                <dt className="text-xs tracking-link text-content-subtle shrink-0 w-8">
+                <dt className="text-xs tracking-label text-content-secondary shrink-0 w-16">
                   {p.dimensions}
                 </dt>
                 <dd className="text-xs text-content-secondary">{p.dimensionValue}</dd>
@@ -146,7 +146,7 @@ export default function EssentialPage() {
 
             <Link
               href="/collections"
-              className="mt-5 text-center text-2xs tracking-link text-content-subtle hover:text-content-primary transition-colors"
+              className="mt-5 text-center text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
             >
               {p.viewAll}
             </Link>

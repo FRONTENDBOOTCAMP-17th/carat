@@ -17,7 +17,7 @@ export default function WishlistButton({ item }: { item: WishlistItem }) {
   return (
     <button
       onClick={handleClick}
-      className={`w-full py-4 text-xs tracking-link border transition-colors duration-200 ${
+      className={`w-full py-4 text-xs tracking-label border transition-colors duration-200 ${
         inWishlist
           ? "bg-content-secondary text-surface-darkest border-content-secondary hover:bg-content-faint hover:border-content-faint"
           : "bg-transparent text-content-primary border-content-subtle hover:bg-content-secondary hover:text-surface-darkest hover:border-content-secondary"

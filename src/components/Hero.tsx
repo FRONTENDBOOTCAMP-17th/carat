@@ -30,10 +30,25 @@ function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
   return (
     <>
       <ambientLight intensity={0.2} />
-      <pointLight ref={keyRef} position={[-2.5, 4, 2]} intensity={30} color="#ffffff" />
+      <pointLight
+        ref={keyRef}
+        position={[-2.5, 4, 2]}
+        intensity={30}
+        color="#ffffff"
+      />
       <pointLight position={[3, 0, 2]} intensity={1.2} color="#c8d8ff" />
-      <pointLight ref={rimMainRef} position={[0, 2, -4]} intensity={20} color="#ffffff" />
-      <pointLight ref={rimSideRef} position={[2, 1, -3]} intensity={10} color="#ddeeff" />
+      <pointLight
+        ref={rimMainRef}
+        position={[0, 2, -4]}
+        intensity={20}
+        color="#ffffff"
+      />
+      <pointLight
+        ref={rimSideRef}
+        position={[2, 1, -3]}
+        intensity={10}
+        color="#ddeeff"
+      />
     </>
   );
 }
@@ -87,16 +102,26 @@ export default function Hero() {
   const scrollHintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => { target.current = window.scrollY / (window.innerHeight * 3); };
+    const onScroll = () => {
+      target.current = window.scrollY / (window.innerHeight * 3);
+    };
     const onMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: (e.clientX / window.innerWidth) * 2 - 1, y: -(e.clientY / window.innerHeight) * 2 + 1 };
+      mouseRef.current = {
+        x: (e.clientX / window.innerWidth) * 2 - 1,
+        y: -(e.clientY / window.innerHeight) * 2 + 1,
+      };
     };
     const onTouchMove = (e: TouchEvent) => {
       const touch = e.touches[0];
-      mouseRef.current = { x: (touch.clientX / window.innerWidth) * 2 - 1, y: -(touch.clientY / window.innerHeight) * 2 + 1 };
+      mouseRef.current = {
+        x: (touch.clientX / window.innerWidth) * 2 - 1,
+        y: -(touch.clientY / window.innerHeight) * 2 + 1,
+      };
     };
     let isMobile = window.innerWidth < 640;
-    const onResize = () => { isMobile = window.innerWidth < 640; };
+    const onResize = () => {
+      isMobile = window.innerWidth < 640;
+    };
     window.addEventListener("scroll", onScroll);
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("touchmove", onTouchMove, { passive: true });
@@ -104,7 +129,9 @@ export default function Hero() {
     onScroll();
 
     let frame: number;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     if (prefersReducedMotion) {
       window.dispatchEvent(new Event("prisme:nav-reveal"));
@@ -114,7 +141,10 @@ export default function Hero() {
         const p = smooth.current;
         progressRef.current = p;
         const heroFade = Math.min(p / 0.3, 1);
-        if (overlayRef.current) overlayRef.current.style.opacity = String(heroFade * 0.4);
+        if (overlayRef.current) {
+          const isLight = document.documentElement.dataset.theme === "light";
+          overlayRef.current.style.opacity = isLight ? "0" : String(heroFade * 0.4);
+        }
         if (heroTextRef.current) {
           heroTextRef.current.style.opacity = String(1 - heroFade);
           heroTextRef.current.style.transform = `translateY(${heroFade * -40}px)`;
@@ -129,7 +159,10 @@ export default function Hero() {
           essentialTextRef.current.style.opacity = String(essentialEase);
           essentialTextRef.current.style.transform = `translateX(${isMobile ? 0 : -essentialEase * 20}px)`;
         }
-        if (scrollHintRef.current) scrollHintRef.current.style.opacity = String(Math.max(0, 1 - p / 0.04));
+        if (scrollHintRef.current)
+          scrollHintRef.current.style.opacity = String(
+            Math.max(0, 1 - p / 0.04),
+          );
         frame = requestAnimationFrame(animate);
       };
       animate();
@@ -147,11 +180,15 @@ export default function Hero() {
   const [desc1, desc2] = t.hero.essentialDesc.split("\n");
 
   return (
-    <section className="relative h-[400vh] bg-surface-base" aria-label={t.hero.sectionLabel}>
+    <section
+      className="relative h-[400vh] bg-surface-base"
+      aria-label={t.hero.sectionLabel}
+    >
       <div className="sticky top-0 h-screen overflow-hidden">
         <Canvas
           className="absolute inset-0"
           camera={{ position: [0, 0, 4], fov: 45 }}
+          gl={{ alpha: true }}
           role="img"
           aria-label={t.hero.canvasLabel}
           onCreated={() => window.dispatchEvent(new Event("prisme:hero-ready"))}
@@ -160,16 +197,26 @@ export default function Hero() {
           <Ring progressRef={progressRef} />
         </Canvas>
 
-        <div ref={overlayRef} className="absolute inset-0 bg-surface-base" style={{ opacity: 0.4 }} aria-hidden="true" />
+        <div
+          ref={overlayRef}
+          className="absolute inset-0 bg-surface-base"
+          style={{ opacity: 0 }}
+          aria-hidden="true"
+        />
 
         {/* Initial centered hero text */}
-        <div ref={heroTextRef} className="absolute inset-0 flex flex-col items-center justify-center text-content-primary">
-          <h1 className="mb-5 text-5xl sm:text-6xl lg:text-7xl font-medium" style={{ fontFamily: "var(--font-cinzel)" }}>
+        <div
+          ref={heroTextRef}
+          className="absolute inset-0 flex flex-col items-center justify-center text-content-primary"
+        >
+          <h1
+            className="mb-5 text-5xl sm:text-6xl lg:text-7xl font-medium"
+            style={{ fontFamily: "var(--font-cinzel)" }}
+          >
             PRISME
           </h1>
           <div className="flex justify-center flex-col">
             <span className="block text-center">{t.hero.tagline1}</span>
-            <span className="block text-center">{t.hero.tagline2}</span>
           </div>
         </div>
 
@@ -180,25 +227,53 @@ export default function Hero() {
           style={{ opacity: 0 }}
         >
           <div className="mt-[13vh]">
-            <p className="mb-2 sm:mb-3 text-2xs tracking-descriptor text-content-subtle">{t.hero.collectionLabel}</p>
-            <h2 className="mb-8 sm:mb-10 leading-none font-light" style={{ fontFamily: "var(--font-cinzel)" }}>
-              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl">{t.hero.essentialLine1}</span>
-              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl pl-4 sm:pl-10 lg:pl-16 xl:pl-20">{t.hero.essentialLine2}</span>
+            <p className="mb-2 sm:mb-3 text-2xs tracking-descriptor text-content-secondary">
+              {t.hero.collectionLabel}
+            </p>
+            <h2
+              className="mb-8 sm:mb-10 leading-none font-light"
+              style={{ fontFamily: "var(--font-cinzel)" }}
+            >
+              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl">
+                {t.hero.essentialLine1}
+              </span>
+              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl pl-4 sm:pl-10 lg:pl-16 xl:pl-20">
+                {t.hero.essentialLine2}
+              </span>
             </h2>
-            <p className="max-w-40 sm:max-w-55 md:max-w-75 text-xs sm:text-sm leading-relaxed text-content-muted">
-              {desc1}<br />{desc2}
+            <p className="max-w-40 sm:max-w-55 md:max-w-75 text-xs sm:text-sm leading-relaxed text-content-secondary">
+              {desc1}
+              <br />
+              {desc2}
             </p>
           </div>
           <div className="flex-1" />
-          <a href="/essential" className="mb-[10%] text-2xs sm:text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors">
+          <a
+            href="/essential"
+            className="mb-[10%] text-2xs sm:text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
+          >
             {t.hero.cta}
           </a>
         </div>
 
         {/* Scroll hint */}
-        <div ref={scrollHintRef} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-content-subtle pointer-events-none" aria-hidden="true">
+        <div
+          ref={scrollHintRef}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-content-muted pointer-events-none"
+          aria-hidden="true"
+        >
           <span className="text-2xs tracking-link">{t.hero.scroll}</span>
-          <svg width="14" height="20" viewBox="0 0 14 22" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="motion-safe:animate-bounce">
+          <svg
+            width="14"
+            height="20"
+            viewBox="0 0 14 22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="motion-safe:animate-bounce"
+          >
             <line x1="7" y1="0" x2="7" y2="16" />
             <polyline points="2,12 7,17 12,12" />
           </svg>

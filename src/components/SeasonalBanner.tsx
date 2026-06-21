@@ -24,7 +24,7 @@ export default function SeasonalBanner() {
         placeholder="blur"
         quality={85}
       />
-      <div className="absolute inset-0 bg-surface-overlay" aria-hidden="true" />
+      <div className="absolute inset-0 dark:bg-surface-overlay" aria-hidden="true" />
 
       <div className="relative z-10 flex h-full justify-center">
         <div className="w-full max-w-container flex flex-col justify-between px-4 py-12 sm:px-6 lg:px-8 lg:py-32">
@@ -41,10 +41,10 @@ export default function SeasonalBanner() {
             variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewport}
             transition={{ ...transition, delay: 0.15 }}
           >
-            <p className="mb-6 max-w-2xl text-sm leading-relaxed text-content-muted">
+            <p className="mb-6 max-w-2xl text-sm leading-relaxed text-content-secondary">
               {descLine1}<br />{descLine2}
             </p>
-            <Link href="/fw-collections" className="text-xs tracking-link text-content-secondary transition-colors hover:text-content-primary">
+            <Link href="/fw-collections" className="text-xs tracking-label text-content-secondary transition-colors hover:text-content-primary">
               {s.cta}
             </Link>
           </motion.div>

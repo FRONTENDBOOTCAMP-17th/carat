@@ -201,10 +201,10 @@ export default function LoginModal() {
                     {a.confirmCloseBody}
                   </p>
                   <div className="flex gap-4">
-                    <button type="button" ref={confirmCancelRef} onClick={() => setShowConfirmClose(false)} className="text-xs tracking-link text-content-secondary transition-colors hover:text-content-primary">
+                    <button type="button" ref={confirmCancelRef} onClick={() => setShowConfirmClose(false)} className="text-xs tracking-label text-content-secondary transition-colors hover:text-content-primary">
                       {a.continueEditing}
                     </button>
-                    <button type="button" onClick={handleClose} className="text-xs tracking-link text-content-faint transition-colors hover:text-content-primary">
+                    <button type="button" onClick={handleClose} className="text-xs tracking-label text-content-faint transition-colors hover:text-content-primary">
                       {a.close}
                     </button>
                   </div>
@@ -215,8 +215,8 @@ export default function LoginModal() {
                 {/* Header */}
                 <div className="flex items-start justify-between mb-8">
                   <div>
-                    <p className="text-2xs tracking-label text-content-faint mb-2">PRISME</p>
-                    <h2 className="text-2xl tracking-heading text-content-primary" style={{ fontFamily: "var(--font-cinzel)" }}>
+                    <p className="text-2xs tracking-label text-content-faint font-normal mb-2">PRISME</p>
+                    <h2 className="text-2xl tracking-label text-content-primary" style={{ fontFamily: "var(--font-cinzel)" }}>
                       {isLogin ? a.login : a.signup}
                     </h2>
                   </div>
@@ -231,7 +231,7 @@ export default function LoginModal() {
                   {/* Name — signup only */}
                   {!isLogin && (
                     <div className="flex flex-col gap-1.5">
-                      <label htmlFor="signup-name" className="text-2xs tracking-label text-content-faint">NAME</label>
+                      <label htmlFor="signup-name" className="text-2xs tracking-label text-content-faint font-normal">NAME</label>
                       <input id="signup-name" type="text" autoComplete="name" value={name} onChange={(e) => handleChange("name", e.target.value)} onBlur={(e) => handleBlur("name", e.target.value)} className={inputCls(!!err("name"))} placeholder={a.namePlaceholder} required aria-invalid={!!err("name")} aria-describedby={err("name") ? "error-name" : undefined} />
                       {err("name") && <p id="error-name" className="text-xs text-red-400" role="alert">{err("name")}</p>}
                     </div>
@@ -239,17 +239,17 @@ export default function LoginModal() {
 
                   {/* Email */}
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="auth-email" className="text-2xs tracking-label text-content-faint">EMAIL</label>
+                    <label htmlFor="auth-email" className="text-2xs tracking-label text-content-faint font-normal">EMAIL</label>
                     <input id="auth-email" type="email" autoComplete="email" value={email} onChange={(e) => handleChange("email", e.target.value)} onBlur={(e) => handleBlur("email", e.target.value)} className={inputCls(!!err("email"))} placeholder="name@domain.com" required aria-invalid={!!err("email")} aria-describedby={err("email") ? "error-email" : undefined} />
                     {err("email") && <p id="error-email" className="text-xs text-red-400" role="alert">{err("email")}</p>}
                   </div>
 
                   {/* Password */}
                   <div className="flex flex-col gap-1.5">
-                    <label htmlFor="auth-password" className="text-2xs tracking-label text-content-faint">PASSWORD</label>
+                    <label htmlFor="auth-password" className="text-2xs tracking-label text-content-faint font-normal">PASSWORD</label>
                     <div className="relative">
                       <input id="auth-password" type={showPassword ? "text" : "password"} autoComplete={isLogin ? "current-password" : "new-password"} value={password} onChange={(e) => handleChange("password", e.target.value)} onBlur={(e) => handleBlur("password", e.target.value)} className={inputCls(!!err("password"), "pr-10")} placeholder="••••••••" required aria-invalid={!!err("password")} aria-describedby={err("password") ? "error-password" : undefined} />
-                      <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-content-subtle hover:text-content-primary transition-colors" aria-label={showPassword ? a.hidePassword : a.showPassword}>
+                      <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-content-secondary hover:text-content-primary transition-colors" aria-label={showPassword ? a.hidePassword : a.showPassword}>
                         {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                       </button>
                     </div>
@@ -259,10 +259,10 @@ export default function LoginModal() {
                   {/* Confirm password — signup only */}
                   {!isLogin && (
                     <div className="flex flex-col gap-1.5">
-                      <label htmlFor="signup-confirm" className="text-2xs tracking-label text-content-faint">CONFIRM PASSWORD</label>
+                      <label htmlFor="signup-confirm" className="text-2xs tracking-label text-content-faint font-normal">CONFIRM PASSWORD</label>
                       <div className="relative">
                         <input id="signup-confirm" type={showConfirmPassword ? "text" : "password"} autoComplete="new-password" value={confirmPassword} onChange={(e) => handleChange("confirmPassword", e.target.value)} onBlur={(e) => handleBlur("confirmPassword", e.target.value)} className={inputCls(!!err("confirmPassword"), "pr-10")} placeholder="••••••••" required aria-invalid={!!err("confirmPassword")} aria-describedby={err("confirmPassword") ? "error-confirm" : undefined} />
-                        <button type="button" onClick={() => setShowConfirmPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-content-subtle hover:text-content-primary transition-colors" aria-label={showConfirmPassword ? a.hideConfirmPassword : a.showConfirmPassword}>
+                        <button type="button" onClick={() => setShowConfirmPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-content-secondary hover:text-content-primary transition-colors" aria-label={showConfirmPassword ? a.hideConfirmPassword : a.showConfirmPassword}>
                           {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
                         </button>
                       </div>
@@ -272,13 +272,13 @@ export default function LoginModal() {
 
                   {serverError && <p className="text-xs text-red-400" role="alert">{serverError}</p>}
 
-                  <button type="submit" disabled={isLoading} className="mt-1 w-full py-3 text-xs tracking-link bg-content-primary text-surface-base hover:bg-content-secondary disabled:opacity-50 transition-colors">
+                  <button type="submit" disabled={isLoading} className="mt-1 w-full py-3 text-xs tracking-label bg-content-primary text-surface-base hover:bg-content-secondary disabled:opacity-50 transition-colors">
                     {isLoading ? (isLogin ? a.loggingIn : a.signingUp) : (isLogin ? a.login : a.signup)}
                   </button>
 
                   <p className="text-center text-2xs text-content-faint">
                     {isLogin ? a.noAccount : a.hasAccount}{" "}
-                    <button type="button" onClick={switchMode} className="text-content-muted hover:text-content-primary underline underline-offset-2 transition-colors">
+                    <button type="button" onClick={switchMode} className="text-content-secondary hover:text-content-primary underline underline-offset-2 transition-colors">
                       {isLogin ? a.signUpLink : a.loginLink}
                     </button>
                   </p>
