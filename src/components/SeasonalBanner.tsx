@@ -6,9 +6,11 @@ import { motion } from "framer-motion";
 import bannerImage from "../../public/images/SeasonalBanner.webp";
 import { fadeUp, transition, viewport } from "@/lib/motion";
 import { useLang } from "@/context/LanguageContext";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function SeasonalBanner() {
   const { t } = useLang();
+  const { theme } = useTheme();
   const s = t.seasonalBanner;
   const [descLine1, descLine2] = s.desc.split("\n");
 
@@ -24,7 +26,7 @@ export default function SeasonalBanner() {
         placeholder="blur"
         quality={85}
       />
-      <div className="absolute inset-0 dark:bg-surface-overlay" aria-hidden="true" />
+      {theme === "dark" && <div className="absolute inset-0 bg-surface-overlay" aria-hidden="true" />}
 
       <div className="relative z-10 flex h-full justify-center">
         <div className="w-full max-w-container flex flex-col justify-between px-4 py-12 sm:px-6 lg:px-8 lg:py-32">
