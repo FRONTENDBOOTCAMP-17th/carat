@@ -1,36 +1,128 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PRISME
 
-## Getting Started
+가상의 주얼리 브랜드 PRISME를 주제로 제작한 프론트엔드 파이널 프로젝트입니다.
 
-First, run the development server:
+단순히 상품을 나열하는 이커머스가 아니라, 에디토리얼 매거진처럼 브랜드 경험 자체를 전달하는 방향으로 기획했습니다.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+브랜드명은 프랑스어로 프리즘을 뜻하는 _Prisme_ 에서 가져왔습니다. 하나의 소재도 빛과 시선의 각도에 따라 다른 인상을 만든다는 개념을 브랜드 아이덴티티에 반영했습니다.
+
+---
+
+## 프로젝트 목표
+
+주얼리는 구매 이전에 이미지와 분위기를 먼저 경험하는 제품이라고 생각했습니다.
+
+그래서 일반적인 쇼핑몰 구조 대신,
+
+- 스크롤 중심의 에디토리얼 레이아웃
+- 3D 히어로를 활용한 브랜드 인트로
+- 컬렉션별 스토리텔링
+- 절제된 인터랙션
+
+을 통해 사용자가 브랜드를 탐색하는 과정 자체를 설계하는 데 집중했습니다.
+
+---
+
+## 설계 과정에서 중요하게 다룬 부분
+
+### 레이아웃 구조
+
+섹션마다 배경이 달라지는 에디토리얼 특성상, 시각 레이어와 콘텐츠 레이어를 분리하는 구조가 필요했습니다.
+
+```
+Viewport
+ └ Section      ← 배경색·풀블리드 담당
+    └ Container ← 최대 너비(1440px)·반응형 패딩 담당
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+이 구조를 전 페이지에 걸쳐 일관되게 적용했습니다. 섹션은 화면 전체를 채우면서도 안쪽 콘텐츠는 화면이 좁아질수록 가장자리에서 적절히 떨어지도록, 반응형 패딩(`px-4 sm:px-6 lg:px-8`)을 컨테이너 단위로 관리했습니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+히어로 섹션은 의도적으로 컨테이너를 두지 않았습니다. 에디토리얼 첫 화면처럼 타이포그래피가 뷰포트 전체에 걸쳐 펼쳐지는 첫인상을 원했기 때문입니다.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3D 씬과 로딩 화면 동기화
 
-## Learn More
+초기 진입 시 3D 씬이 준비되기 전에 검은 화면이 노출되거나 오브젝트가 갑자기 나타나는 문제가 있었습니다. 브랜드 에디토리얼 경험의 첫 장면이 깨지는 상황이라 그냥 넘기기 어려웠습니다.
 
-To learn more about Next.js, take a look at the following resources:
+씬이 준비됐을 때 신호를 보내고, 로딩 화면이 그 신호를 받은 뒤에만 사라지는 구조를 선택했습니다. 최소 표시 시간(1.6초)도 두었는데, 씬이 너무 빨리 준비되더라도 로딩 화면이 지나치게 짧게 깜빡이는 것을 막기 위해서입니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 모달의 포커스 관리
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+키보드로만 탐색하는 사용자에게 모달은 함정이 될 수 있습니다. 열린 모달 바깥으로 포커스가 빠져나가면 사용자는 어디 있는지 알 수 없게 됩니다.
 
-## Deploy on Vercel
+모달과 내비게이션 드로어 모두 Tab 이동이 내부에서만 순환하도록 포커스 트랩을 적용했습니다.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+로그인 모달에서는 한 가지 결정을 더 했습니다. 입력 중에 실수로 닫기를 눌렀을 때 입력값이 그냥 사라지면 불편하다고 판단해, 확인 오버레이를 먼저 띄우는 방식을 선택했습니다. 이때 오버레이 뒤의 폼에 `inert` 속성을 적용해 키보드 포커스가 뒤로 이동하지 못하도록 했고, 오버레이가 닫히면 포커스가 자동으로 닫기 버튼으로 돌아오도록 했습니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 디자인 토큰 시스템
+
+14개 페이지를 작업하면서 매번 색상값을 직접 고르면 미묘한 불일치가 생길 것 같았습니다. 특정 색상이 어디 쓰이는지 기억하는 것도 어렵고요.
+
+그래서 색상을 값이 아닌 역할 이름으로 관리하는 방향을 택했습니다.
+
+```
+content-primary / secondary / muted   텍스트 계층
+surface-base / raised / elevated      배경 계층
+```
+
+새 컴포넌트를 추가할 때 구체적인 색상을 고르는 대신 "이 텍스트는 보조 역할"처럼 역할만 결정하면 됩니다. 자간(letter-spacing)도 `heading`, `logo`, `link` 등 쓰임새 기준으로 이름을 붙였습니다.
+
+### 퍼지 검색
+
+사용자가 정확한 상품명을 외우고 있다고 가정하는 검색은 현실적이지 않다고 생각했습니다. "은반지", "14k" 같은 단편적인 단어로도, 오타가 섞여도 관련 결과가 나오는 것이 더 자연스러운 탐색 경험입니다.
+
+상품명·소재·카테고리를 함께 탐색하며, 완전 일치가 아닌 유사도 기반으로 결과를 노출하는 방향을 선택했습니다.
+
+---
+
+## 접근성
+
+- Skip Link 제공
+- 커스텀 Focus Ring 적용
+- `prefers-reduced-motion` 지원
+- ARIA 속성 적용
+- 시맨틱 HTML 구조 사용
+
+---
+
+## 페이지 구성
+
+| 경로              | 설명                                              |
+| ----------------- | ------------------------------------------------- |
+| `/`               | 3D 히어로 · 시즌 배너 · Best Pieces · 컬렉션 소개 |
+| `/essential`      | Essential Collection                              |
+| `/best-pieces`    | Best Pieces                                       |
+| `/collections`    | Collections                                       |
+| `/fw-collections` | FW Collections                                    |
+| `/archive`        | Archive                                           |
+| `/products/[id]`  | 상품 상세                                         |
+| `/search`         | 검색 결과                                         |
+| `/wishlist`       | 위시리스트                                        |
+| `/materials`      | 소재 소개                                         |
+| `/process`        | 제작 과정                                         |
+| `/care-guide`     | 관리 가이드                                       |
+| `/faq`            | FAQ                                               |
+| `/contact`        | 문의                                              |
+| `/shipping`       | 배송 안내                                         |
+
+---
+
+## 기술 스택
+
+| 분야      | 기술                             |
+| --------- | -------------------------------- |
+| Framework | Next.js 16, React 19, TypeScript |
+| Styling   | Tailwind CSS v4                  |
+| 3D        | Three.js, React Three Fiber      |
+| Animation | Framer Motion                    |
+| Font      | Cinzel, Pretendard               |
+
+---
+
+## 실행
+
+```bash
+npm install
+npm run dev
+```
+
+브라우저에서 `http://localhost:3000` 으로 접속합니다.

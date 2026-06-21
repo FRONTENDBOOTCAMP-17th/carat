@@ -4,7 +4,10 @@ import localFont from "next/font/local";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
 import LoginModal from "@/components/LoginModal";
+import SkipLink from "@/components/SkipLink";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 /* -----------------------------
    Cinzel (headline)
@@ -85,19 +88,27 @@ export default function RootLayout({
     <html
       lang="ko"
       className={`${cinzel.variable} ${pretendard.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Anti-flash: set data-theme before React hydration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var s=localStorage.getItem('prisme_theme');var t=s==='light'||s==='dark'?s:(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
-        <AuthProvider>
-          <CustomCursor />
-          <LoginModal />
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:text-sm focus:rounded"
-          >
-            본문으로 바로가기
-          </a>
-          {children}
-        </AuthProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              <CustomCursor />
+              <LoginModal />
+              <SkipLink />
+              {children}
+            </AuthProvider>
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

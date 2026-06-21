@@ -1,19 +1,26 @@
+"use client";
+
 import { notFound } from "next/navigation";
+import { use } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WishlistButton from "@/components/WishlistButton";
 import BackButton from "@/components/BackButton";
 import { getProductById } from "@/lib/products";
+import { useLang } from "@/context/LanguageContext";
 
-export default async function ProductPage({
+export default function ProductPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const product = getProductById(id);
+  const { id } = use(params);
+  const { lang, t } = useLang();
+  const product = getProductById(id, lang);
 
   if (!product) notFound();
+
+  const p = t.pages.product;
 
   const wishlistItem = {
     id: product.id,
@@ -28,7 +35,7 @@ export default async function ProductPage({
       <Navbar />
 
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
-        <nav aria-label="이전 페이지로 돌아가기">
+        <nav aria-label={p.backNav}>
           <BackButton href={product.backHref} label={product.categoryLabel} />
         </nav>
 
@@ -36,7 +43,7 @@ export default async function ProductPage({
           <div
             className="aspect-square bg-surface-input w-full"
             role="img"
-            aria-label={`${product.name} 상품 이미지`}
+            aria-label={t.productCard.imageAlt(product.name)}
           />
 
           <div className="flex flex-col">
@@ -56,15 +63,15 @@ export default async function ProductPage({
             <dl className="mb-8 space-y-3">
               <div className="flex gap-8">
                 <dt className="text-2xs tracking-link text-content-subtle shrink-0 w-8">
-                  소재
+                  {p.material}
                 </dt>
-                <dd className="text-2xs text-content-secondary">{product.material}</dd>
+                <dd className="text-2xs text-content-secondary">{p.materialValue}</dd>
               </div>
               <div className="flex gap-8">
                 <dt className="text-2xs tracking-link text-content-subtle shrink-0 w-8">
-                  규격
+                  {p.dimensions}
                 </dt>
-                <dd className="text-2xs text-content-secondary">{product.dimensions}</dd>
+                <dd className="text-2xs text-content-secondary">{p.dimensionsValue}</dd>
               </div>
             </dl>
 

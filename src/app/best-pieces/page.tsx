@@ -1,11 +1,16 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 import { getProductsByCategory } from "@/lib/products";
-
-const products = getProductsByCategory("best-pieces");
+import { useLang } from "@/context/LanguageContext";
 
 export default function BestPiecesPage() {
+  const { lang, t } = useLang();
+  const products = getProductsByCategory("best-pieces", lang);
+  const p = t.pages.bestPieces;
+
   return (
     <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
       <Navbar />
@@ -18,21 +23,21 @@ export default function BestPiecesPage() {
               className="mb-3 text-3xl tracking-heading text-content-primary"
               style={{ fontFamily: "var(--font-cinzel)" }}
             >
-              BEST PIECES
+              {p.title}
             </h1>
             <p className="mb-16 text-xs leading-relaxed text-content-faint">
-              가장 많은 사랑을 받은 PRISME의 시그니처 피스를 만나보세요.
+              {p.desc}
             </p>
           </header>
 
           <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
-            {products.map((p) => (
-              <li key={p.id}>
+            {products.map((item) => (
+              <li key={item.id}>
                 <ProductCard
-                  id={p.id}
-                  name={p.name}
-                  description={p.description}
-                  price={p.price}
+                  id={item.id}
+                  name={item.name}
+                  description={item.description}
+                  price={item.price}
                 />
               </li>
             ))}

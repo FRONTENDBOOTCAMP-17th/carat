@@ -1,25 +1,32 @@
+"use client";
+
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import { useLang } from "@/context/LanguageContext";
 
 export default function NotFound() {
+  const { t } = useLang();
+  const p = t.pages.notFound;
+  const [descLine1, descLine2] = p.desc.split("\n");
+
   return (
     <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
       <Navbar />
 
       <div className="flex flex-1 flex-col items-center justify-center px-4 text-center">
         <p className="mb-4 text-2xs tracking-descriptor text-content-faint">
-          PAGE NOT FOUND
+          {p.tag}
         </p>
         <h1
           className="mb-6 text-3xl tracking-heading text-content-primary sm:text-4xl"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
-          페이지를 찾을 수 없어요
+          {p.title}
         </h1>
         <p className="mb-10 max-w-sm text-xs leading-relaxed text-content-muted">
-          주소가 잘못 입력되었거나, 페이지가 이동되었을 수 있어요.
+          {descLine1}
           <br />
-          아래 링크에서 원하는 컬렉션을 찾아보세요.
+          {descLine2}
         </p>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row">
@@ -27,7 +34,7 @@ export default function NotFound() {
             href="/"
             className="text-xs tracking-link text-content-secondary transition-colors hover:text-content-primary"
           >
-            홈으로 돌아가기 →
+            {p.home}
           </Link>
           <span className="hidden text-content-faint sm:inline" aria-hidden="true">
             /
@@ -36,7 +43,7 @@ export default function NotFound() {
             href="/collections"
             className="text-xs tracking-link text-content-secondary transition-colors hover:text-content-primary"
           >
-            컬렉션 둘러보기 →
+            {p.collections}
           </Link>
         </div>
       </div>

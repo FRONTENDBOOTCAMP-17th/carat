@@ -1,17 +1,16 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import { useLang } from "@/context/LanguageContext";
 import type { WishlistItem } from "@/context/AuthContext";
 
 export default function WishlistButton({ item }: { item: WishlistItem }) {
   const { user, wishlist, toggleWishlist, openLoginModal } = useAuth();
+  const { t } = useLang();
   const inWishlist = wishlist.some((w) => w.id === item.id);
 
   const handleClick = () => {
-    if (!user) {
-      openLoginModal("login");
-      return;
-    }
+    if (!user) { openLoginModal("login"); return; }
     toggleWishlist(item);
   };
 
@@ -23,10 +22,10 @@ export default function WishlistButton({ item }: { item: WishlistItem }) {
           ? "bg-content-secondary text-surface-darkest border-content-secondary hover:bg-content-faint hover:border-content-faint"
           : "bg-transparent text-content-primary border-content-subtle hover:bg-content-secondary hover:text-surface-darkest hover:border-content-secondary"
       }`}
-      aria-label={inWishlist ? "위시리스트에서 제거" : "위시리스트에 추가"}
+      aria-label={inWishlist ? t.wishlistBtn.remove : t.wishlistBtn.add}
       aria-pressed={inWishlist}
     >
-      {inWishlist ? "위시리스트에서 제거" : "위시리스트에 추가"}
+      {inWishlist ? t.wishlistBtn.remove : t.wishlistBtn.add}
     </button>
   );
 }

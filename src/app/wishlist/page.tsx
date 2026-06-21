@@ -6,9 +6,12 @@ import Footer from "@/components/Footer";
 import AuthGuard from "@/components/AuthGuard";
 import ProductCard from "@/components/ProductCard";
 import { useAuth } from "@/context/AuthContext";
+import { useLang } from "@/context/LanguageContext";
 
 function WishlistContent() {
   const { wishlist } = useAuth();
+  const { t } = useLang();
+  const p = t.pages.wishlist;
 
   return (
     <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
@@ -20,10 +23,10 @@ function WishlistContent() {
             className="mb-3 text-3xl tracking-heading text-content-primary"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
-            WISHLIST
+            {p.title}
           </h1>
           <p className="mb-16 text-xs leading-relaxed text-content-faint">
-            마음에 드는 작품을 저장해두고 언제든지 다시 확인하세요.
+            {p.desc}
           </p>
         </header>
 
@@ -52,16 +55,17 @@ function WishlistContent() {
               strokeWidth="1"
               strokeLinecap="round"
               className="text-content-subtle"
+              aria-label={p.heartLabel}
             >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
-            <p className="text-xs tracking-link text-content-faint">위시리스트가 비어 있습니다.</p>
-            <p className="text-2xs text-content-subtle">마음에 드는 작품을 발견하면 추가해보세요.</p>
+            <p className="text-xs tracking-link text-content-faint">{p.emptyTitle}</p>
+            <p className="text-2xs text-content-subtle">{p.emptySub}</p>
             <Link
               href="/collections"
               className="mt-2 text-2xs tracking-link text-content-muted hover:text-content-primary transition-colors underline underline-offset-4"
             >
-              컬렉션 둘러보기 →
+              {p.browseLink}
             </Link>
           </div>
         )}

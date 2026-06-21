@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "@/context/LanguageContext";
 
 const MIN_DISPLAY_MS = 1600;
 const CANVAS_TIMEOUT_MS = 8000;
 
 export default function LoadingScreen() {
   const [isVisible, setIsVisible] = useState(true);
+  const { t } = useLang();
 
   useEffect(() => {
     const isHomepage = window.location.pathname === "/";
@@ -15,17 +17,10 @@ export default function LoadingScreen() {
     let cancelled = false;
 
     const minDelay = new Promise<void>((r) => setTimeout(r, MIN_DISPLAY_MS));
-
-    // 홈페이지에서만 3D 캔버스 준비 신호를 기다림
-    // 다른 페이지는 minDelay만으로 충분 (3D 콘텐츠 없음)
     const canvasReady = isHomepage
       ? new Promise<void>((r) => {
           fallbackTimer = setTimeout(r, CANVAS_TIMEOUT_MS);
-          window.addEventListener(
-            "prisme:hero-ready",
-            () => { clearTimeout(fallbackTimer); r(); },
-            { once: true }
-          );
+          window.addEventListener("prisme:hero-ready", () => { clearTimeout(fallbackTimer); r(); }, { once: true });
         })
       : Promise.resolve();
 
@@ -33,10 +28,7 @@ export default function LoadingScreen() {
       if (!cancelled) setIsVisible(false);
     });
 
-    return () => {
-      cancelled = true;
-      clearTimeout(fallbackTimer);
-    };
+    return () => { cancelled = true; clearTimeout(fallbackTimer); };
   }, []);
 
   return (
@@ -46,7 +38,7 @@ export default function LoadingScreen() {
           className="fixed inset-0 z-[200] bg-surface-base flex flex-col items-center justify-center"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.7, ease: "easeInOut" }}
-          aria-label="로딩 중"
+          aria-label={t.loading.label}
           aria-live="polite"
         >
           <motion.p
@@ -58,8 +50,6 @@ export default function LoadingScreen() {
           >
             PRISME
           </motion.p>
-
-          {/* Progress bar */}
           <div className="w-36 h-px bg-surface-elevated overflow-hidden">
             <motion.div
               className="h-full bg-content-primary"

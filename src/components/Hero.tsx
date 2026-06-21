@@ -3,6 +3,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useLang } from "@/context/LanguageContext";
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
@@ -37,7 +38,6 @@ function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
   );
 }
 
-// progressRef를 prop으로 받아 useFrame 안에서 직접 읽음 — 부모 리렌더 불필요
 function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const smooth = useRef(0);
@@ -45,24 +45,19 @@ function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
 
   useFrame(() => {
     if (!meshRef.current) return;
-
     smooth.current += (progressRef.current - smooth.current) * 0.06;
     const p = smooth.current;
-
     const revealP = easeOutCubic(Math.min(Math.max(p / 0.55, 0), 1));
     const moveP = easeOutCubic(Math.min(Math.max((p - 0.5) / 0.4, 0), 1));
-
     const rotX = Math.PI * 0.32 - revealP * Math.PI * 0.2;
     const rotY = revealP * Math.PI * 0.1 + moveP * Math.PI * 0.12;
     const rotZ = Math.sin(revealP * Math.PI) * 0.06;
-
     const scaleFactor = Math.min(1, viewport.width / 5.0);
     const scale = Math.max(0.4, scaleFactor);
     const ringExtent = 1.35 * scale;
     const maxPosX = Math.max(0, viewport.width * 0.5 - ringExtent);
     const posX = Math.min(moveP * viewport.width * 0.3, maxPosX);
     const posY = -moveP * 0.15 * scale;
-
     meshRef.current.scale.setScalar(scale);
     meshRef.current.rotation.x = rotX;
     meshRef.current.rotation.y = rotY;
@@ -80,42 +75,28 @@ function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
 }
 
 export default function Hero() {
+  const { t } = useLang();
   const target = useRef(0);
   const smooth = useRef(0);
   const progressRef = useRef(0);
   const mouseRef = useRef<MousePos>({ x: 0, y: 0 });
   const navRevealedRef = useRef(false);
-
-  // HTML 오버레이 요소 — React 리렌더 없이 직접 style 조작
   const overlayRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const essentialTextRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => {
-      target.current = window.scrollY / (window.innerHeight * 3);
-    };
-
+    const onScroll = () => { target.current = window.scrollY / (window.innerHeight * 3); };
     const onMouseMove = (e: MouseEvent) => {
-      mouseRef.current = {
-        x: (e.clientX / window.innerWidth) * 2 - 1,
-        y: -(e.clientY / window.innerHeight) * 2 + 1,
-      };
+      mouseRef.current = { x: (e.clientX / window.innerWidth) * 2 - 1, y: -(e.clientY / window.innerHeight) * 2 + 1 };
     };
-
     const onTouchMove = (e: TouchEvent) => {
-      const t = e.touches[0];
-      mouseRef.current = {
-        x: (t.clientX / window.innerWidth) * 2 - 1,
-        y: -(t.clientY / window.innerHeight) * 2 + 1,
-      };
+      const touch = e.touches[0];
+      mouseRef.current = { x: (touch.clientX / window.innerWidth) * 2 - 1, y: -(touch.clientY / window.innerHeight) * 2 + 1 };
     };
-
-    // resize마다 재계산해서 클로저 변수로 유지 — 60fps 읽기 제거
     let isMobile = window.innerWidth < 640;
     const onResize = () => { isMobile = window.innerWidth < 640; };
-
     window.addEventListener("scroll", onScroll);
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("touchmove", onTouchMove, { passive: true });
@@ -132,13 +113,8 @@ export default function Hero() {
         smooth.current += (target.current - smooth.current) * 0.08;
         const p = smooth.current;
         progressRef.current = p;
-
         const heroFade = Math.min(p / 0.3, 1);
-
-        // React setState 없이 DOM style 직접 변경 — compositor 속성만 건드림
-        if (overlayRef.current) {
-          overlayRef.current.style.opacity = String(heroFade * 0.4);
-        }
+        if (overlayRef.current) overlayRef.current.style.opacity = String(heroFade * 0.4);
         if (heroTextRef.current) {
           heroTextRef.current.style.opacity = String(1 - heroFade);
           heroTextRef.current.style.transform = `translateY(${heroFade * -40}px)`;
@@ -153,11 +129,7 @@ export default function Hero() {
           essentialTextRef.current.style.opacity = String(essentialEase);
           essentialTextRef.current.style.transform = `translateX(${isMobile ? 0 : -essentialEase * 20}px)`;
         }
-
-        if (scrollHintRef.current) {
-          scrollHintRef.current.style.opacity = String(Math.max(0, 1 - p / 0.04));
-        }
-
+        if (scrollHintRef.current) scrollHintRef.current.style.opacity = String(Math.max(0, 1 - p / 0.04));
         frame = requestAnimationFrame(animate);
       };
       animate();
@@ -172,106 +144,61 @@ export default function Hero() {
     };
   }, []);
 
+  const [desc1, desc2] = t.hero.essentialDesc.split("\n");
+
   return (
-    <section
-      className="relative h-[400vh] bg-surface-base"
-      aria-label="PRISME 메인 히어로"
-    >
+    <section className="relative h-[400vh] bg-surface-base" aria-label={t.hero.sectionLabel}>
       <div className="sticky top-0 h-screen overflow-hidden">
         <Canvas
           className="absolute inset-0"
           camera={{ position: [0, 0, 4], fov: 45 }}
           role="img"
-          aria-label="스크롤에 반응하는 반지 3D 애니메이션"
+          aria-label={t.hero.canvasLabel}
           onCreated={() => window.dispatchEvent(new Event("prisme:hero-ready"))}
         >
           <Lights mouseRef={mouseRef} />
           <Ring progressRef={progressRef} />
         </Canvas>
 
-        <div
-          ref={overlayRef}
-          className="absolute inset-0 bg-surface-base"
-          style={{ opacity: 0.4 }}
-          aria-hidden="true"
-        />
+        <div ref={overlayRef} className="absolute inset-0 bg-surface-base" style={{ opacity: 0.4 }} aria-hidden="true" />
 
         {/* Initial centered hero text */}
-        <div
-          ref={heroTextRef}
-          className="absolute inset-0 flex flex-col items-center justify-center text-content-primary"
-        >
-          <h1
-            className="mb-5 text-5xl sm:text-6xl lg:text-7xl font-medium"
-            style={{ fontFamily: "var(--font-cinzel)" }}
-          >
+        <div ref={heroTextRef} className="absolute inset-0 flex flex-col items-center justify-center text-content-primary">
+          <h1 className="mb-5 text-5xl sm:text-6xl lg:text-7xl font-medium" style={{ fontFamily: "var(--font-cinzel)" }}>
             PRISME
           </h1>
-          <div className="flex justify-center items flex-col">
-            <span className="block text-center">
-              Shaped through balance, defined by elegance.
-            </span>
-            <span className="block text-center">
-              Contemporary jewelry reduced to its essential expression.
-            </span>
+          <div className="flex justify-center flex-col">
+            <span className="block text-center">{t.hero.tagline1}</span>
+            <span className="block text-center">{t.hero.tagline2}</span>
           </div>
         </div>
 
-        {/* ESSENTIAL COLLECTION — full-bleed, no 1440px constraint */}
+        {/* Essential Collection overlay */}
         <div
           ref={essentialTextRef}
           className="absolute top-0 bottom-0 left-4 sm:left-[7%] lg:left-[8%] right-4 sm:right-6 lg:right-8 flex flex-col text-content-primary"
           style={{ opacity: 0 }}
         >
           <div className="mt-[13vh]">
-            <p className="mb-2 sm:mb-3 text-2xs tracking-descriptor text-content-subtle">
-              COLLECTION
-            </p>
-            <h2
-              className="mb-8 sm:mb-10 leading-none font-light"
-              style={{ fontFamily: "var(--font-cinzel)" }}
-            >
-              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl">
-                ESSENTIAL
-              </span>
-              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl pl-4 sm:pl-10 lg:pl-16 xl:pl-20">
-                COLLECTION
-              </span>
+            <p className="mb-2 sm:mb-3 text-2xs tracking-descriptor text-content-subtle">{t.hero.collectionLabel}</p>
+            <h2 className="mb-8 sm:mb-10 leading-none font-light" style={{ fontFamily: "var(--font-cinzel)" }}>
+              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl">{t.hero.essentialLine1}</span>
+              <span className="block text-4xl sm:text-5xl lg:text-7xl xl:text-8xl pl-4 sm:pl-10 lg:pl-16 xl:pl-20">{t.hero.essentialLine2}</span>
             </h2>
             <p className="max-w-40 sm:max-w-55 md:max-w-75 text-xs sm:text-sm leading-relaxed text-content-muted">
-              절제와 정밀이 만나는 지점.
-              가장 단순한 형태 안에 소재의 본질을 담았습니다.
+              {desc1}<br />{desc2}
             </p>
           </div>
-
           <div className="flex-1" />
-
-          <a
-            href="/essential"
-            className="mb-[10%] text-2xs sm:text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
-          >
-            컬렉션 살펴보기 →
+          <a href="/essential" className="mb-[10%] text-2xs sm:text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors">
+            {t.hero.cta}
           </a>
         </div>
 
-        {/* 스크롤 힌트 — 스크롤 시작 즉시 fade-out */}
-        <div
-          ref={scrollHintRef}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-content-subtle pointer-events-none"
-          aria-hidden="true"
-        >
-          <span className="text-2xs tracking-link">SCROLL</span>
-          <svg
-            width="14"
-            height="20"
-            viewBox="0 0 14 22"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="motion-safe:animate-bounce"
-          >
+        {/* Scroll hint */}
+        <div ref={scrollHintRef} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-content-subtle pointer-events-none" aria-hidden="true">
+          <span className="text-2xs tracking-link">{t.hero.scroll}</span>
+          <svg width="14" height="20" viewBox="0 0 14 22" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="motion-safe:animate-bounce">
             <line x1="7" y1="0" x2="7" y2="16" />
             <polyline points="2,12 7,17 12,12" />
           </svg>

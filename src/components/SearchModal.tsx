@@ -3,33 +3,24 @@
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLang } from "@/context/LanguageContext";
 
-export default function SearchModal({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
+export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { t } = useLang();
 
-  // 열릴 때 input에 포커스
   useEffect(() => {
     if (!isOpen) return;
-    const t = setTimeout(() => inputRef.current?.focus(), 80);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => inputRef.current?.focus(), 80);
+    return () => clearTimeout(timer);
   }, [isOpen]);
 
-  // Escape 닫기
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-        setQuery("");
-      }
+      if (e.key === "Escape") { onClose(); setQuery(""); }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -56,7 +47,7 @@ export default function SearchModal({
           onClick={onClose}
           role="dialog"
           aria-modal="true"
-          aria-label="상품 검색"
+          aria-label={t.search.label}
         >
           <motion.div
             className="w-full max-w-lg"
@@ -67,9 +58,7 @@ export default function SearchModal({
             onClick={(e) => e.stopPropagation()}
           >
             <form onSubmit={handleSubmit} role="search">
-              <label htmlFor="site-search" className="sr-only">
-                상품 검색
-              </label>
+              <label htmlFor="site-search" className="sr-only">{t.search.label}</label>
               <div className="relative flex items-center border-b border-surface-elevated pb-3">
                 <input
                   ref={inputRef}
@@ -79,33 +68,22 @@ export default function SearchModal({
                   spellCheck={false}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="검색어를 입력하세요"
+                  placeholder={t.search.placeholder}
                   className="flex-1 bg-transparent text-xl text-content-primary placeholder:text-content-subtle outline-none"
                   style={{ fontFamily: "var(--font-pretendard)" }}
                 />
                 <button
                   type="submit"
-                  aria-label="검색"
+                  aria-label={t.search.submit}
                   className="ml-4 text-content-tertiary hover:text-content-primary transition-colors"
                 >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                  >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
                     <circle cx="11" cy="11" r="8" />
                     <path d="m21 21-4.35-4.35" />
                   </svg>
                 </button>
               </div>
-              <p className="mt-3 text-2xs text-content-subtle tracking-link">
-                ESC로 닫기
-              </p>
+              <p className="mt-3 text-2xs text-content-subtle tracking-link">{t.search.escHint}</p>
             </form>
           </motion.div>
         </motion.div>

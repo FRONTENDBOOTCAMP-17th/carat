@@ -1,38 +1,125 @@
 @import "tailwindcss";
 
-/* -----------------------------
+/* =============================================
    PRISME FONT SYSTEM
-------------------------------*/
+   Variables injected by layout.tsx
+   ============================================ */
 :root {
-  --background: #ffffff; /* fallback */
-  --foreground: #171717; /* fallback */
-
-  /* font variables (layout.tsx에서 주입됨) */
-  --font-sans: var(--font-pretendard);
+  --font-sans:    var(--font-pretendard);
   --font-display: var(--font-cinzel);
 }
 
+/* =============================================
+   LEVEL 1 — RAW THEME VARIABLES
+   Defined on <html> (dark = default).
+   Overridden by html[data-theme="light"].
+   Tailwind @theme inline references these via var(),
+   so ALL utility classes respond to theme changes.
+   ============================================ */
+
+html {
+  /* Surface — dark defaults */
+  --c-surface-base:     #09090b;
+  --c-surface-darkest:  #0d0d10;
+  --c-surface-raised:   #18181b;
+  --c-surface-elevated: #27272a;
+  --c-surface-input:    #3f3f46;
+  --c-surface-overlay:  rgba(0, 0, 0, 0.5);
+
+  /* Content — dark defaults (off-white, not pure white) */
+  --c-content-primary:   #e4e4e7;
+  --c-content-secondary: rgba(228, 228, 231, 0.80);
+  --c-content-tertiary:  rgba(228, 228, 231, 0.70);
+  --c-content-muted:     rgba(228, 228, 231, 0.60);
+  --c-content-subtle:    rgba(228, 228, 231, 0.50);
+  --c-content-dimmed:    #71717a;
+  --c-content-faint:     #a1a1aa;
+
+  /* Body */
+  --c-bg: #09090b;
+  --c-fg: #e4e4e7;
+}
+
+/* oklch for supporting browsers */
 @supports (color: oklch(0% 0 0)) {
-  :root {
-    --background: oklch(100% 0 0);
-    --foreground: oklch(20.5% 0 0); /* #171717 근사값 */
+  html {
+    --c-surface-base:     var(--color-zinc-950);
+    --c-surface-darkest:  oklch(8% 0 0);
+    --c-surface-raised:   var(--color-zinc-900);
+    --c-surface-elevated: var(--color-zinc-800);
+    --c-surface-input:    var(--color-zinc-700);
+    --c-surface-overlay:  oklch(0% 0 0 / 50%);
+
+    --c-content-primary:   oklch(91% 0 0);
+    --c-content-secondary: oklch(91% 0 0 / 80%);
+    --c-content-tertiary:  oklch(91% 0 0 / 70%);
+    --c-content-muted:     oklch(91% 0 0 / 60%);
+    --c-content-subtle:    oklch(91% 0 0 / 50%);
+    --c-content-dimmed:    var(--color-zinc-500);
+    --c-content-faint:     var(--color-zinc-400);
+
+    --c-bg: var(--color-zinc-950);
+    --c-fg: oklch(91% 0 0);
   }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+/* Light mode */
+html[data-theme="light"] {
+  --c-surface-base:     #fafafa;
+  --c-surface-darkest:  #f4f4f5;
+  --c-surface-raised:   #ececee;
+  --c-surface-elevated: #e0e0e3;
+  --c-surface-input:    #d4d4d8;
+  --c-surface-overlay:  rgba(0, 0, 0, 0.3);
 
-  --font-sans: var(--font-pretendard);
+  /* Off-black, not pure black */
+  --c-content-primary:   #18181b;
+  --c-content-secondary: rgba(24, 24, 27, 0.80);
+  --c-content-tertiary:  rgba(24, 24, 27, 0.70);
+  --c-content-muted:     rgba(24, 24, 27, 0.60);
+  --c-content-subtle:    rgba(24, 24, 27, 0.50);
+  --c-content-dimmed:    #71717a;
+  --c-content-faint:     #52525b;
+
+  --c-bg: #fafafa;
+  --c-fg: #18181b;
+}
+
+@supports (color: oklch(0% 0 0)) {
+  html[data-theme="light"] {
+    --c-surface-base:     oklch(98.5% 0 0);
+    --c-surface-darkest:  oklch(96% 0 0);
+    --c-surface-raised:   oklch(93% 0 0);
+    --c-surface-elevated: oklch(89% 0 0);
+    --c-surface-input:    oklch(85% 0 0);
+    --c-surface-overlay:  oklch(0% 0 0 / 30%);
+
+    --c-content-primary:   oklch(14% 0 0);
+    --c-content-secondary: oklch(14% 0 0 / 80%);
+    --c-content-tertiary:  oklch(14% 0 0 / 70%);
+    --c-content-muted:     oklch(14% 0 0 / 60%);
+    --c-content-subtle:    oklch(14% 0 0 / 50%);
+    --c-content-dimmed:    var(--color-zinc-500);
+    --c-content-faint:     var(--color-zinc-600);
+
+    --c-bg: oklch(98.5% 0 0);
+    --c-fg: oklch(14% 0 0);
+  }
+}
+
+/* =============================================
+   LEVEL 2 — TAILWIND DESIGN TOKENS
+   @theme inline references --c-* raw vars.
+   Generated utility classes will contain
+   e.g.  .bg-surface-darkest { background-color: var(--c-surface-darkest) }
+   which responds to runtime theme changes.
+   ============================================ */
+@theme inline {
+  /* Fonts */
+  --font-sans:    var(--font-pretendard);
   --font-display: var(--font-cinzel);
 
-  /* ================================================
-     DESIGN TOKENS — PRISME
-     구조: 원시 토큰(Primitive) → 시맨틱 토큰(Semantic)
-  ================================================ */
-
-  /* --- Letter-spacing: 원시 스케일 ---
-     1(좁음) → 6(넓음) */
+  /* Letter-spacing scale */
   --tracking-1: 0.07em;
   --tracking-2: 0.18em;
   --tracking-3: 0.2em;
@@ -40,85 +127,45 @@
   --tracking-5: 0.26em;
   --tracking-6: 0.3em;
 
-  /* --- Letter-spacing: 시맨틱 토큰 (원시 스케일 참조) --- */
-  --tracking-label: var(--tracking-1); /* 섹션 레이블 헤더 (Footer h3 등) */
-  --tracking-heading: var(--tracking-2); /* 페이지 / 섹션 제목 (h1, h2) */
-  --tracking-link: var(--tracking-3); /* 링크, 카테고리 레이블 (가장 빈번) */
-  --tracking-hero: var(--tracking-4); /* 히어로 서브타이틀 */
-  --tracking-descriptor: var(--tracking-5); /* 프리헤더 설명 텍스트 */
-  --tracking-logo: var(--tracking-6); /* 로고 / 브랜드명 */
+  /* Letter-spacing semantic */
+  --tracking-label:      var(--tracking-1);
+  --tracking-heading:    var(--tracking-2);
+  --tracking-link:       var(--tracking-3);
+  --tracking-hero:       var(--tracking-4);
+  --tracking-descriptor: var(--tracking-5);
+  --tracking-logo:       var(--tracking-6);
 
-  /* --- Font sizes: 마이크로 스케일 (Tailwind text-xs 아래) --- */
-  --text-2xs: 0.625rem; /* 10px */
-  --text-4xs: 0.5rem; /* 8px  */
+  /* Font sizes */
+  --text-2xs: 0.625rem;
+  --text-4xs: 0.5rem;
 
-  /* --- Colors (fallback: hex/rgba): 시맨틱 콘텐츠(텍스트) 토큰 ---
-     불투명 → hex / 반투명 → rgba() */
-  --color-content-primary: #ffffff;
-  --color-content-secondary: rgba(255, 255, 255, 0.8);
-  --color-content-tertiary: rgba(255, 255, 255, 0.7);
-  --color-content-muted: rgba(255, 255, 255, 0.6);
-  --color-content-subtle: rgba(255, 255, 255, 0.5);
-  --color-content-dimmed: #71717a; /* zinc-500 hex */
-  --color-content-faint: #a1a1aa; /* zinc-400 hex */
-
-  /* --- Colors (fallback: hex/rgba): 시맨틱 서피스(배경) 토큰 --- */
-  --color-surface-base: #000000;
-  --color-surface-darkest: #09090b; /* zinc-950 hex */
-  --color-surface-raised: #18181b; /* zinc-900 hex */
-  --color-surface-elevated: #27272a; /* zinc-800 hex */
-  --color-surface-input: #3f3f46; /* zinc-700 hex */
-  --color-surface-overlay: rgba(0, 0, 0, 0.5);
-
-  /* --- Layout: 컨테이너 최대 너비 --- */
+  /* Layout */
   --max-width-container: 1440px;
+
+  /* Color tokens — reference --c-* so utilities are themeable */
+  --color-surface-base:     var(--c-surface-base);
+  --color-surface-darkest:  var(--c-surface-darkest);
+  --color-surface-raised:   var(--c-surface-raised);
+  --color-surface-elevated: var(--c-surface-elevated);
+  --color-surface-input:    var(--c-surface-input);
+  --color-surface-overlay:  var(--c-surface-overlay);
+
+  --color-content-primary:   var(--c-content-primary);
+  --color-content-secondary: var(--c-content-secondary);
+  --color-content-tertiary:  var(--c-content-tertiary);
+  --color-content-muted:     var(--c-content-muted);
+  --color-content-subtle:    var(--c-content-subtle);
+  --color-content-dimmed:    var(--c-content-dimmed);
+  --color-content-faint:     var(--c-content-faint);
+
+  --color-background: var(--c-bg);
+  --color-foreground: var(--c-fg);
 }
 
-/* oklch 지원 브라우저: 색상 토큰 override */
-@supports (color: oklch(0% 0 0)) {
-  :root {
-    /* 콘텐츠 토큰 */
-    --color-content-primary: oklch(100% 0 0);
-    --color-content-secondary: oklch(100% 0 0 / 80%);
-    --color-content-tertiary: oklch(100% 0 0 / 70%);
-    --color-content-muted: oklch(100% 0 0 / 60%);
-    --color-content-subtle: oklch(100% 0 0 / 50%);
-    --color-content-dimmed: var(--color-zinc-500);
-    --color-content-faint: var(--color-zinc-400);
-
-    /* 서피스 토큰 */
-    --color-surface-base: oklch(0% 0 0);
-    --color-surface-darkest: var(--color-zinc-950);
-    --color-surface-raised: var(--color-zinc-900);
-    --color-surface-elevated: var(--color-zinc-800);
-    --color-surface-input: var(--color-zinc-700);
-    --color-surface-overlay: oklch(0% 0 0 / 50%);
-  }
-}
-
-/* -----------------------------
-   DARK MODE
-------------------------------*/
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a; /* fallback */
-    --foreground: #ededed; /* fallback */
-  }
-
-  @supports (color: oklch(0% 0 0)) {
-    :root {
-      --background: oklch(14.5% 0 0); /* #0a0a0a 근사값 */
-      --foreground: oklch(94.6% 0 0); /* #ededed 근사값 */
-    }
-  }
-}
-
-/* -----------------------------
+/* =============================================
    CUSTOM CURSOR
-------------------------------*/
+   ============================================ */
 @media (pointer: fine) {
-  /* JS가 커스텀 커서를 마운트했을 때만 네이티브 커서를 숨김
-     → JS 비활성화 / 마운트 실패 시 OS 기본 포인터가 표시됨 */
   .has-custom-cursor,
   .has-custom-cursor *,
   .has-custom-cursor *::before,
@@ -133,7 +180,7 @@
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: var(--color-content-primary);
+    background: var(--c-content-primary);
     pointer-events: none;
     z-index: 9999;
     will-change: transform;
@@ -146,7 +193,7 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    border: 1px solid var(--color-content-tertiary);
+    border: 1px solid var(--c-content-tertiary);
     pointer-events: none;
     z-index: 9998;
     will-change: transform;
@@ -157,24 +204,22 @@
 
   .cursor-ring.is-hover {
     border: 1.2px solid;
-    border-color: var(--color-content-secondary);
+    border-color: var(--c-content-secondary);
   }
 }
 
-/* -----------------------------
-   FOCUS
-   — @layer 외부 선언: Tailwind utilities(focus:outline-none 등)보다
-     cascade 우선순위가 높아 키보드 포커스 링이 항상 표시됨
-------------------------------*/
-:focus-visible {
-  outline: 0.5px solid white;
+/* =============================================
+   FOCUS RING
+   ============================================ */
+:focus-visible:not(input):not(textarea):not(select) {
+  outline: 0.5px solid var(--c-content-primary);
   outline-offset: 3px;
   border-radius: 1px;
 }
 
-/* -----------------------------
+/* =============================================
    BASE
-------------------------------*/
+   ============================================ */
 @layer base {
   html {
     word-break: keep-all;
@@ -182,10 +227,8 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-
-  /* 기본 텍스트 = Pretendard */
+  background: var(--c-bg);
+  color: var(--c-fg);
   font-family: var(--font-pretendard);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
