@@ -24,9 +24,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("prisme_theme") as Theme | null;
-    const resolved = stored === "light" || stored === "dark" ? stored : detectOsTheme();
+    const hasUserPref = stored === "light" || stored === "dark";
+    const resolved = hasUserPref ? stored : detectOsTheme();
     setThemeState(resolved);
     document.documentElement.setAttribute("data-theme", resolved);
+
+    // OS 테마 변경을 실시간으로 반영 (사용자가 명시적으로 선택하지 않은 경우에만)
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    const onOsChange = (e: MediaQueryListEvent) => {
+      if (localStorage.getItem("prisme_theme")) return;
+      const next: Theme = e.matches ? "light" : "dark";
+      setThemeState(next);
+      document.documentElement.setAttribute("data-theme", next);
+    };
+    mq.addEventListener("change", onOsChange);
+    return () => mq.removeEventListener("change", onOsChange);
   }, []);
 
   const setTheme = useCallback((t: Theme) => {

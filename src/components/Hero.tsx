@@ -54,38 +54,54 @@ function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
 }
 
 function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
+  const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
   const smooth = useRef(0);
   const { viewport } = useThree();
 
   useFrame(() => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !groupRef.current) return;
     smooth.current += (progressRef.current - smooth.current) * 0.06;
     const p = smooth.current;
     const revealP = easeOutCubic(Math.min(Math.max(p / 0.55, 0), 1));
     const moveP = easeOutCubic(Math.min(Math.max((p - 0.5) / 0.4, 0), 1));
-    const rotX = Math.PI * 0.32 - revealP * Math.PI * 0.2;
+    // 회전: 초기엔 가파르게 누운 각도 → 정면에 가까운 각도
+    const rotX = Math.PI * -0.78 - revealP * Math.PI * 0.3;
     const rotY = revealP * Math.PI * 0.1 + moveP * Math.PI * 0.12;
-    const rotZ = Math.sin(revealP * Math.PI) * 0.06;
-    const scaleFactor = Math.min(1, viewport.width / 5.0);
-    const scale = Math.max(0.4, scaleFactor);
-    const ringExtent = 1.35 * scale;
+    // 화면 평면(시선축) 기울기 — 양수 = 반시계. group에 적용해야 보임
+    const tiltZ = 0.6 + Math.sin(revealP * Math.PI) * 0.06;
+    // 크기: 초기엔 화면 가득(heroScale) → 기준 크기(baseScale)로 축소
+    const baseScale = Math.max(0.4, Math.min(1, viewport.width / 4.0));
+    const heroScale = Math.max(baseScale * 1.8, viewport.height / 3.0);
+    const scale = heroScale + (baseScale - heroScale) * revealP;
+    // 이동: 축소가 끝난 뒤(baseScale 기준) 오른쪽으로 이동
+    const ringExtent = 1.35 * baseScale;
     const maxPosX = Math.max(0, viewport.width * 0.5 - ringExtent);
     const posX = Math.min(moveP * viewport.width * 0.3, maxPosX);
-    const posY = -moveP * 0.15 * scale;
-    meshRef.current.scale.setScalar(scale);
+    // 초기 세로 위치 보정: 화면 가득일 때 아래로 내려 중앙에 맞춤 → revealP 진행 시 0으로
+    const heroOffsetY = -1.2 * (1 - revealP);
+    const posY = heroOffsetY - moveP * 0.15 * baseScale;
+    // 반지 포즈(눕힘/좌우)는 mesh에
     meshRef.current.rotation.x = rotX;
     meshRef.current.rotation.y = rotY;
-    meshRef.current.rotation.z = rotZ;
-    meshRef.current.position.x = posX;
-    meshRef.current.position.y = posY;
+    // 화면 평면 기울기·크기·위치는 group에
+    groupRef.current.rotation.z = tiltZ;
+    groupRef.current.scale.setScalar(scale);
+    groupRef.current.position.x = posX;
+    groupRef.current.position.y = posY;
   });
 
   return (
-    <mesh ref={meshRef}>
-      <torusGeometry args={[1, 0.4, 64, 128]} />
-      <meshStandardMaterial metalness={0.95} roughness={0.06} color="#ffffff" />
-    </mesh>
+    <group ref={groupRef}>
+      <mesh ref={meshRef}>
+        <torusGeometry args={[1, 0.4, 64, 128]} />
+        <meshStandardMaterial
+          metalness={0.95}
+          roughness={0.06}
+          color="#ffffff"
+        />
+      </mesh>
+    </group>
   );
 }
 
