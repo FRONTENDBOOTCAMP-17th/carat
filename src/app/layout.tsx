@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel } from "next/font/google";
 import localFont from "next/font/local";
+import { cookies } from "next/headers";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
 import LoginModal from "@/components/LoginModal";
@@ -8,6 +9,7 @@ import SkipLink from "@/components/SkipLink";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import type { Lang } from "@/lib/translations";
 
 /* -----------------------------
    Cinzel (headline)
@@ -79,14 +81,18 @@ export const metadata: Metadata = {
   description: "Jewelry editorial experience",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const storedLang = cookieStore.get("prisme_lang")?.value;
+  const initialLang: Lang = storedLang === "ko" || storedLang === "en" ? storedLang : "ko";
+
   return (
     <html
-      lang="ko"
+      lang={initialLang}
       className={`${cinzel.variable} ${pretendard.variable} h-full antialiased`}
       suppressHydrationWarning
     >
@@ -99,7 +105,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <LanguageProvider>
+        <LanguageProvider initialLang={initialLang}>
           <ThemeProvider>
             <AuthProvider>
               <CustomCursor />

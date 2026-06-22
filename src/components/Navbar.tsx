@@ -11,7 +11,6 @@ export default function Navbar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { user, openLoginModal, logout } = useAuth();
   const { lang, setLang, t } = useLang();
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -19,19 +18,13 @@ export default function Navbar() {
   const wishlistLinkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    if (!user) {
-      setIsUserMenuOpen(false);
-      setShowLogoutConfirm(false);
-    }
+    if (!user) setIsUserMenuOpen(false);
   }, [user]);
 
   useEffect(() => {
     if (!isUserMenuOpen) return;
     const onPointerDown = (e: PointerEvent) => {
-      if (!userMenuRef.current?.contains(e.target as Node)) {
-        setIsUserMenuOpen(false);
-        setShowLogoutConfirm(false);
-      }
+      if (!userMenuRef.current?.contains(e.target as Node)) setIsUserMenuOpen(false);
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
@@ -42,7 +35,6 @@ export default function Navbar() {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsUserMenuOpen(false);
-        setShowLogoutConfirm(false);
         userButtonRef.current?.focus();
       }
     };
@@ -158,46 +150,20 @@ export default function Navbar() {
                   <p className="px-4 py-1 text-2xs text-content-faint truncate">{user.email}</p>
                   <div className="my-2 h-px bg-surface-elevated" />
 
-                  {showLogoutConfirm ? (
-                    <div className="px-4 py-2">
-                      <p className="mb-3 text-2xs leading-relaxed text-content-secondary">
-                        {t.auth.logoutWarning}
-                      </p>
-                      <div className="flex gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setShowLogoutConfirm(false)}
-                          className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
-                        >
-                          {t.auth.cancel}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => { logout(); setIsUserMenuOpen(false); setShowLogoutConfirm(false); }}
-                          className="text-2xs tracking-label text-content-faint hover:text-content-primary transition-colors"
-                        >
-                          {t.auth.logout}
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <Link
-                        ref={wishlistLinkRef}
-                        href="/wishlist"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center min-h-11 px-4 text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
-                      >
-                        {t.auth.wishlist}
-                      </Link>
-                      <button
-                        onClick={() => setShowLogoutConfirm(true)}
-                        className="flex items-center w-full min-h-11 px-4 text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
-                      >
-                        {t.auth.logout}
-                      </button>
-                    </>
-                  )}
+                  <Link
+                    ref={wishlistLinkRef}
+                    href="/wishlist"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex items-center min-h-11 px-4 text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+                  >
+                    {t.auth.wishlist}
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setIsUserMenuOpen(false); }}
+                    className="flex items-center w-full min-h-11 px-4 text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+                  >
+                    {t.auth.logout}
+                  </button>
                 </div>
               )}
             </div>

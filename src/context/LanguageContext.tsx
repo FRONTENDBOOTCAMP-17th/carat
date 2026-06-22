@@ -19,19 +19,26 @@ function detectOsLang(): Lang {
   }
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("ko");
+export function LanguageProvider({
+  children,
+  initialLang = "ko",
+}: {
+  children: React.ReactNode;
+  initialLang?: Lang;
+}) {
+  const [lang, setLangState] = useState<Lang>(initialLang);
 
   useEffect(() => {
     const stored = localStorage.getItem("prisme_lang") as Lang | null;
     const resolved = stored === "ko" || stored === "en" ? stored : detectOsLang();
-    setLangState(resolved);
+    if (resolved !== lang) setLangState(resolved);
     document.documentElement.setAttribute("lang", resolved);
   }, []);
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
     localStorage.setItem("prisme_lang", l);
+    document.cookie = `prisme_lang=${l}; path=/; max-age=31536000`;
     document.documentElement.setAttribute("lang", l);
   }, []);
 

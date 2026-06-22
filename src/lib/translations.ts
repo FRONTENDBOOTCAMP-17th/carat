@@ -35,8 +35,6 @@ const ko = {
   auth: {
     wishlist: "Wishlist",
     logout: "로그아웃",
-    logoutWarning: "로그아웃하면 위시리스트가 삭제됩니다. 계속하시겠어요?",
-    cancel: "취소",
     modalLogin: "로그인",
     modalSignup: "회원가입",
     modalClose: "닫기",
@@ -565,8 +563,6 @@ const en: typeof ko = {
   auth: {
     wishlist: "Wishlist",
     logout: "Sign out",
-    logoutWarning: "Signing out will clear your wishlist. Continue?",
-    cancel: "Cancel",
     modalLogin: "Sign in",
     modalSignup: "Sign up",
     modalClose: "Close",

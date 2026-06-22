@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-type User = { email: string; name: string };
+type User = { id: string; email: string; name: string };
 
 export type WishlistItem = {
   id: string;
@@ -29,6 +29,15 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function getOrCreateUserId(email: string): string {
+  const key = `prisme_uid_${email}`;
+  const existing = localStorage.getItem(key);
+  if (existing) return existing;
+  const id = crypto.randomUUID();
+  localStorage.setItem(key, id);
+  return id;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window === "undefined") return null;
@@ -38,9 +47,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const [wishlist, setWishlist] = useState<WishlistItem[]>(() => {
     if (typeof window === "undefined") return [];
-    // 유저 데이터가 없으면 위시리스트도 복원하지 않음
-    if (!localStorage.getItem("prisme_user")) return [];
-    const stored = localStorage.getItem("prisme_wishlist");
+    const userStored = localStorage.getItem("prisme_user");
+    if (!userStored) return [];
+    const { id } = JSON.parse(userStored) as User;
+    const stored = localStorage.getItem(`prisme_wishlist_${id}`);
     return stored ? (JSON.parse(stored) as WishlistItem[]) : [];
   });
 
@@ -59,9 +69,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!email.includes("@") || password.length < 4) {
       return { error: "이메일 또는 비밀번호를 확인해주세요." };
     }
-    const newUser: User = { email, name: email.split("@")[0] };
+    const id = getOrCreateUserId(email);
+    const newUser: User = { id, email, name: email.split("@")[0] };
     setUser(newUser);
     localStorage.setItem("prisme_user", JSON.stringify(newUser));
+    const stored = localStorage.getItem(`prisme_wishlist_${id}`);
+    setWishlist(stored ? (JSON.parse(stored) as WishlistItem[]) : []);
     return { error: null };
   }, []);
 
@@ -70,7 +83,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!email.includes("@")) return { error: "올바른 이메일 주소를 입력해주세요." };
     if (password.length < 8) return { error: "비밀번호는 8자 이상이어야 합니다." };
     if (!name.trim()) return { error: "이름을 입력해주세요." };
-    const newUser: User = { email, name: name.trim() };
+    const id = getOrCreateUserId(email);
+    const newUser: User = { id, email, name: name.trim() };
     setUser(newUser);
     localStorage.setItem("prisme_user", JSON.stringify(newUser));
     return { error: null };
@@ -80,7 +94,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setWishlist([]);
     localStorage.removeItem("prisme_user");
-    localStorage.removeItem("prisme_wishlist");
   }, []);
 
   const toggleWishlist = useCallback((item: WishlistItem) => {
@@ -90,12 +103,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  // wishlist → localStorage 동기화 (초기 마운트 스킵)
+  // wishlist → localStorage 동기화 (초기 마운트 스킵, 유저별 키 사용)
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) { isFirstRender.current = false; return; }
-    localStorage.setItem("prisme_wishlist", JSON.stringify(wishlist));
-  }, [wishlist]);
+    if (user) {
+      localStorage.setItem(`prisme_wishlist_${user.id}`, JSON.stringify(wishlist));
+    }
+  }, [wishlist, user]);
 
   const value = useMemo(
     () => ({
