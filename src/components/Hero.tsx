@@ -1,9 +1,18 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useLang } from "@/context/LanguageContext";
+
+// Heuristic: low-end = <4 GB RAM or <4 CPU cores.
+// Falls back to false (high-end assumed) if the APIs are absent (Safari, Firefox).
+function detectLowEnd(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const mem = (navigator as { deviceMemory?: number }).deviceMemory ?? 8;
+  const cores = navigator.hardwareConcurrency ?? 4;
+  return mem < 4 || cores < 4;
+}
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
@@ -11,13 +20,21 @@ function easeOutCubic(t: number) {
 
 type MousePos = { x: number; y: number };
 
-function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
+function Lights({
+  mouseRef,
+  isLowEnd,
+}: {
+  mouseRef: React.RefObject<MousePos>;
+  isLowEnd: boolean;
+}) {
   const keyRef = useRef<THREE.PointLight>(null);
   const rimMainRef = useRef<THREE.PointLight>(null);
   const rimSideRef = useRef<THREE.PointLight>(null);
   const smooth = useRef<MousePos>({ x: 0, y: 0 });
 
   useFrame(() => {
+    // Low-end: skip per-frame mouse tracking, keep lights static
+    if (isLowEnd) return;
     smooth.current.x += (mouseRef.current.x - smooth.current.x) * 0.06;
     smooth.current.y += (mouseRef.current.y - smooth.current.y) * 0.06;
     const mx = smooth.current.x;
@@ -26,6 +43,16 @@ function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
     rimMainRef.current?.position.set(-mx * 1.5, 2 - my * 0.5, -4);
     rimSideRef.current?.position.set(2 - mx * 0.8, 1 + my * 0.3, -3);
   });
+
+  if (isLowEnd) {
+    // 2-light rig: ambient + single key. ~75% fewer light calculations per fragment.
+    return (
+      <>
+        <ambientLight intensity={0.35} />
+        <pointLight position={[-2.5, 4, 2]} intensity={30} color="#ffffff" />
+      </>
+    );
+  }
 
   return (
     <>
@@ -53,11 +80,19 @@ function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
   );
 }
 
-function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
+function Ring({
+  progressRef,
+  isLowEnd,
+}: {
+  progressRef: React.RefObject<number>;
+  isLowEnd: boolean;
+}) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
   const smooth = useRef(0);
   const { viewport } = useThree();
+  // Low-end: 32×64 = 1/4 the triangle count of 64×128
+  const [radialSeg, tubularSeg] = isLowEnd ? [32, 64] : [64, 128];
 
   useFrame(() => {
     if (!meshRef.current || !groupRef.current) return;
@@ -94,11 +129,13 @@ function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
   return (
     <group ref={groupRef}>
       <mesh ref={meshRef}>
-        <torusGeometry args={[1, 0.4, 64, 128]} />
+        <torusGeometry args={[1, 0.4, radialSeg, tubularSeg]} />
+        {/* dithering: Three.js built-in Bayer 4×4 — eliminates quantization bands at near-zero cost */}
         <meshStandardMaterial
           metalness={0.95}
           roughness={0.06}
           color="#ffffff"
+          dithering
         />
       </mesh>
     </group>
@@ -107,6 +144,7 @@ function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
 
 export default function Hero() {
   const { t } = useLang();
+  const isLowEnd = useMemo(() => detectLowEnd(), []);
   const target = useRef(0);
   const smooth = useRef(0);
   const progressRef = useRef(0);
@@ -207,12 +245,22 @@ export default function Hero() {
           className="absolute inset-0"
           camera={{ position: [0, 0, 4], fov: 45 }}
           gl={{ alpha: true }}
+          // Low-end: lock DPR to 1. High-end: allow up to native 2×.
+          // performance.min=0.5 lets R3F further reduce DPR if fps drops below target.
+          dpr={isLowEnd ? 1 : [1, 2]}
+          performance={{ min: 0.5 }}
           role="img"
           aria-label={t.hero.canvasLabel}
-          onCreated={() => window.dispatchEvent(new Event("prisme:hero-ready"))}
+          onCreated={({ gl }) => {
+            // ACESFilmic compresses specular hot-spots smoothly → less banding in dark-to-bright gradients.
+            // Combined with material dithering this eliminates visible quantization steps.
+            gl.toneMapping = THREE.ACESFilmicToneMapping;
+            gl.toneMappingExposure = 1.2;
+            window.dispatchEvent(new Event("prisme:hero-ready"));
+          }}
         >
-          <Lights mouseRef={mouseRef} />
-          <Ring progressRef={progressRef} />
+          <Lights mouseRef={mouseRef} isLowEnd={isLowEnd} />
+          <Ring progressRef={progressRef} isLowEnd={isLowEnd} />
         </Canvas>
 
         <div
