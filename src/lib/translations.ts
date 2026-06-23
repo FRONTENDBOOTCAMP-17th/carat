@@ -170,15 +170,21 @@ const ko = {
         `Essential Ring — ${colorLabel}`,
     },
     bestPieces: {
+      backNav: "메인으로 돌아가기",
+      section: "SIGNATURE",
       title: "BEST PIECES",
       desc: "가장 많은 사랑을 받은 PRISME의 시그니처 피스를 만나보세요.",
     },
     collections: {
+      backNav: "메인으로 돌아가기",
+      section: "EXPLORE",
       title: "COLLECTIONS",
       desc: "현대적인 조형성과 정교한 소재가 만나는 곳,\nPRISME의 컬렉션을 만나보세요.",
     },
     fwCollections: {
-      title: "2026 F/W COLLECTIONS",
+      backNav: "메인으로 돌아가기",
+      section: "2026 F/W",
+      title: "COLLECTIONS",
       desc: "2026 가을·겨울 시즌의 새로운 컬렉션,\nPRISME가 제안하는 계절의 정수를 만나보세요.",
     },
     archive: {
@@ -416,6 +422,9 @@ const ko = {
       dimensions: "규격",
       materialValue: "18K 옐로우 골드 / 다이아몬드",
       dimensionsValue: "내경 16.5mm",
+      fromCollection: "같은 컬렉션의 다른 피스",
+      materialsLink: "소재 안내",
+      careLink: "케어 가이드",
     },
     search: {
       section: "SEARCH",
@@ -698,15 +707,21 @@ const en: typeof ko = {
         `Essential Ring — ${colorLabel}`,
     },
     bestPieces: {
+      backNav: "Back to home",
+      section: "SIGNATURE",
       title: "BEST PIECES",
       desc: "Discover PRISME's most beloved signature pieces.",
     },
     collections: {
+      backNav: "Back to home",
+      section: "EXPLORE",
       title: "COLLECTIONS",
       desc: "Where contemporary form meets refined material —\ndiscover the PRISME collection.",
     },
     fwCollections: {
-      title: "2026 F/W COLLECTIONS",
+      backNav: "Back to home",
+      section: "2026 F/W",
+      title: "COLLECTIONS",
       desc: "The new season collection for Autumn/Winter 2026 —\nthe essence of the season, as envisioned by PRISME.",
     },
     archive: {
@@ -946,6 +961,9 @@ const en: typeof ko = {
       dimensions: "Dimensions",
       materialValue: "18K Yellow Gold / Diamond",
       dimensionsValue: "Inner diameter 16.5mm",
+      fromCollection: "More from this collection",
+      materialsLink: "Materials",
+      careLink: "Care Guide",
     },
     search: {
       section: "SEARCH",

@@ -5,8 +5,7 @@ import type { Lang } from "@/lib/translations";
 export type RawProduct = {
   id: string;
   name: string;
-  description: string;
-  descriptionEn?: string;
+  nameEn?: string;
   price: string;
 };
 
@@ -26,21 +25,21 @@ const CATEGORY_META = {
 type CategoryKey = keyof typeof CATEGORY_META;
 
 export function getProductsByCategory(category: CategoryKey, lang: Lang = "ko"): RawProduct[] {
-  const raw = productsData[category] as (RawProduct & { descriptionEn?: string })[];
+  const raw = productsData[category] as RawProduct[];
   if (lang === "en") {
-    return raw.map((p) => ({ ...p, description: p.descriptionEn ?? p.description }));
+    return raw.map((p) => ({ ...p, name: p.nameEn ?? p.name }));
   }
   return raw;
 }
 
 export function getProductById(id: string, lang: Lang = "ko"): Product | null {
   for (const [category, products] of Object.entries(productsData)) {
-    const raw = (products as (RawProduct & { descriptionEn?: string })[]).find((p) => p.id === id);
+    const raw = (products as RawProduct[]).find((p) => p.id === id);
     if (!raw) continue;
     const meta = CATEGORY_META[category as CategoryKey];
     return {
       ...raw,
-      description: lang === "en" ? (raw.descriptionEn ?? raw.description) : raw.description,
+      name: lang === "en" ? (raw.nameEn ?? raw.name) : raw.name,
       category,
       categoryLabel: meta.label,
       backHref: meta.href,

@@ -5,7 +5,7 @@ import productsData from "@/data/products.json";
 export type SearchableProduct = {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   price: string;
   category: string;
   categoryLabel: string;
@@ -43,11 +43,10 @@ export function getAllSearchProducts(): SearchableProduct[] {
   for (const [cat, items] of Object.entries(productsData)) {
     const meta = CATEGORY_META[cat];
     if (!meta) continue;
-    for (const item of items as Array<{ id: string; name: string; description: string; price: string }>) {
+    for (const item of items as Array<{ id: string; name: string; price: string }>) {
       out.push({
         id: item.id,
         name: item.name,
-        description: item.description,
         price: item.price,
         category: cat,
         categoryLabel: meta.label,
@@ -128,7 +127,7 @@ function expandWords(words: string[]): string[] {
 
 function scoreProduct(p: SearchableProduct, expandedWords: string[]): number {
   const name = normalize(p.name);
-  const desc = normalize(p.description);
+  const desc = p.description ? normalize(p.description) : "";
   const cat  = normalize(p.categoryLabel);
   let score = 0;
   for (const w of expandedWords) {
@@ -146,7 +145,7 @@ function buildVocabulary(): string[] {
   const vocab = new Set<string>();
   for (const p of getAllSearchProducts()) {
     normalize(p.name).split(" ").forEach((w) => { if (w.length >= 2) vocab.add(w); });
-    normalize(p.description).split(" ").forEach((w) => { if (w.length >= 2) vocab.add(w); });
+    if (p.description) normalize(p.description).split(" ").forEach((w) => { if (w.length >= 2) vocab.add(w); });
   }
   // Add synonym keys too
   Object.keys(SYNONYMS).forEach((k) => vocab.add(normalize(k)));
