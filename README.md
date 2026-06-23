@@ -84,25 +84,150 @@ surface-base / raised / elevated      배경 계층
 
 ---
 
-## 페이지 구성
+## 화면 구조
 
-| 경로              | 설명                                              |
-| ----------------- | ------------------------------------------------- |
-| `/`               | 3D 히어로 · 시즌 배너 · Best Pieces · 컬렉션 소개 |
-| `/essential`      | Essential Collection                              |
-| `/best-pieces`    | Best Pieces                                       |
-| `/collections`    | Collections                                       |
-| `/fw-collections` | FW Collections                                    |
-| `/archive`        | Archive                                           |
-| `/products/[id]`  | 상품 상세                                         |
-| `/search`         | 검색 결과                                         |
-| `/wishlist`       | 위시리스트                                        |
-| `/materials`      | 소재 소개                                         |
-| `/process`        | 제작 과정                                         |
-| `/care-guide`     | 관리 가이드                                       |
-| `/faq`            | FAQ                                               |
-| `/contact`        | 문의                                              |
-| `/shipping`       | 배송 안내                                         |
+```
+app/
+├── /                        홈 — 3D 히어로 · 시즌 배너 · Best Pieces · 컬렉션 소개
+├── /essential               Essential Collection — 컬러 선택형 제품 상세
+├── /best-pieces             Best Pieces
+├── /collections             Collections
+├── /fw-collections          FW Collections
+├── /archive                 Archive
+├── /products/[id]           상품 상세 (동적 라우트)
+├── /search                  검색 결과
+├── /wishlist                위시리스트 (로그인 필요)
+├── /materials               소재 소개
+├── /process                 제작 과정
+├── /care-guide              관리 가이드
+├── /faq                     FAQ
+├── /contact                 문의
+├── /shipping                배송 안내
+└── 404                      존재하지 않는 경로
+```
+
+---
+
+## 유저 플로우
+
+```
+진입
+  ├─ 홈 (/)
+  │   ├─ 컬렉션 탐색
+  │   │   ├─ /collections · /best-pieces · /fw-collections · /archive
+  │   │   └─ 상품 클릭 → /products/:id
+  │   │         ├─ 위시리스트 추가 → [인증 분기]
+  │   │         ├─ 같은 컬렉션 다른 피스 클릭 → /products/:id
+  │   │         └─ 컨텍스트 링크 클릭 → /materials · /care-guide
+  │   │
+  │   ├─ Essential 컬렉션 → /essential
+  │   │   └─ 컬러 선택 → 위시리스트 추가 → [인증 분기]
+  │   │
+  │   └─ 검색 → /search?q=...
+  │         └─ 결과 클릭 → /products/:id
+  │
+  ├─ 위시리스트 (/wishlist) ── 로그인 필요
+  │
+  ├─ 브랜드 탐색
+  │   └─ /materials · /process · /care-guide · /archive
+  │
+  └─ 고객 지원
+      ├─ /faq · /shipping
+      └─ /contact ── 폼 작성 → 전송
+```
+
+---
+
+## UX 분기
+
+### `/search`
+
+```
+q 없음
+  └─ 빈 상태 안내
+
+q 있음
+  ├─ 직접 매칭 있음     → 결과 그리드
+  ├─ 연관 상품 있음     → 연관 섹션 (직접 매칭과 공존 가능)
+  ├─ 오타 감지됨        → 교정 제안 배너
+  └─ 아무 결과 없음     → "결과 없음" 안내
+```
+
+### `/products/:id`
+
+```
+id 유효    → 제품 상세 렌더
+            ├─ 데스크탑: breadcrumb (PRISME › 컬렉션 › 제품명)
+            ├─ 모바일: 뒤로가기 버튼
+            ├─ 같은 컬렉션 다른 피스 가로 스크롤 → 피스 클릭 → /products/:id
+            └─ 소재 · 관리 가이드 컨텍스트 링크 → /materials · /care-guide
+id 없음    → 404
+```
+
+### `/essential`
+
+```
+컬러 선택 (gold / silver / rose-gold)
+  └─ swatch tint 실시간 변경
+     └─ 위시리스트 항목 id도 선택에 따라 변경 (essential-gold 등)
+```
+
+### `/wishlist`
+
+```
+비로그인    → 렌더 중단 + 로그인 모달 자동 오픈
+로그인
+  ├─ 위시리스트 있음    → 상품 그리드
+  └─ 위시리스트 없음    → 빈 상태 안내
+```
+
+### `/contact`
+
+```
+전송 시도
+  ├─ 이름 비어있음      → 이름 에러
+  ├─ 이메일 오형식      → 이메일 에러
+  └─ 메시지 비어있음    → 메시지 에러
+
+touch 이후    → 필드별 실시간 유효성 재검사
+전송 성공     → 성공 상태
+```
+
+---
+
+## 전역 상태
+
+테마와 언어는 모든 페이지에 공통으로 적용되는 직교 축입니다. 페이지 라우팅이나 콘텐츠 블록을 바꾸지 않으며, 각 페이지의 UX 분기와 독립적으로 동작합니다.
+
+### 테마 (`dark` / `light`)
+
+```
+진입
+  └─ localStorage에 저장된 값?
+      ├─ 있음    → 사용자 명시 선택 적용
+      └─ 없음    → OS prefers-color-scheme 감지
+                     └─ OS 변경 시 실시간 반영 (사용자 미선택 상태에서만)
+```
+
+### 언어 (`ko` / `en`)
+
+```
+진입
+  └─ localStorage / 쿠키에 저장된 값?
+      ├─ 있음    → 저장된 언어 적용
+      └─ 없음    → navigator.language 감지 (ko 접두사 → ko, 그 외 → en)
+```
+
+### 인증
+
+```
+비로그인 상태에서 /wishlist 진입
+  └─ 렌더 중단 + 로그인 모달 자동 오픈
+
+로그인 모달
+  ├─ 닫기 시도 (입력값 있음)    → 확인 오버레이 (실수 방지)
+  └─ 로그인 성공                → 모달 닫힘, 페이지 콘텐츠 렌더
+```
 
 ---
 
