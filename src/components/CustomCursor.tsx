@@ -4,32 +4,88 @@ import { useEffect, useRef } from "react";
 
 const SCALE_DEFAULT = 1;
 const SCALE_HOVER = 30 / 28; // ≈ 1.071
+const DEAD_ZONE = 10; // px — no scroll within this radius
+const MAX_SPEED = 20; // px per frame
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const autoScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const dot = dotRef.current;
     const ring = ringRef.current;
-    if (!dot || !ring) return;
+    const autoScroll = autoScrollRef.current;
+    if (!dot || !ring || !autoScroll) return;
 
     const isFirefox = navigator.userAgent.includes("Firefox");
-    if (isFirefox) return;
+    const isPointerFine = window.matchMedia("(pointer: fine)").matches;
+    if (isFirefox || !isPointerFine) return;
 
     document.documentElement.classList.add("has-custom-cursor");
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const halfDot = dot.offsetWidth / 2;
     const halfRing = ring.offsetWidth / 2;
+    const halfAuto = autoScroll.offsetWidth / 2;
 
     let mouseX = 0, mouseY = 0;
     let ringX = 0, ringY = 0;
     let currentScale = SCALE_DEFAULT;
     let targetScale = SCALE_DEFAULT;
     let rafId: number;
+    let scrollRafId: number;
     let initialized = false;
     let wasHovering = false;
+    let isAutoScrolling = false;
+    let originX = 0, originY = 0;
+
+    const showNormalCursors = () => {
+      if (!initialized) return;
+      dot.style.opacity = "1";
+      ring.style.opacity = "1";
+    };
+
+    const hideNormalCursors = () => {
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    };
+
+    const stopAutoScroll = () => {
+      isAutoScrolling = false;
+      cancelAnimationFrame(scrollRafId);
+      autoScroll.style.opacity = "0";
+      autoScroll.removeAttribute("data-up");
+      autoScroll.removeAttribute("data-down");
+      showNormalCursors();
+    };
+
+    const startAutoScroll = (x: number, y: number) => {
+      originX = x;
+      originY = y;
+      isAutoScrolling = true;
+      autoScroll.style.transform = `translate(${x - halfAuto}px, ${y - halfAuto}px)`;
+      autoScroll.style.opacity = "1";
+      hideNormalCursors();
+
+      const scrollLoop = () => {
+        if (!isAutoScrolling) return;
+        const dx = mouseX - originX;
+        const dy = mouseY - originY;
+
+        autoScroll.toggleAttribute("data-up", dy < -DEAD_ZONE);
+        autoScroll.toggleAttribute("data-down", dy > DEAD_ZONE);
+
+        const vy = Math.abs(dy) > DEAD_ZONE
+          ? Math.sign(dy) * Math.min((Math.abs(dy) - DEAD_ZONE) * 0.08, MAX_SPEED)
+          : 0;
+
+        window.scrollBy(0, vy);
+        scrollRafId = requestAnimationFrame(scrollLoop);
+      };
+
+      scrollRafId = requestAnimationFrame(scrollLoop);
+    };
 
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
@@ -37,8 +93,10 @@ export default function CustomCursor() {
       dot.style.transform = `translate(${mouseX - halfDot}px, ${mouseY - halfDot}px)`;
       if (!initialized) {
         initialized = true;
-        dot.style.opacity = "1";
-        ring.style.opacity = "1";
+        if (!isAutoScrolling) {
+          dot.style.opacity = "1";
+          ring.style.opacity = "1";
+        }
       }
     };
 
@@ -51,6 +109,22 @@ export default function CustomCursor() {
         // border-color 전환은 CSS transition에 위임
         ring.classList.toggle("is-hover", isHovering);
       }
+    };
+
+    const onMouseDown = (e: MouseEvent) => {
+      if (isAutoScrolling) {
+        stopAutoScroll();
+        // 중간 휠로 종료 시 새 auto-scroll 시작 안 함
+        if (e.button === 1) return;
+      }
+      if (e.button === 1) {
+        e.preventDefault();
+        startAutoScroll(e.clientX, e.clientY);
+      }
+    };
+
+    const onKeyDown = () => {
+      if (isAutoScrolling) stopAutoScroll();
     };
 
     const animate = () => {
@@ -74,29 +148,37 @@ export default function CustomCursor() {
     rafId = requestAnimationFrame(animate);
     window.addEventListener("mousemove", onMove);
     document.addEventListener("mouseover", onOver);
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
       cancelAnimationFrame(rafId);
+      cancelAnimationFrame(scrollRafId);
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseover", onOver);
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("keydown", onKeyDown);
       document.documentElement.classList.remove("has-custom-cursor");
     };
   }, []);
 
   return (
     <>
-      <div
-        ref={dotRef}
-        className="cursor-dot"
-        style={{ opacity: 0 }}
-        aria-hidden="true"
-      />
-      <div
-        ref={ringRef}
-        className="cursor-ring"
-        style={{ opacity: 0 }}
-        aria-hidden="true"
-      />
+      <div ref={dotRef} className="cursor-dot" style={{ opacity: 0 }} aria-hidden="true" />
+      <div ref={ringRef} className="cursor-ring" style={{ opacity: 0 }} aria-hidden="true" />
+      <div ref={autoScrollRef} className="cursor-autoscroll" style={{ opacity: 0 }} aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+          <g data-dir="up">
+            <line x1="12" y1="9" x2="12" y2="4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <polyline points="9.5,7 12,4.5 14.5,7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </g>
+          <g data-dir="down">
+            <line x1="12" y1="15" x2="12" y2="19.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            <polyline points="9.5,17 12,19.5 14.5,17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </g>
+        </svg>
+      </div>
     </>
   );
 }

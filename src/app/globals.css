@@ -203,6 +203,36 @@ html[data-theme="light"] {
     border: 1.2px solid;
     border-color: var(--c-content-secondary);
   }
+
+  .cursor-autoscroll {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 9999;
+    color: var(--c-content-primary);
+    will-change: transform;
+    transition: opacity 0.15s ease;
+  }
+
+  .cursor-autoscroll [data-dir] {
+    opacity: 0.25;
+    transition: opacity 0.12s ease;
+  }
+
+  .cursor-autoscroll[data-up] [data-dir="up"],
+  .cursor-autoscroll[data-down] [data-dir="down"] {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-autoscroll,
+    .cursor-autoscroll [data-dir] {
+      transition: none;
+    }
+  }
 }
 
 /* =============================================
