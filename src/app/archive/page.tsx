@@ -51,7 +51,7 @@ export default function ArchivePage() {
                   <div className="flex flex-1 flex-col gap-3">
                     <div className="flex items-center gap-4">
                       <h2
-                        className="text-xl tracking-label text-content-primary"
+                        className={`text-xl tracking-label leading-none ${s.status === "current" ? "text-content-primary" : "text-content-faint"}`}
                         style={{ fontFamily: "var(--font-cinzel)" }}
                       >
                         {s.name}
@@ -62,16 +62,16 @@ export default function ArchivePage() {
                         </span>
                       )}
                     </div>
-                    <p className="max-w-xl text-xs leading-relaxed text-content-secondary">{s.desc}</p>
+                    <p className={`max-w-xl text-xs leading-relaxed ${s.status === "current" ? "text-content-secondary" : "text-content-faint"}`}>{s.desc}</p>
                     {s.href ? (
                       <Link
                         href={s.href}
-                        className="mt-1 self-start text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+                        className="mt-1 self-start text-xs tracking-label font-medium text-content-secondary hover:text-content-primary transition-colors"
                       >
                         {p.viewCollection}
                       </Link>
                     ) : (
-                      <span className="mt-1 text-xs tracking-label text-surface-input">
+                      <span className="mt-1 text-xs tracking-label text-content-faint font-medium">
                         {p.closed}
                       </span>
                     )}

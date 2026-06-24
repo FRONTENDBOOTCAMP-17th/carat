@@ -7,7 +7,6 @@ type User = { id: string; email: string; name: string };
 export type WishlistItem = {
   id: string;
   name: string;
-  price: string;
   category?: string;
   description?: string;
 };

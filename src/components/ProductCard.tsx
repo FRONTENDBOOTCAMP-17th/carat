@@ -10,11 +10,10 @@ type ProductCardProps = {
   name: string;
   description?: string;
   category?: string;
-  price?: string;
   href?: string;
 };
 
-export default function ProductCard({ id, name, description, category, price, href }: ProductCardProps) {
+export default function ProductCard({ id, name, description, category, href }: ProductCardProps) {
   const router = useRouter();
   const { user, wishlist, toggleWishlist, openLoginModal } = useAuth();
   const { t } = useLang();
@@ -24,13 +23,13 @@ export default function ProductCard({ id, name, description, category, price, hr
   const handleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) { openLoginModal("login"); return; }
-    toggleWishlist({ id, name, price: price ?? "", category, description });
+    toggleWishlist({ id, name, category, description });
   };
 
   return (
     <article
       className="group cursor-pointer"
-      aria-label={`${name}${category ? `, ${category}` : ""}${price ? `, ${price}` : ""}`}
+      aria-label={`${name}${category ? `, ${category}` : ""}`}
       role="link"
       tabIndex={0}
       onClick={() => router.push(navigateTo)}
@@ -54,7 +53,6 @@ export default function ProductCard({ id, name, description, category, price, hr
       {category && <p className="mb-1 text-xs tracking-label text-content-faint">{category}</p>}
       <h3 className="mb-0.5 text-sm font-light text-content-primary">{name}</h3>
       {description && <p className="mb-0.5 text-xs text-content-faint">{description}</p>}
-      {price && <p className="text-sm text-content-secondary">{price}</p>}
     </article>
   );
 }

@@ -38,7 +38,6 @@ function WishlistContent() {
                 <ProductCard
                   id={item.id}
                   name={item.name}
-                  price={item.price}
                   category={item.category}
                   description={item.description}
                 />

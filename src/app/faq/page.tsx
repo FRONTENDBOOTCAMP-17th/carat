@@ -53,7 +53,7 @@ export default function FaqPage() {
           <div className="max-w-2xl divide-y divide-surface-elevated">
             {p.items.map((faq, i) => (
               <details key={i} className="group py-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden [&::marker]:hidden">
                   <span className="text-sm text-content-primary">{faq.q}</span>
                   <span
                     className="shrink-0 flex items-center justify-center size-11 text-lg leading-none text-content-faint transition-transform duration-200 group-open:rotate-45"

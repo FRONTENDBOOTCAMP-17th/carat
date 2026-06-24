@@ -6,7 +6,6 @@ export type RawProduct = {
   id: string;
   name: string;
   nameEn?: string;
-  price: string;
 };
 
 export type Product = WishlistItem & {
@@ -22,7 +21,7 @@ const CATEGORY_META = {
   "fw-collections": { label: "FW COLLECTIONS", href: "/fw-collections" },
 } as const;
 
-type CategoryKey = keyof typeof CATEGORY_META;
+export type CategoryKey = keyof typeof CATEGORY_META;
 
 export function getProductsByCategory(category: CategoryKey, lang: Lang = "ko"): RawProduct[] {
   const raw = productsData[category] as RawProduct[];

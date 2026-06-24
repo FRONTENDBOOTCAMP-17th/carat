@@ -8,11 +8,10 @@ import { useLang } from "@/context/LanguageContext";
 type CollectionCardProps = {
   id: string;
   title: string;
-  price: string;
   category?: string;
 };
 
-export default function CollectionCard({ id, title, price, category }: CollectionCardProps) {
+export default function CollectionCard({ id, title, category }: CollectionCardProps) {
   const router = useRouter();
   const { user, wishlist, toggleWishlist, openLoginModal } = useAuth();
   const { t } = useLang();
@@ -21,13 +20,13 @@ export default function CollectionCard({ id, title, price, category }: Collectio
   const handleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) { openLoginModal("login"); return; }
-    toggleWishlist({ id, name: title, price, category });
+    toggleWishlist({ id, name: title, category });
   };
 
   return (
     <article
       className="group cursor-pointer"
-      aria-label={`${title}, ${price}`}
+      aria-label={title}
       role="link"
       tabIndex={0}
       onClick={() => router.push(`/products/${id}`)}
@@ -49,8 +48,7 @@ export default function CollectionCard({ id, title, price, category }: Collectio
         </button>
       </div>
       {category && <p className="mb-1 text-xs tracking-label text-content-faint">{category}</p>}
-      <h3 className="mb-1 text-sm font-light text-content-primary">{title}</h3>
-      <p className="text-sm text-content-faint">{price}</p>
+      <h3 className="text-sm font-light text-content-primary">{title}</h3>
     </article>
   );
 }

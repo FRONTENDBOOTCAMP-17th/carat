@@ -185,13 +185,13 @@ const ko = {
       backNav: "메인으로 돌아가기",
       section: "2026 F/W",
       title: "COLLECTIONS",
-      desc: "2026 가을·겨울 시즌의 새로운 컬렉션,\nPRISME가 제안하는 계절의 정수를 만나보세요.",
+      desc: "2026 가을·겨울 시즌의 새로운 컬렉션,\nPRISME에서 제안하는 계절의 정수를 만나보세요.",
     },
     archive: {
       backNav: "메인으로 돌아가기",
       section: "EXPLORE",
       title: "ARCHIVE",
-      desc: "PRISME가 걸어온 시즌별 컬렉션의 기록입니다.",
+      desc: "PRISME의 시즌별 컬렉션 기록입니다.",
       listLabel: "시즌 목록",
       viewCollection: "컬렉션 보기 →",
       closed: "종료된 컬렉션",
@@ -337,7 +337,7 @@ const ko = {
       backNav: "메인으로 돌아가기",
       section: "EXPLORE",
       title: "MATERIALS",
-      desc: "PRISME는 소재 선택에서부터 완성까지, 모든 과정을 정직하게 다룹니다.\n사용하는 귀금속과 원석 하나하나가 작품의 품격을 결정한다고 믿기 때문입니다.",
+      desc: "PRISME은 소재 선택에서부터 완성까지, 모든 과정을 정직하게 다룹니다.\n사용하는 귀금속과 원석 하나하나가 작품의 품격을 결정한다고 믿기 때문입니다.",
       items: [
         {
           name: "18K 옐로우 골드",

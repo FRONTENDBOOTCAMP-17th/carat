@@ -14,6 +14,9 @@ export default function CustomCursor() {
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
+    const isFirefox = navigator.userAgent.includes("Firefox");
+    if (isFirefox) return;
+
     document.documentElement.classList.add("has-custom-cursor");
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

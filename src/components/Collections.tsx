@@ -32,7 +32,7 @@ export default function Collections() {
         >
           {collections.map((c) => (
             <motion.li key={c.id} variants={fadeUp} transition={transition}>
-              <CollectionCard id={c.id} title={c.name} price={c.price} />
+              <CollectionCard id={c.id} title={c.name} />
             </motion.li>
           ))}
         </motion.ul>

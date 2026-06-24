@@ -10,6 +10,7 @@ import BackButton from "@/components/BackButton";
 import RelatedScroll from "@/components/RelatedScroll";
 import Breadcrumb from "@/components/Breadcrumb";
 import { getProductById, getProductsByCategory } from "@/lib/products";
+import type { CategoryKey } from "@/lib/products";
 import { useLang } from "@/context/LanguageContext";
 
 export default function ProductPage({
@@ -25,7 +26,6 @@ export default function ProductPage({
 
   const p = t.pages.product;
 
-  type CategoryKey = "best-pieces" | "collections" | "fw-collections";
   const related = product.category
     ? getProductsByCategory(product.category as CategoryKey, lang).filter((r) => r.id !== product.id)
     : [];
@@ -33,7 +33,6 @@ export default function ProductPage({
   const wishlistItem = {
     id: product.id,
     name: product.name,
-    price: product.price,
     category: product.category,
     description: product.description,
   };

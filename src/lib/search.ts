@@ -6,10 +6,9 @@ export type SearchableProduct = {
   id: string;
   name: string;
   description?: string;
-  price: string;
   category: string;
   categoryLabel: string;
-  href: string;          // 상품 상세 페이지 경로 (Essential은 /essential)
+  href: string;
 };
 
 export type SearchResult = {
@@ -31,7 +30,6 @@ const ESSENTIAL_ENTRY: SearchableProduct = {
   id: "essential",
   name: "Essential Ring",
   description: "실버 · 18K 골드 · 로즈 골드 — 다이아몬드. 절제와 정밀의 시그니처 피스.",
-  price: "₩ 10,000,000",
   category: "essential",
   categoryLabel: "ESSENTIAL",
   href: "/essential",
@@ -43,11 +41,10 @@ export function getAllSearchProducts(): SearchableProduct[] {
   for (const [cat, items] of Object.entries(productsData)) {
     const meta = CATEGORY_META[cat];
     if (!meta) continue;
-    for (const item of items as Array<{ id: string; name: string; price: string }>) {
+    for (const item of items as Array<{ id: string; name: string }>) {
       out.push({
         id: item.id,
         name: item.name,
-        price: item.price,
         category: cat,
         categoryLabel: meta.label,
         href: `/products/${item.id}`,

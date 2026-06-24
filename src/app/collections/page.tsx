@@ -24,15 +24,15 @@ export default function CollectionsPage() {
 
           <header className="mb-16">
             <p className="mb-6 text-xs tracking-label text-content-faint">{p.section}</p>
-            <div className="flex items-end justify-between mb-8">
+            <div className="flex items-end justify-between gap-3 mb-8">
               <h1
                 id="collections-heading"
-                className="text-5xl sm:text-6xl lg:text-7xl font-light leading-none text-content-primary"
+                className="min-w-0 text-4xl sm:text-5xl lg:text-7xl font-light leading-none text-content-primary truncate"
                 style={{ fontFamily: "var(--font-cinzel)" }}
               >
                 {p.title}
               </h1>
-              <span className="text-xs tracking-label text-content-faint pb-2 shrink-0 ml-6">
+              <span className="text-xs tracking-label text-content-faint shrink-0">
                 {products.length} PIECES
               </span>
             </div>

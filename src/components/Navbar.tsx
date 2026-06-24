@@ -25,7 +25,8 @@ export default function Navbar() {
   useEffect(() => {
     if (!isUserMenuOpen) return;
     const onPointerDown = (e: PointerEvent) => {
-      if (!userMenuRef.current?.contains(e.target as Node)) setIsUserMenuOpen(false);
+      if (!userMenuRef.current?.contains(e.target as Node))
+        setIsUserMenuOpen(false);
     };
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
@@ -61,7 +62,6 @@ export default function Navbar() {
     <>
       <nav aria-label="주요 내비게이션" className="w-full bg-surface-base">
         <div className="max-w-container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-5">
-
           {/* Logo */}
           <Link
             href="/"
@@ -85,7 +85,11 @@ export default function Navbar() {
           {/* Right: Lang + Search + User + Menu */}
           <div className="flex items-center gap-1">
             {/* Language toggle */}
-            <div className="flex items-center mr-1" role="group" aria-label="Language">
+            <div
+              className="flex items-center mr-1"
+              role="group"
+              aria-label="Language"
+            >
               <button
                 onClick={() => setLang("ko")}
                 className={`text-xs tracking-label px-1.5 py-1 transition-colors ${
@@ -98,7 +102,12 @@ export default function Navbar() {
               >
                 KO
               </button>
-              <span className="text-xs text-content-secondary" aria-hidden="true">|</span>
+              <span
+                className="text-xs text-content-secondary"
+                aria-hidden="true"
+              >
+                |
+              </span>
               <button
                 onClick={() => setLang("en")}
                 className={`text-xs tracking-label px-1.5 py-1 transition-colors ${
@@ -136,13 +145,18 @@ export default function Navbar() {
               >
                 <User size={18} strokeWidth={1.5} aria-hidden="true" />
                 {user && (
-                  <span className="absolute bottom-3.25 right-3.25 w-1.5 h-1.5 rounded-full bg-content-primary" aria-hidden="true" />
+                  <span
+                    className="absolute bottom-3.25 right-3.25 w-1.5 h-1.5 rounded-full bg-content-primary"
+                    aria-hidden="true"
+                  />
                 )}
               </button>
 
               {isUserMenuOpen && user && (
                 <div className="absolute top-11 right-0 z-50 w-44 bg-surface-raised border border-surface-elevated py-3">
-                  <p className="px-4 py-1 text-xs text-content-faint truncate">{user.email}</p>
+                  <p className="px-4 py-1 text-xs text-content-faint truncate">
+                    {user.email}
+                  </p>
                   <div className="my-2 h-px bg-surface-elevated" />
 
                   <Link
@@ -154,7 +168,10 @@ export default function Navbar() {
                     {t.auth.wishlist}
                   </Link>
                   <button
-                    onClick={() => { logout(); setIsUserMenuOpen(false); }}
+                    onClick={() => {
+                      logout();
+                      setIsUserMenuOpen(false);
+                    }}
                     className="flex items-center w-full min-h-11 px-4 text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
                   >
                     {t.auth.logout}
@@ -166,7 +183,7 @@ export default function Navbar() {
             {/* Menu */}
             <button
               onClick={() => setIsDrawerOpen(true)}
-              className="flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
+              className="flex items-center justify-center size-11 -mr-4 text-content-tertiary hover:text-content-primary transition-colors"
               aria-label={t.nav.menuOpen}
               aria-haspopup="dialog"
               aria-expanded={isDrawerOpen}
@@ -179,7 +196,10 @@ export default function Navbar() {
       </nav>
 
       <NavDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
     </>
   );
 }

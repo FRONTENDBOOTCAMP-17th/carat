@@ -37,7 +37,7 @@ export default function RelatedScroll({
   }, [update, items]);
 
   const scroll = (dir: "left" | "right") => {
-    scrollRef.current?.scrollBy({ left: dir === "left" ? -300 : 300, behavior: "smooth" });
+    scrollRef.current?.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
   };
 
   return (
@@ -57,12 +57,12 @@ export default function RelatedScroll({
           <ChevronLeft size={16} strokeWidth={1.5} aria-hidden="true" />
         </button>
 
-        {/* Left edge gradient — oklch 보간으로 hue shift 없이 매끄럽게 페이드 */}
+        {/* Left edge gradient */}
         <div
           className={`absolute left-0 top-0 h-full w-16 z-5 pointer-events-none transition-opacity duration-200 ${
             canScrollLeft ? "opacity-100" : "opacity-0"
           }`}
-          style={{ background: "linear-gradient(in oklch to right, var(--color-surface-darkest), transparent)" }}
+          style={{ background: "linear-gradient(to right, var(--color-surface-darkest), transparent)" }}
           aria-hidden="true"
         />
 
@@ -88,7 +88,7 @@ export default function RelatedScroll({
           className={`absolute right-0 top-0 h-full w-16 z-5 pointer-events-none transition-opacity duration-200 ${
             canScrollRight ? "opacity-100" : "opacity-0"
           }`}
-          style={{ background: "linear-gradient(in oklch to left, var(--color-surface-darkest), transparent)" }}
+          style={{ background: "linear-gradient(to left, var(--color-surface-darkest), transparent)" }}
           aria-hidden="true"
         />
 

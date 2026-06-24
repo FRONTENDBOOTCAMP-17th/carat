@@ -74,7 +74,6 @@ function SearchContent() {
                     id={item.id}
                     name={item.name}
                     description={item.description}
-                    price={item.price}
                     category={item.categoryLabel}
                     href={item.href}
                   />
@@ -100,7 +99,6 @@ function SearchContent() {
                     id={item.id}
                     name={item.name}
                     description={item.description}
-                    price={item.price}
                     category={item.categoryLabel}
                     href={item.href}
                   />

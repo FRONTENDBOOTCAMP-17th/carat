@@ -32,7 +32,7 @@ export default function BestPieces() {
         >
           {products.map((p) => (
             <motion.li key={p.id} variants={fadeUp} transition={transition}>
-              <ProductCard id={p.id} name={p.name} price={p.price} />
+              <ProductCard id={p.id} name={p.name} />
             </motion.li>
           ))}
         </motion.ul>
