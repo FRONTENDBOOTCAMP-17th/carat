@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import { useLang } from "@/context/LanguageContext";
 
 export default function ProcessPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const p = t.pages.process;
 
   return (
@@ -40,26 +40,19 @@ export default function ProcessPage() {
             </p>
           </header>
 
-          <ol className="space-y-px" aria-label={p.listLabel}>
+          <ol className="divide-y divide-surface-darkest" aria-label={p.listLabel}>
             {p.steps.map((s) => (
               <li
                 key={s.step}
-                className="grid grid-cols-[auto_1fr] gap-8 bg-surface-raised px-8 py-10 sm:grid-cols-[80px_auto_1fr] sm:gap-12"
+                className="grid grid-cols-1 gap-4 bg-surface-raised px-8 py-10 sm:grid-cols-[200px_1fr] sm:items-start sm:gap-12"
               >
-                <span
-                  className="text-4xl font-light text-surface-elevated"
-                  aria-hidden="true"
-                  style={{ fontFamily: "var(--font-cinzel)" }}
-                >
-                  {s.step}
-                </span>
-                <div className="flex flex-col gap-1 sm:justify-center">
-                  <p className="text-xs tracking-label text-content-faint font-normal">{s.sub}</p>
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs tracking-label text-content-faint font-medium" lang={lang === "ko" ? "en" : "ko"}>{s.step}. {s.sub}</p>
                   <h2 className="text-base tracking-label text-content-primary" style={{ fontFamily: "var(--font-cinzel)" }}>
                     {s.title}
                   </h2>
                 </div>
-                <p className="col-span-2 text-xs leading-relaxed text-content-secondary sm:col-span-1 sm:self-center">
+                <p className="text-sm leading-relaxed text-content-secondary self-start">
                   {s.desc}
                 </p>
               </li>

@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     await new Promise((r) => setTimeout(r, 700));
     if (!email.includes("@") || password.length < 4) {
-      return { error: "이메일 또는 비밀번호를 확인해주세요." };
+      return { error: "loginFailed" };
     }
     const id = getOrCreateUserId(email);
     const newUser: User = { id, email, name: email.split("@")[0] };
@@ -79,9 +79,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signup = useCallback(async (email: string, password: string, name: string) => {
     await new Promise((r) => setTimeout(r, 700));
-    if (!email.includes("@")) return { error: "올바른 이메일 주소를 입력해주세요." };
-    if (password.length < 8) return { error: "비밀번호는 8자 이상이어야 합니다." };
-    if (!name.trim()) return { error: "이름을 입력해주세요." };
+    if (!email.includes("@")) return { error: "emailInvalidSignup" };
+    if (password.length < 8) return { error: "passwordTooShortSignup" };
+    if (!name.trim()) return { error: "nameRequiredSignup" };
     const id = getOrCreateUserId(email);
     const newUser: User = { id, email, name: name.trim() };
     setUser(newUser);

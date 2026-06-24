@@ -4,6 +4,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import type { RawProduct } from "@/lib/products";
+import { useLang } from "@/context/LanguageContext";
 
 export default function RelatedScroll({
   items,
@@ -12,6 +13,7 @@ export default function RelatedScroll({
   items: RawProduct[];
   label: string;
 }) {
+  const { t } = useLang();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -50,7 +52,7 @@ export default function RelatedScroll({
           className={`absolute left-0 top-22 -translate-y-1/2 z-10 size-9 flex items-center justify-center text-content-secondary hover:text-content-primary transition-[opacity,color] duration-200 ${
             canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
-          aria-label="이전"
+          aria-label={t.relatedScroll.prev}
           tabIndex={canScrollLeft ? 0 : -1}
           aria-hidden={canScrollLeft ? undefined : true}
         >
@@ -98,7 +100,7 @@ export default function RelatedScroll({
           className={`absolute right-0 top-22 -translate-y-1/2 z-10 size-9 flex items-center justify-center text-content-secondary hover:text-content-primary transition-[opacity,color] duration-200 ${
             canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
-          aria-label="다음"
+          aria-label={t.relatedScroll.next}
           tabIndex={canScrollRight ? 0 : -1}
           aria-hidden={canScrollRight ? undefined : true}
         >

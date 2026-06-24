@@ -60,7 +60,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav aria-label="주요 내비게이션" className="w-full bg-surface-base">
+      <nav aria-label={t.nav.primaryNav} className="w-full bg-surface-base">
         <div className="max-w-container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-5">
           {/* Logo */}
           <Link

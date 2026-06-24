@@ -145,7 +145,8 @@ export default function LoginModal() {
     const { error } = isLogin ? await login(email, password) : await signup(email, password, name);
     setIsLoading(false);
     if (error) {
-      setServerError(isLogin ? a.errors.loginFailed : error);
+      const key = error as keyof typeof a.errors;
+      setServerError(a.errors[key] ?? a.errors.loginFailed);
     } else {
       closeLoginModal(); reset();
     }
@@ -205,8 +206,8 @@ export default function LoginModal() {
                 <div className="flex items-start justify-between mb-8">
                   <div>
                     <p className="text-xs tracking-label text-content-faint font-normal mb-2">PRISME</p>
-                    <h2 className="text-2xl tracking-label text-content-primary" style={{ fontFamily: "var(--font-cinzel)" }}>
-                      {isLogin ? a.login : a.signup}
+                    <h2 className="text-2xl tracking-label text-content-primary">
+                      {isLogin ? a.modalLogin : a.modalSignup}
                     </h2>
                   </div>
                   <button ref={closeButtonRef} onClick={attemptClose} className="flex items-center justify-center size-11 -mr-3 -mt-2 text-content-tertiary hover:text-content-primary transition-colors" aria-label={a.modalClose}>

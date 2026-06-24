@@ -43,11 +43,13 @@ export default function MaterialsPage() {
             </p>
           </header>
 
-          <ul className="grid grid-cols-1 gap-px bg-surface-elevated sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {p.items.map((m) => (
-              <li key={m.sub} className="flex flex-col gap-3 bg-surface-darkest p-8">
-                <p className="text-xs tracking-label text-content-faint font-normal">{m.sub}</p>
-                <h2 className="text-lg text-content-primary font-light">{m.name}</h2>
+              <li key={m.sub} className="flex flex-col gap-5 bg-surface-raised p-6">
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs tracking-label text-content-faint font-normal">{m.sub}</p>
+                  <h2 className="text-lg text-content-primary font-light">{m.name}</h2>
+                </div>
                 <p className="text-xs leading-relaxed text-content-secondary">{m.desc}</p>
               </li>
             ))}
