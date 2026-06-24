@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Search, User, Menu } from "lucide-react";
 import NavDrawer from "./NavDrawer";
 import SearchModal from "./SearchModal";
 import { useAuth } from "@/context/AuthContext";
@@ -120,10 +121,7 @@ export default function Navbar() {
               aria-haspopup="dialog"
               aria-expanded={isSearchOpen}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
+              <Search size={18} strokeWidth={1.5} aria-hidden="true" />
             </button>
 
             {/* User */}
@@ -136,10 +134,7 @@ export default function Navbar() {
                 aria-haspopup={user ? "menu" : "dialog"}
                 aria-expanded={user ? isUserMenuOpen : undefined}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <circle cx="12" cy="8" r="3.5" />
-                  <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-                </svg>
+                <User size={18} strokeWidth={1.5} aria-hidden="true" />
                 {user && (
                   <span className="absolute bottom-3.25 right-3.25 w-1.5 h-1.5 rounded-full bg-content-primary" aria-hidden="true" />
                 )}
@@ -177,11 +172,7 @@ export default function Navbar() {
               aria-expanded={isDrawerOpen}
               aria-controls="primary-menu"
             >
-              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                <line x1="0" y1="1" x2="20" y2="1" />
-                <line x1="0" y1="7" x2="20" y2="7" />
-                <line x1="0" y1="13" x2="20" y2="13" />
-              </svg>
+              <Menu size={18} strokeWidth={1.5} aria-hidden="true" />
             </button>
           </div>
         </div>

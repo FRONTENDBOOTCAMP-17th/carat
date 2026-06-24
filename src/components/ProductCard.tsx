@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Heart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLang } from "@/context/LanguageContext";
 
@@ -12,12 +13,6 @@ type ProductCardProps = {
   price?: string;
   href?: string;
 };
-
-const HeartIcon = ({ filled }: { filled: boolean }) => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-  </svg>
-);
 
 export default function ProductCard({ id, name, description, category, price, href }: ProductCardProps) {
   const router = useRouter();
@@ -53,7 +48,7 @@ export default function ProductCard({ id, name, description, category, price, hr
           aria-label={inWishlist ? t.productCard.removeFromWishlist : t.productCard.addToWishlist}
           aria-pressed={inWishlist}
         >
-          <HeartIcon filled={inWishlist} />
+          <Heart size={18} strokeWidth={1.5} fill={inWishlist ? "currentColor" : "none"} aria-hidden="true" />
         </button>
       </div>
       {category && <p className="mb-1 text-xs tracking-label text-content-faint">{category}</p>}

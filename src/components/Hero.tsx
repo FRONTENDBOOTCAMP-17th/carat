@@ -3,6 +3,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { ArrowDown } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 
 // Returns false during SSR (window absent) — treated as "supported" until client confirms otherwise.
@@ -311,20 +312,7 @@ export default function Hero() {
           aria-hidden="true"
         >
           <span className="text-xs tracking-link">{t.hero.scroll}</span>
-          <svg
-            width="14"
-            height="20"
-            viewBox="0 0 14 22"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="motion-safe:animate-bounce"
-          >
-            <line x1="7" y1="0" x2="7" y2="16" />
-            <polyline points="2,12 7,17 12,12" />
-          </svg>
+          <ArrowDown size={16} strokeWidth={1} className="motion-safe:animate-bounce" aria-hidden="true" />
         </div>
       </div>
     </section>

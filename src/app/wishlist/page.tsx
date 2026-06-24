@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Heart } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthGuard from "@/components/AuthGuard";
@@ -46,19 +47,7 @@ function WishlistContent() {
           </ul>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1"
-              strokeLinecap="round"
-              className="text-content-secondary"
-              aria-label={p.heartLabel}
-            >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
+            <Heart size={32} strokeWidth={1} className="text-content-secondary" aria-label={p.heartLabel} />
             <p className="text-xs tracking-label text-content-faint">{p.emptyTitle}</p>
             <p className="text-xs text-content-secondary">{p.emptySub}</p>
             <Link

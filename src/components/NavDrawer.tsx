@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { X } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -96,10 +97,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
             className="text-content-tertiary hover:text-content-primary transition-colors"
             aria-label={t.drawer.close}
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <line x1="1" y1="1" x2="15" y2="15" />
-              <line x1="15" y1="1" x2="1" y2="15" />
-            </svg>
+            <X size={16} strokeWidth={1.5} aria-hidden="true" />
           </button>
         </div>
 

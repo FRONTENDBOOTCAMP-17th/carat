@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { Search } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
 
 export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -77,10 +78,7 @@ export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onCl
                   aria-label={t.search.submit}
                   className="ml-4 text-content-tertiary hover:text-content-primary transition-colors"
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.35-4.35" />
-                  </svg>
+                  <Search size={18} strokeWidth={1.5} aria-hidden="true" />
                 </button>
               </div>
               <p className="mt-3 text-xs text-content-secondary tracking-label">{t.search.escHint}</p>

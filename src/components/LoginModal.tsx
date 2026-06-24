@@ -16,18 +16,7 @@ function inputCls(hasError: boolean, extra?: string) {
     .filter(Boolean).join(" ");
 }
 
-const EyeIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
-  </svg>
-);
-const EyeOffIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-    <line x1="1" y1="1" x2="23" y2="23" />
-  </svg>
-);
+import { Eye, EyeOff, X } from "lucide-react";
 
 export default function LoginModal() {
   const { isLoginModalOpen, modalMode, closeLoginModal, login, signup } = useAuth();
@@ -221,9 +210,7 @@ export default function LoginModal() {
                     </h2>
                   </div>
                   <button ref={closeButtonRef} onClick={attemptClose} className="flex items-center justify-center size-11 -mr-3 -mt-2 text-content-tertiary hover:text-content-primary transition-colors" aria-label={a.modalClose}>
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                      <line x1="1" y1="1" x2="13" y2="13" /><line x1="13" y1="1" x2="1" y2="13" />
-                    </svg>
+                    <X size={14} strokeWidth={1.5} aria-hidden="true" />
                   </button>
                 </div>
 
@@ -250,7 +237,7 @@ export default function LoginModal() {
                     <div className="relative">
                       <input id="auth-password" type={showPassword ? "text" : "password"} autoComplete={isLogin ? "current-password" : "new-password"} value={password} onChange={(e) => handleChange("password", e.target.value)} onBlur={(e) => handleBlur("password", e.target.value)} className={inputCls(!!err("password"), "pr-10")} placeholder="••••••••" required aria-invalid={!!err("password")} aria-describedby={err("password") ? "error-password" : undefined} />
                       <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-content-secondary hover:text-content-primary transition-colors" aria-label={showPassword ? a.hidePassword : a.showPassword}>
-                        {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                        {showPassword ? <EyeOff size={16} strokeWidth={1.5} aria-hidden="true" /> : <Eye size={16} strokeWidth={1.5} aria-hidden="true" />}
                       </button>
                     </div>
                     {err("password") && <p id="error-password" className="text-xs text-red-400" role="alert">{err("password")}</p>}
@@ -263,7 +250,7 @@ export default function LoginModal() {
                       <div className="relative">
                         <input id="signup-confirm" type={showConfirmPassword ? "text" : "password"} autoComplete="new-password" value={confirmPassword} onChange={(e) => handleChange("confirmPassword", e.target.value)} onBlur={(e) => handleBlur("confirmPassword", e.target.value)} className={inputCls(!!err("confirmPassword"), "pr-10")} placeholder="••••••••" required aria-invalid={!!err("confirmPassword")} aria-describedby={err("confirmPassword") ? "error-confirm" : undefined} />
                         <button type="button" onClick={() => setShowConfirmPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-content-secondary hover:text-content-primary transition-colors" aria-label={showConfirmPassword ? a.hideConfirmPassword : a.showConfirmPassword}>
-                          {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+                          {showConfirmPassword ? <EyeOff size={16} strokeWidth={1.5} aria-hidden="true" /> : <Eye size={16} strokeWidth={1.5} aria-hidden="true" />}
                         </button>
                       </div>
                       {err("confirmPassword") && <p id="error-confirm" className="text-xs text-red-400" role="alert">{err("confirmPassword")}</p>}

@@ -1,20 +1,9 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import type { RawProduct } from "@/lib/products";
-
-const ChevronLeft = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M10 13L5 8l5-5" />
-  </svg>
-);
-
-const ChevronRight = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M6 3l5 5-5 5" />
-  </svg>
-);
 
 export default function RelatedScroll({
   items,
@@ -65,7 +54,7 @@ export default function RelatedScroll({
           tabIndex={canScrollLeft ? 0 : -1}
           aria-hidden={canScrollLeft ? undefined : true}
         >
-          <ChevronLeft />
+          <ChevronLeft size={16} strokeWidth={1.5} aria-hidden="true" />
         </button>
 
         {/* Left edge gradient — oklch 보간으로 hue shift 없이 매끄럽게 페이드 */}
@@ -113,7 +102,7 @@ export default function RelatedScroll({
           tabIndex={canScrollRight ? 0 : -1}
           aria-hidden={canScrollRight ? undefined : true}
         >
-          <ChevronRight />
+          <ChevronRight size={16} strokeWidth={1.5} aria-hidden="true" />
         </button>
       </div>
     </div>

@@ -1,25 +1,10 @@
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 export type BreadcrumbItem = {
   label: string;
   href?: string;
 };
-
-const ChevronSeparator = () => (
-  <svg
-    width="10"
-    height="10"
-    viewBox="0 0 10 10"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M3.5 2l3 3-3 3" />
-  </svg>
-);
 
 export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
@@ -31,7 +16,7 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
             <li key={index} className="flex items-center gap-2">
               {index > 0 && (
                 <span className="text-content-faint" aria-hidden="true">
-                  <ChevronSeparator />
+                  <ChevronRight size={10} strokeWidth={1.5} aria-hidden="true" />
                 </span>
               )}
               {!isLast && item.href ? (
