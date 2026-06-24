@@ -55,12 +55,12 @@ const ko = {
     showConfirmPassword: "비밀번호 확인 표시",
     hideConfirmPassword: "비밀번호 확인 숨기기",
     errors: {
-      nameRequired: "이름을 입력해 주세요. (예: 홍길동)",
+      nameRequired: "성함을 입력해 주세요.",
       emailRequired: "이메일 주소를 입력해 주세요.",
       emailInvalid:
         "올바른 이메일 형식으로 입력해 주세요. (예: name@domain.com)",
       passwordRequired: "비밀번호를 입력해 주세요.",
-      passwordTooShort: "비밀번호는 8자 이상으로 설정해 주세요. (예: mypass123)",
+      passwordTooShort: "비밀번호는 8자 이상으로 설정해 주세요.",
       confirmPasswordRequired: "비밀번호 확인을 입력해 주세요.",
       confirmPasswordMismatch:
         "비밀번호가 일치하지 않습니다. 다시 확인해 주세요.",
@@ -69,11 +69,11 @@ const ko = {
       passwordTooShortSignup: "비밀번호는 8자 이상으로 설정해 주세요.",
       nameRequiredSignup: "이름을 입력해 주세요.",
     },
-    namePlaceholder: "홍길동",
+    namePlaceholder: "성함",
   },
   search: {
     label: "상품 검색",
-    placeholder: "검색어를 입력하세요",
+    placeholder: "작품명 또는 컬렉션 검색",
     submit: "검색",
     escHint: "ESC로 닫기",
   },
@@ -289,7 +289,7 @@ const ko = {
       location: "서울특별시 강남구",
       labelHours: "HOURS",
       hours: "월–금 10:00 – 18:00\n토·일·공휴일 휴무",
-      namePlaceholder: "홍길동",
+      namePlaceholder: "성함",
       msgPlaceholder: "문의 내용을 입력해 주세요.",
       submit: "문의 보내기",
       sending: "전송 중...",
@@ -297,7 +297,7 @@ const ko = {
       successMsg: "메시지가 전송되었습니다.\n빠른 시일 내에 답변드리겠습니다.",
       newInquiry: "새 문의 작성 →",
       errors: {
-        nameRequired: "이름을 입력해 주세요. (예: 홍길동)",
+        nameRequired: "성함을 입력해 주세요.",
         emailRequired: "이메일 주소를 입력해 주세요.",
         emailInvalid:
           "올바른 이메일 형식으로 입력해 주세요. (예: name@domain.com)",
@@ -597,13 +597,13 @@ const en: typeof ko = {
     showConfirmPassword: "Show confirm password",
     hideConfirmPassword: "Hide confirm password",
     errors: {
-      nameRequired: "Please enter your name. (e.g., Jane Smith)",
+      nameRequired: "Please enter your name.",
       emailRequired: "Please enter your email address.",
       emailInvalid:
         "Please enter a valid email address. (e.g., name@domain.com)",
       passwordRequired: "Please enter your password.",
       passwordTooShort:
-        "Password must be at least 8 characters. (e.g., mypass123)",
+        "Password must be at least 8 characters.",
       confirmPasswordRequired: "Please confirm your password.",
       confirmPasswordMismatch: "Passwords do not match. Please try again.",
       loginFailed: "Please check your email or password.",
@@ -611,11 +611,11 @@ const en: typeof ko = {
       passwordTooShortSignup: "Password must be at least 8 characters.",
       nameRequiredSignup: "Please enter your name.",
     },
-    namePlaceholder: "Jane Smith",
+    namePlaceholder: "Full name",
   },
   search: {
     label: "Search products",
-    placeholder: "Search...",
+    placeholder: "Search pieces or collections",
     submit: "Search",
     escHint: "Press ESC to close",
   },
@@ -831,8 +831,8 @@ const en: typeof ko = {
       location: "Gangnam-gu, Seoul",
       labelHours: "HOURS",
       hours: "Mon–Fri 10:00–18:00\nClosed on weekends and public holidays",
-      namePlaceholder: "Jane Smith",
-      msgPlaceholder: "Please enter your inquiry.",
+      namePlaceholder: "Full name",
+      msgPlaceholder: "How may we assist you?",
       submit: "SEND MESSAGE",
       sending: "SENDING...",
       thankYou: "THANK YOU",
@@ -840,7 +840,7 @@ const en: typeof ko = {
         "Your message has been sent.\nWe will get back to you shortly.",
       newInquiry: "Write a new inquiry →",
       errors: {
-        nameRequired: "Please enter your name. (e.g., Jane Smith)",
+        nameRequired: "Please enter your name.",
         emailRequired: "Please enter your email address.",
         emailInvalid:
           "Please enter a valid email address. (e.g., name@domain.com)",
