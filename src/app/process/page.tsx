@@ -18,14 +18,14 @@ export default function ProcessPage() {
           <nav aria-label={p.backNav}>
             <Link
               href="/"
-              className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+              className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
             >
               ← PRISME
             </Link>
           </nav>
 
           <header className="mt-10 mb-16">
-            <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
+            <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
               {p.section}
             </p>
             <h1
@@ -54,7 +54,7 @@ export default function ProcessPage() {
                   {s.step}
                 </span>
                 <div className="flex flex-col gap-1 sm:justify-center">
-                  <p className="text-2xs tracking-label text-content-faint font-normal">{s.sub}</p>
+                  <p className="text-xs tracking-label text-content-faint font-normal">{s.sub}</p>
                   <h2 className="text-base tracking-label text-content-primary" style={{ fontFamily: "var(--font-cinzel)" }}>
                     {s.title}
                   </h2>

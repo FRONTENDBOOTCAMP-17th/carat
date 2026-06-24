@@ -26,7 +26,7 @@ function SearchContent() {
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
         {/* Header */}
         <header className="mb-12">
-          <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
+          <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
             {p.section}
           </p>
           <h1
@@ -63,7 +63,7 @@ function SearchContent() {
           <section aria-labelledby="search-direct-heading" className="mb-16">
             <h2
               id="search-direct-heading"
-              className="mb-8 text-2xs tracking-label text-content-faint font-normal"
+              className="mb-8 text-xs tracking-label text-content-faint font-normal"
             >
               {p.sectionDirect}
             </h2>
@@ -89,7 +89,7 @@ function SearchContent() {
           <section aria-labelledby="search-related-heading">
             <h2
               id="search-related-heading"
-              className="mb-8 text-2xs tracking-label text-content-faint font-normal"
+              className="mb-8 text-xs tracking-label text-content-faint font-normal"
             >
               {direct.length > 0 ? p.sectionRelated : p.sectionRelatedNoExact}
             </h2>
@@ -117,7 +117,7 @@ function SearchContent() {
             <p className="text-xs text-content-secondary">{p.tryOther}</p>
             <Link
               href="/collections"
-              className="mt-4 text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors underline underline-offset-4"
+              className="mt-4 text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors underline underline-offset-4"
             >
               {p.viewAll}
             </Link>

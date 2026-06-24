@@ -275,7 +275,7 @@ export default function Hero() {
           style={{ opacity: 0 }}
         >
           <div className="mt-[13vh]">
-            <p className="mb-2 sm:mb-3 text-2xs tracking-descriptor text-content-secondary">
+            <p className="mb-2 sm:mb-3 text-xs tracking-descriptor text-content-secondary">
               {t.hero.collectionLabel}
             </p>
             <h2
@@ -298,7 +298,7 @@ export default function Hero() {
           <div className="flex-1" />
           <a
             href="/essential"
-            className="mb-[10%] text-2xs sm:text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
+            className="mb-[10%] text-xs tracking-link text-content-secondary hover:text-content-primary transition-colors"
           >
             {t.hero.cta}
           </a>
@@ -310,7 +310,7 @@ export default function Hero() {
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-content-muted pointer-events-none"
           aria-hidden="true"
         >
-          <span className="text-2xs tracking-link">{t.hero.scroll}</span>
+          <span className="text-xs tracking-link">{t.hero.scroll}</span>
           <svg
             width="14"
             height="20"

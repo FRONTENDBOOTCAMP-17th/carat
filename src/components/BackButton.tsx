@@ -26,7 +26,7 @@ export default function BackButton({ href, label }: BackButtonProps) {
         }
         // 직접 URL 접근·외부 유입의 경우 href(카테고리 페이지)로 이동
       }}
-      className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+      className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
     >
       ← {label}
     </Link>

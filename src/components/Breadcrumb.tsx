@@ -37,13 +37,13 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
               {!isLast && item.href ? (
                 <Link
                   href={item.href}
-                  className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+                  className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
                 >
                   {item.label}
                 </Link>
               ) : (
                 <span
-                  className="text-2xs tracking-label text-content-faint"
+                  className="text-xs tracking-label text-content-faint"
                   aria-current={isLast ? "page" : undefined}
                 >
                   {item.label}

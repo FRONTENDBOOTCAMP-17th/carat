@@ -74,7 +74,7 @@ export default function ContactPage() {
         <nav aria-label={p.backNav}>
           <Link
             href="/"
-            className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+            className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
           >
             ← PRISME
           </Link>
@@ -83,7 +83,7 @@ export default function ContactPage() {
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
           {/* Info */}
           <div>
-            <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
+            <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
               {p.section}
             </p>
             <h1
@@ -98,15 +98,15 @@ export default function ContactPage() {
 
             <dl className="space-y-6">
               <div>
-                <dt className="mb-1 text-2xs tracking-label text-content-secondary">{p.labelEmail}</dt>
+                <dt className="mb-1 text-xs tracking-label text-content-secondary">{p.labelEmail}</dt>
                 <dd className="text-xs text-content-secondary">contact@prisme.co</dd>
               </div>
               <div>
-                <dt className="mb-1 text-2xs tracking-label text-content-secondary">{p.labelLocation}</dt>
+                <dt className="mb-1 text-xs tracking-label text-content-secondary">{p.labelLocation}</dt>
                 <dd className="text-xs text-content-secondary">{p.location}</dd>
               </div>
               <div>
-                <dt className="mb-1 text-2xs tracking-label text-content-secondary">{p.labelHours}</dt>
+                <dt className="mb-1 text-xs tracking-label text-content-secondary">{p.labelHours}</dt>
                 <dd className="text-xs text-content-secondary whitespace-pre-line">{p.hours}</dd>
               </div>
             </dl>
@@ -130,7 +130,7 @@ export default function ContactPage() {
                     setErrors({});
                     setSubmitted(false);
                   }}
-                  className="mt-4 self-start text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+                  className="mt-4 self-start text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
                 >
                   {p.newInquiry}
                 </button>
@@ -139,7 +139,7 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
                 {/* Name */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-name" className="text-2xs tracking-label text-content-faint font-normal">
+                  <label htmlFor="contact-name" className="text-xs tracking-label text-content-faint font-normal">
                     NAME
                   </label>
                   <input
@@ -163,7 +163,7 @@ export default function ContactPage() {
 
                 {/* Email */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-email" className="text-2xs tracking-label text-content-faint font-normal">
+                  <label htmlFor="contact-email" className="text-xs tracking-label text-content-faint font-normal">
                     EMAIL
                   </label>
                   <input
@@ -187,7 +187,7 @@ export default function ContactPage() {
 
                 {/* Message */}
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-message" className="text-2xs tracking-label text-content-faint font-normal">
+                  <label htmlFor="contact-message" className="text-xs tracking-label text-content-faint font-normal">
                     MESSAGE
                   </label>
                   <textarea

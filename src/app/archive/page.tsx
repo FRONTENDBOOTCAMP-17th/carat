@@ -18,14 +18,14 @@ export default function ArchivePage() {
           <nav aria-label={p.backNav}>
             <Link
               href="/"
-              className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+              className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
             >
               ← PRISME
             </Link>
           </nav>
 
           <header className="mt-10 mb-16">
-            <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
+            <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
               {p.section}
             </p>
             <h1
@@ -45,7 +45,7 @@ export default function ArchivePage() {
               <li key={`${s.year}-${s.season}`} className="group py-10">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-12">
                   <div className="shrink-0 sm:w-28">
-                    <p className="text-2xs tracking-label text-content-faint font-normal">{s.year} {s.season}</p>
+                    <p className="text-xs tracking-label text-content-faint font-normal">{s.year} {s.season}</p>
                   </div>
 
                   <div className="flex flex-1 flex-col gap-3">
@@ -57,7 +57,7 @@ export default function ArchivePage() {
                         {s.name}
                       </h2>
                       {s.status === "current" && (
-                        <span className="text-2xs tracking-label text-content-faint font-normal border border-surface-elevated px-2 py-0.5">
+                        <span className="text-xs tracking-label text-content-faint font-normal border border-surface-elevated px-2 py-0.5">
                           {p.now}
                         </span>
                       )}
@@ -71,7 +71,7 @@ export default function ArchivePage() {
                         {p.viewCollection}
                       </Link>
                     ) : (
-                      <span className="mt-1 text-2xs tracking-label text-surface-input">
+                      <span className="mt-1 text-xs tracking-label text-surface-input">
                         {p.closed}
                       </span>
                     )}

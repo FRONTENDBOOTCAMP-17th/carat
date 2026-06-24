@@ -58,7 +58,7 @@ export default function EssentialPage() {
 
           {/* Info */}
           <div className="flex flex-col">
-            <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
+            <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
               {p.sectionLabel}
             </p>
             <h1
@@ -75,10 +75,10 @@ export default function EssentialPage() {
             {/* Color Selection */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-2xs tracking-label text-content-secondary">
+                <p className="text-xs tracking-label text-content-secondary">
                   {p.materialSelect}
                 </p>
-                <p className="text-2xs text-content-secondary transition-all duration-200">
+                <p className="text-xs text-content-secondary transition-all duration-200">
                   {color.sublabel}
                 </p>
               </div>
@@ -146,7 +146,7 @@ export default function EssentialPage() {
 
             <Link
               href="/collections"
-              className="mt-5 text-center text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+              className="mt-5 text-center text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
             >
               {p.viewAll}
             </Link>

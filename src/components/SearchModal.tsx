@@ -83,7 +83,7 @@ export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onCl
                   </svg>
                 </button>
               </div>
-              <p className="mt-3 text-2xs text-content-secondary tracking-label">{t.search.escHint}</p>
+              <p className="mt-3 text-xs text-content-secondary tracking-label">{t.search.escHint}</p>
             </form>
           </motion.div>
         </motion.div>

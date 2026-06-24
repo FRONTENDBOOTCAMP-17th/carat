@@ -87,7 +87,7 @@ export default function Navbar() {
             <div className="flex items-center mr-1" role="group" aria-label="Language">
               <button
                 onClick={() => setLang("ko")}
-                className={`text-2xs tracking-label px-1.5 py-1 transition-colors ${
+                className={`text-xs tracking-label px-1.5 py-1 transition-colors ${
                   lang === "ko"
                     ? "text-content-primary"
                     : "text-content-muted hover:text-content-secondary"
@@ -97,10 +97,10 @@ export default function Navbar() {
               >
                 KO
               </button>
-              <span className="text-2xs text-content-secondary" aria-hidden="true">|</span>
+              <span className="text-xs text-content-secondary" aria-hidden="true">|</span>
               <button
                 onClick={() => setLang("en")}
-                className={`text-2xs tracking-label px-1.5 py-1 transition-colors ${
+                className={`text-xs tracking-label px-1.5 py-1 transition-colors ${
                   lang === "en"
                     ? "text-content-primary"
                     : "text-content-muted hover:text-content-secondary"
@@ -147,7 +147,7 @@ export default function Navbar() {
 
               {isUserMenuOpen && user && (
                 <div className="absolute top-11 right-0 z-50 w-44 bg-surface-raised border border-surface-elevated py-3">
-                  <p className="px-4 py-1 text-2xs text-content-faint truncate">{user.email}</p>
+                  <p className="px-4 py-1 text-xs text-content-faint truncate">{user.email}</p>
                   <div className="my-2 h-px bg-surface-elevated" />
 
                   <Link

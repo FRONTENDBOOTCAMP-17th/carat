@@ -21,14 +21,14 @@ export default function ShippingPage() {
           <nav aria-label={p.backNav}>
             <Link
               href="/"
-              className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+              className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
             >
               ← PRISME
             </Link>
           </nav>
 
           <header className="mt-10 mb-16">
-            <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
+            <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
               {p.section}
             </p>
             <h1

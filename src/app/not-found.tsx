@@ -14,7 +14,7 @@ export default function NotFound() {
       <Navbar />
 
       <div className="flex flex-1 flex-col items-center justify-center px-4 text-center">
-        <p className="mb-4 text-2xs tracking-label text-content-faint font-normal">
+        <p className="mb-4 text-xs tracking-label text-content-faint font-normal">
           {p.tag}
         </p>
         <h1

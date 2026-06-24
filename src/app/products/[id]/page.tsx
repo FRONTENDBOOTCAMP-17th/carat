@@ -66,7 +66,7 @@ export default function ProductPage({
           />
 
           <div className="flex flex-col">
-            <p className="mb-3 text-2xs tracking-label text-content-faint">
+            <p className="mb-3 text-xs tracking-label text-content-faint">
               {product.categoryLabel}
             </p>
             <h1
@@ -78,29 +78,29 @@ export default function ProductPage({
 
             <dl className="mb-8 space-y-3">
               <div className="flex gap-8">
-                <dt className="text-2xs tracking-label text-content-secondary shrink-0 w-16">
+                <dt className="text-xs tracking-label text-content-secondary shrink-0 w-16">
                   {p.material}
                 </dt>
-                <dd className="text-2xs text-content-secondary">{p.materialValue}</dd>
+                <dd className="text-xs text-content-secondary">{p.materialValue}</dd>
               </div>
               <div className="flex gap-8">
-                <dt className="text-2xs tracking-label text-content-secondary shrink-0 w-16">
+                <dt className="text-xs tracking-label text-content-secondary shrink-0 w-16">
                   {p.dimensions}
                 </dt>
-                <dd className="text-2xs text-content-secondary">{p.dimensionsValue}</dd>
+                <dd className="text-xs text-content-secondary">{p.dimensionsValue}</dd>
               </div>
             </dl>
 
             <div className="mb-8 pt-6 border-t border-surface-elevated flex gap-6">
               <Link
                 href="/materials"
-                className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+                className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
               >
                 {p.materialsLink} →
               </Link>
               <Link
                 href="/care-guide"
-                className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+                className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
               >
                 {p.careLink} →
               </Link>

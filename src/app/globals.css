@@ -135,9 +135,6 @@ html[data-theme="light"] {
   --tracking-descriptor: var(--tracking-5);
   --tracking-logo:       var(--tracking-6);
 
-  /* Font sizes */
-  --text-2xs: 0.625rem;
-  --text-4xs: 0.5rem;
 
   /* Layout */
   --max-width-container: 1440px;

@@ -16,7 +16,7 @@ export default function BestPieces() {
     <section className="w-full bg-surface-darkest" aria-labelledby="best-pieces-heading">
       <div className="max-w-container mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={viewport} transition={transition}>
-          <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">{s.sub}</p>
+          <p className="mb-3 text-xs tracking-label text-content-faint font-normal">{s.sub}</p>
           <h2 id="best-pieces-heading" className="mb-8 text-3xl tracking-label text-content-primary lg:mb-14 lg:text-4xl" style={{ fontFamily: "var(--font-cinzel)" }}>
             BEST PIECES
           </h2>

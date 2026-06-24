@@ -53,7 +53,7 @@ export default function RelatedScroll({
 
   return (
     <div>
-      <p className="mb-8 text-2xs tracking-label text-content-faint">{label}</p>
+      <p className="mb-8 text-xs tracking-label text-content-faint">{label}</p>
       <div className="relative">
         {/* Left chevron — absolute overlay, opacity만 전환해서 layout shift 없음 */}
         <button

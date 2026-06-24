@@ -18,14 +18,14 @@ export default function CareGuidePage() {
           <nav aria-label={p.backNav}>
             <Link
               href="/"
-              className="text-2xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
+              className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
             >
               ← PRISME
             </Link>
           </nav>
 
           <header className="mt-10 mb-16">
-            <p className="mb-3 text-2xs tracking-label text-content-faint font-normal">
+            <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
               {p.section}
             </p>
             <h1
@@ -52,7 +52,7 @@ export default function CareGuidePage() {
                 <ul className="space-y-4">
                   {section.items.map((tip, i) => (
                     <li key={i} className="flex gap-4">
-                      <span className="mt-0.5 shrink-0 text-2xs text-surface-input" aria-hidden="true">—</span>
+                      <span className="mt-0.5 shrink-0 text-xs text-surface-input" aria-hidden="true">—</span>
                       <p className="text-xs leading-relaxed text-content-secondary">{tip}</p>
                     </li>
                   ))}

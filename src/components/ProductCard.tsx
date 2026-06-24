@@ -56,7 +56,7 @@ export default function ProductCard({ id, name, description, category, price, hr
           <HeartIcon filled={inWishlist} />
         </button>
       </div>
-      {category && <p className="mb-1 text-2xs tracking-label text-content-faint">{category}</p>}
+      {category && <p className="mb-1 text-xs tracking-label text-content-faint">{category}</p>}
       <h3 className="mb-0.5 text-sm font-light text-content-primary">{name}</h3>
       {description && <p className="mb-0.5 text-xs text-content-faint">{description}</p>}
       {price && <p className="text-sm text-content-secondary">{price}</p>}

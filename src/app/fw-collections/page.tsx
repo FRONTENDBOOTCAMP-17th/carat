@@ -23,7 +23,7 @@ export default function FwCollectionsPage() {
           </nav>
 
           <header className="mb-16">
-            <p className="mb-6 text-2xs tracking-label text-content-faint">{p.section}</p>
+            <p className="mb-6 text-xs tracking-label text-content-faint">{p.section}</p>
             <div className="flex items-end justify-between mb-8">
               <h1
                 id="fw-collections-heading"
@@ -32,7 +32,7 @@ export default function FwCollectionsPage() {
               >
                 {p.title}
               </h1>
-              <span className="text-2xs tracking-label text-content-faint pb-2 shrink-0 ml-6">
+              <span className="text-xs tracking-label text-content-faint pb-2 shrink-0 ml-6">
                 {products.length} PIECES
               </span>
             </div>
