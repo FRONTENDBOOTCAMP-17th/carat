@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import PageShell from "@/components/PageShell";
 import AuthGuard from "@/components/AuthGuard";
 import ProductCard from "@/components/ProductCard";
 import { useAuth } from "@/context/AuthContext";
@@ -15,9 +14,7 @@ function WishlistContent() {
   const p = t.pages.wishlist;
 
   return (
-    <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
-      <Navbar />
-
+    <PageShell>
       <div className="flex-1 flex flex-col px-4 pt-12 pb-24 sm:px-6 lg:px-8 max-w-container mx-auto w-full">
         <header>
           <h1
@@ -58,9 +55,7 @@ function WishlistContent() {
           </div>
         )}
       </div>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }
 

@@ -2,9 +2,8 @@
 
 import { notFound } from "next/navigation";
 import { use } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
+import PageShell from "@/components/PageShell";
 import WishlistButton from "@/components/WishlistButton";
 import BackButton from "@/components/BackButton";
 import RelatedScroll from "@/components/RelatedScroll";
@@ -38,9 +37,7 @@ export default function ProductPage({
   };
 
   return (
-    <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
-      <Navbar />
-
+    <PageShell>
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
         {/* 데스크탑: 전체 계층 breadcrumb */}
         <div className="hidden sm:block">
@@ -117,8 +114,6 @@ export default function ProductPage({
           </div>
         </div>
       )}
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

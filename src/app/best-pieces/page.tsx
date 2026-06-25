@@ -1,8 +1,7 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import ProductCard from "@/components/ProductCard";
-import Footer from "@/components/Footer";
 import BackButton from "@/components/BackButton";
 import { getProductsByCategory } from "@/lib/products";
 import { useLang } from "@/context/LanguageContext";
@@ -13,9 +12,7 @@ export default function BestPiecesPage() {
   const p = t.pages.bestPieces;
 
   return (
-    <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
-      <Navbar />
-
+    <PageShell>
       <section className="flex-1 w-full" aria-labelledby="best-pieces-heading">
         <div className="max-w-container mx-auto px-4 pt-16 pb-24 sm:px-6 lg:px-8">
           <nav aria-label={p.backNav} className="mb-10">
@@ -49,15 +46,12 @@ export default function BestPiecesPage() {
                 <ProductCard
                   id={item.id}
                   name={item.name}
-
                 />
               </li>
             ))}
           </ul>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

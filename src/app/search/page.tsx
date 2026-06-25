@@ -3,8 +3,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import PageShell from "@/components/PageShell";
 import ProductCard from "@/components/ProductCard";
 import { searchProducts } from "@/lib/search";
 import { useLang } from "@/context/LanguageContext";
@@ -20,9 +19,7 @@ function SearchContent() {
     : { direct: [], related: [], suggestion: null };
 
   return (
-    <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
-      <Navbar />
-
+    <PageShell>
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
         {/* Header */}
         <header className="mb-12">
@@ -129,9 +126,7 @@ function SearchContent() {
           </p>
         )}
       </div>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }
 

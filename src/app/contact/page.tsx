@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import PageShell from "@/components/PageShell";
+import BackButton from "@/components/BackButton";
 import { useLang } from "@/context/LanguageContext";
 
 type FormState = { name: string; email: string; message: string };
@@ -65,19 +65,11 @@ export default function ContactPage() {
     setSubmitted(true);
   };
 
-
   return (
-    <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
-      <Navbar />
-
+    <PageShell>
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
         <nav aria-label={p.backNav}>
-          <Link
-            href="/"
-            className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
-          >
-            ← PRISME
-          </Link>
+          <BackButton href="/" label="PRISME" />
         </nav>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
@@ -220,8 +212,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

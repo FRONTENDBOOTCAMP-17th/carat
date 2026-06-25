@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import PageShell from "@/components/PageShell";
 import WishlistButton from "@/components/WishlistButton";
 import BackButton from "@/components/BackButton";
 import { useLang } from "@/context/LanguageContext";
@@ -35,12 +34,7 @@ export default function EssentialPage() {
   };
 
   return (
-    <main
-      id="main-content"
-      className="min-h-screen bg-surface-darkest flex flex-col"
-    >
-      <Navbar />
-
+    <PageShell>
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
         <nav aria-label={p.backNav}>
           <BackButton href="/" label="PRISME" />
@@ -153,8 +147,6 @@ export default function EssentialPage() {
           </div>
         </div>
       </div>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

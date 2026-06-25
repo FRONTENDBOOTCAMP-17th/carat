@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import PageShell from "@/components/PageShell";
+import BackButton from "@/components/BackButton";
 import { useLang } from "@/context/LanguageContext";
 
 export default function ProcessPage() {
@@ -10,18 +10,11 @@ export default function ProcessPage() {
   const p = t.pages.process;
 
   return (
-    <main id="main-content" className="min-h-screen bg-surface-darkest flex flex-col">
-      <Navbar />
-
+    <PageShell>
       <section className="flex-1 w-full" aria-labelledby="process-heading">
         <div className="max-w-container mx-auto px-4 pt-12 pb-24 sm:px-6 lg:px-8">
           <nav aria-label={p.backNav}>
-            <Link
-              href="/"
-              className="text-xs tracking-label text-content-secondary hover:text-content-primary transition-colors"
-            >
-              ← PRISME
-            </Link>
+            <BackButton href="/" label="PRISME" />
           </nav>
 
           <header className="mt-10 mb-16">
@@ -60,8 +53,6 @@ export default function ProcessPage() {
           </ol>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }
