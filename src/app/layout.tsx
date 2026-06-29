@@ -77,7 +77,8 @@ const pretendard = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "PRISME",
+  metadataBase: new URL("https://prisme.co"),
+  title: { default: "PRISME", template: "%s | PRISME" },
   description: "Jewelry editorial experience",
 };
 

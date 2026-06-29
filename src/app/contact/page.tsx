@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import BackButton from "@/components/BackButton";
 import { useLang } from "@/context/LanguageContext";

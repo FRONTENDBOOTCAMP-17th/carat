@@ -20,6 +20,8 @@ export default function CustomCursor() {
 
     const isFirefox = navigator.userAgent.includes("Firefox");
     const isPointerFine = window.matchMedia("(pointer: fine)").matches;
+    // Firefox는 중간 휠 클릭 오토스크롤을 브라우저가 네이티브로 가로채므로,
+    // 커스텀 오토스크롤 커서와 충돌한다. 터치/펜 디바이스도 불필요하므로 제외.
     if (isFirefox || !isPointerFine) return;
 
     document.documentElement.classList.add("has-custom-cursor");
