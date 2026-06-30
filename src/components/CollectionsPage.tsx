@@ -1,0 +1,57 @@
+"use client";
+
+import PageShell from "@/components/PageShell";
+import ProductCard from "@/components/ProductCard";
+import BackButton from "@/components/BackButton";
+import { getProductsByCategory } from "@/lib/products";
+import { useLang } from "@/context/LanguageContext";
+
+type CollectionCategory = "collections" | "fw-collections";
+
+export default function CollectionsPage({ category }: { category: CollectionCategory }) {
+  const { lang, t } = useLang();
+  const products = getProductsByCategory(category, lang);
+  const p = category === "collections" ? t.pages.collections : t.pages.fwCollections;
+  const headingId = `${category}-heading`;
+
+  return (
+    <PageShell>
+      <section className="flex-1 w-full" aria-labelledby={headingId}>
+        <div className="max-w-container mx-auto px-4 pt-16 pb-24 sm:px-6 lg:px-8">
+          <nav aria-label={p.backNav} className="mb-10">
+            <BackButton href="/" label="PRISME" />
+          </nav>
+
+          <header className="mb-16">
+            <p className="mb-6 text-xs tracking-label text-content-faint">{p.section}</p>
+            <div className="flex items-end justify-between gap-3 mb-8">
+              <h1
+                id={headingId}
+                className="min-w-0 text-4xl sm:text-5xl lg:text-7xl font-light leading-none text-content-primary truncate"
+                style={{ fontFamily: "var(--font-cinzel)" }}
+              >
+                {p.title}
+              </h1>
+              <span className="text-xs tracking-label text-content-faint shrink-0">
+                {products.length} PIECES
+              </span>
+            </div>
+            <div className="border-t border-surface-elevated pt-6">
+              <p className="text-xs leading-relaxed text-content-secondary whitespace-pre-line max-w-md">
+                {p.desc}
+              </p>
+            </div>
+          </header>
+
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
+            {products.map((item) => (
+              <li key={item.id}>
+                <ProductCard id={item.id} name={item.name} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </PageShell>
+  );
+}

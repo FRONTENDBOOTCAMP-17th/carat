@@ -1,7 +1,6 @@
-"use client";
-
+import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { use } from "react";
 import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import WishlistButton from "@/components/WishlistButton";
@@ -9,16 +8,35 @@ import BackButton from "@/components/BackButton";
 import RelatedScroll from "@/components/RelatedScroll";
 import Breadcrumb from "@/components/Breadcrumb";
 import { getProductById, getProductsByCategory } from "@/lib/products";
+import { translations } from "@/lib/translations";
 import type { CategoryKey } from "@/lib/products";
-import { useLang } from "@/context/LanguageContext";
+import type { Lang } from "@/lib/translations";
 
-export default function ProductPage({
+async function getLang(): Promise<Lang> {
+  const cookieStore = await cookies();
+  const v = cookieStore.get("prisme_lang")?.value;
+  return v === "ko" || v === "en" ? v : "ko";
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const lang = await getLang();
+  const product = getProductById(id, lang);
+  return { title: product?.name ?? "Product" };
+}
+
+export default async function ProductPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-  const { lang, t } = useLang();
+  const { id } = await params;
+  const lang = await getLang();
+  const t = translations[lang];
   const product = getProductById(id, lang);
 
   if (!product) notFound();
@@ -33,13 +51,12 @@ export default function ProductPage({
     id: product.id,
     name: product.name,
     category: product.category,
-    description: product.description,
+    description: product.description ?? "",
   };
 
   return (
     <PageShell>
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
-        {/* 데스크탑: 전체 계층 breadcrumb */}
         <div className="hidden sm:block">
           <Breadcrumb
             items={[
@@ -49,7 +66,6 @@ export default function ProductPage({
             ]}
           />
         </div>
-        {/* 모바일: back button만 — 터치 타겟 및 공간 이슈 */}
         <nav aria-label={p.backNav} className="sm:hidden">
           <BackButton href={product.backHref} label={product.categoryLabel} />
         </nav>
