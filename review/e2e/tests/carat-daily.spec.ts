@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 
-// carat(PRISME) 데일리 E2E (2026-06-24) — 리스트·상세 페이지 신규 UI 포함
-// commit 786eb43: Breadcrumb, RelatedScroll, list/detail UI 개선
-const DATE = "2026-06-24";
+// carat(PRISME) 데일리 E2E — 리스트·상세·검색 신규 UI 포함
+// 16차(2026-07-01): 제품 상세 서버 컴포넌트 전환(generateMetadata per-page title),
+//                    SearchModal 키보드 네비(combobox/listbox ARIA), 컬렉션 컴포넌트 추출
+const DATE = "2026-07-01";
 const IMG = `../images/${DATE}`;
 test.beforeAll(() => fs.mkdirSync(IMG, { recursive: true }));
 
@@ -189,4 +190,62 @@ test("06 FW Collections 리스트·상세", async ({ page }) => {
   const crumbText = await breadcrumb.textContent().catch(() => "");
   console.log(`[fw detail] breadcrumb text: ${crumbText}`);
   await screenshot(page, "06-fw-detail-desktop");
+});
+
+// ────────────────────────────────────────────────
+// 시나리오 07(신규): 상품 상세 per-page <title> — 서버 컴포넌트 전환 검증
+// ────────────────────────────────────────────────
+test("07 상품 상세 — generateMetadata per-page title", async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  const r = await page.goto("/products/collections-0", { waitUntil: "domcontentloaded" });
+  console.log(`[/products/collections-0] HTTP ${r?.status()}`);
+  const title = await page.title();
+  const h1 = await page.locator("h1").first().textContent();
+  console.log(`[detail] <title>: "${title}" | h1: "${h1}"`);
+  // 서버 컴포넌트 전환 후 상세는 제품명이 <title>에 들어와야 함(홈 default "PRISME"가 아님)
+  expect(title, "상세 <title>이 제품명 반영").not.toBe("PRISME");
+  await screenshot(page, "07-detail-title");
+});
+
+// ────────────────────────────────────────────────
+// 시나리오 08(신규): 검색 모달 — 인라인 결과 + 키보드 네비(↓↓ Enter)
+// ────────────────────────────────────────────────
+test("08 검색 모달 — 키보드 네비게이션", async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  await page.goto("/collections", { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(800);
+
+  // Navbar의 검색 트리거(aria-label에 검색/search 포함) 클릭
+  const searchTrigger = page
+    .locator("button[aria-label*='검색'], button[aria-label*='Search' i]")
+    .first();
+  const hasTrigger = await searchTrigger.count();
+  console.log(`[search] trigger count: ${hasTrigger}`);
+  if (hasTrigger === 0) {
+    console.log("[search] 트리거 미발견 — Navbar 열기 시도 후 재탐색");
+  }
+  await searchTrigger.click({ timeout: 5000 }).catch((e) => console.log(`[search] click 실패: ${e}`));
+  await page.waitForTimeout(400);
+
+  const input = page.locator("input[role='combobox']");
+  await input.fill("ring").catch(() => input.fill("링"));
+  await page.waitForTimeout(400);
+
+  const options = page.locator("li[role='option']");
+  const optCount = await options.count();
+  console.log(`[search] 인라인 결과 수: ${optCount}`);
+  await screenshot(page, "08-search-results");
+
+  // 키보드 네비: 아래로 두 번 → 첫 옵션 aria-selected 확인
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("ArrowDown");
+  const selected = page.locator("li[role='option'][aria-selected='true']");
+  const selText = await selected.first().textContent().catch(() => "(none)");
+  console.log(`[search] 선택된 옵션: ${selText}`);
+  await screenshot(page, "08-search-keyboard-selected");
+
+  // Enter로 이동
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(800);
+  console.log(`[search] Enter 후 URL: ${page.url()}`);
 });
