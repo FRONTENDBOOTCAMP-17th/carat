@@ -4,7 +4,7 @@ import fs from "node:fs";
 // carat(PRISME) 데일리 E2E — 리스트·상세·검색 신규 UI 포함
 // 16차(2026-07-01): 제품 상세 서버 컴포넌트 전환(generateMetadata per-page title),
 //                    SearchModal 키보드 네비(combobox/listbox ARIA), 컬렉션 컴포넌트 추출
-const DATE = "2026-07-01";
+const DATE = "2026-07-02";
 const IMG = `../images/${DATE}`;
 test.beforeAll(() => fs.mkdirSync(IMG, { recursive: true }));
 
