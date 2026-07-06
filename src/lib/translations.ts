@@ -124,7 +124,7 @@ const ko = {
   },
   footer: {
     collections: "컬렉션",
-    essentialRing: "Essential Ring",
+    essentialRing: "Iris",
     bestPieces: "Best Pieces",
     allCollections: "All Collections",
     explore: "탐색",
@@ -143,13 +143,15 @@ const ko = {
     essential: {
       backNav: "이전 페이지로 돌아가기",
       sectionLabel: "ESSENTIAL COLLECTION",
-      title: "ESSENTIAL RING",
+      title: "IRIS",
       desc: "균형을 통해 형성되고 우아함으로 정의된 반지. PRISME의 시그니처 피스로, 현대적인 조형성과 정교한 소재가 만나는 가장 순수한 표현입니다.",
       materialSelect: "소재 선택",
       colorGroup: "색상 선택",
       material: "소재",
       dimensions: "규격",
       dimensionValue: "내경 16.5mm",
+      originLabel: "ORIGIN",
+      origin: "PRISME의 첫 실루엣이자, 지금까지 변하지 않은 기준.",
       viewAll: "전체 컬렉션 보기 →",
       colors: [
         {
@@ -171,8 +173,9 @@ const ko = {
           material: "18K 로즈 골드 / 다이아몬드",
         },
       ],
-      wishlistItemName: (colorLabel: string) =>
-        `Essential Ring — ${colorLabel}`,
+      wishlistItemName: (colorLabel: string) => `Iris — ${colorLabel}`,
+      viewerLabel: (colorLabel: string) =>
+        `${colorLabel} Iris 3D 모델 — 드래그해서 회전, 자동으로도 천천히 회전합니다`,
     },
     bestPieces: {
       backNav: "메인으로 돌아가기",
@@ -666,7 +669,7 @@ const en: typeof ko = {
   },
   footer: {
     collections: "COLLECTIONS",
-    essentialRing: "Essential Ring",
+    essentialRing: "Iris",
     bestPieces: "Best Pieces",
     allCollections: "All Collections",
     explore: "EXPLORE",
@@ -685,13 +688,15 @@ const en: typeof ko = {
     essential: {
       backNav: "Back",
       sectionLabel: "ESSENTIAL COLLECTION",
-      title: "ESSENTIAL RING",
+      title: "IRIS",
       desc: "Shaped through balance, defined by elegance. PRISME's signature piece — the purest expression of where contemporary form meets refined material.",
       materialSelect: "Material",
       colorGroup: "Select color",
       material: "Material",
       dimensions: "Dimensions",
       dimensionValue: "Inner diameter 16.5mm",
+      originLabel: "ORIGIN",
+      origin: "PRISME's first silhouette. The standard, ever since.",
       viewAll: "View all collections →",
       colors: [
         {
@@ -713,8 +718,9 @@ const en: typeof ko = {
           material: "18K Rose Gold / Diamond",
         },
       ],
-      wishlistItemName: (colorLabel: string) =>
-        `Essential Ring — ${colorLabel}`,
+      wishlistItemName: (colorLabel: string) => `Iris — ${colorLabel}`,
+      viewerLabel: (colorLabel: string) =>
+        `${colorLabel} Iris 3D model — drag to rotate, rotates slowly on its own too`,
     },
     bestPieces: {
       backNav: "Back to home",

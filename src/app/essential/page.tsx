@@ -5,6 +5,7 @@ import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import WishlistButton from "@/components/WishlistButton";
 import BackButton from "@/components/BackButton";
+import EssentialRingViewer from "@/components/EssentialRingViewer";
 import { useLang } from "@/context/LanguageContext";
 
 const SWATCHES = {
@@ -28,7 +29,6 @@ export default function EssentialPage() {
   const wishlistItem = {
     id: `essential-${selected}`,
     name: p.wishlistItemName(color.label),
-    price: "₩ 10,000,000",
     category: "essential",
     description: color.sublabel,
   };
@@ -41,12 +41,12 @@ export default function EssentialPage() {
         </nav>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-          {/* Image */}
+          {/* 3D model */}
           <div className="relative aspect-square bg-surface-input overflow-hidden">
-            <div
-              className="absolute inset-0 transition-colors duration-700"
-              style={{ backgroundColor: swatch.tint }}
-              aria-hidden="true"
+            <EssentialRingViewer
+              metalColor={swatch.swatch}
+              fallbackTint={swatch.tint}
+              canvasLabel={p.viewerLabel(color.label)}
             />
           </div>
 
@@ -134,7 +134,14 @@ export default function EssentialPage() {
               </div>
             </dl>
 
-            <p className="mb-8 text-xl text-content-primary">₩ 10,000,000</p>
+            <div className="mb-8">
+              <p className="mb-2 text-xs tracking-label text-content-secondary">
+                {p.originLabel}
+              </p>
+              <p className="text-xs leading-relaxed text-content-secondary max-w-sm">
+                {p.origin}
+              </p>
+            </div>
 
             <WishlistButton item={wishlistItem} />
 

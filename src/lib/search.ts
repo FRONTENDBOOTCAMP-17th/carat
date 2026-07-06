@@ -25,10 +25,10 @@ const CATEGORY_META: Record<string, { label: string }> = {
   "fw-collections":{ label: "FW COLLECTIONS" },
 };
 
-// Essential Ring은 products.json에 없으므로 별도 등록
+// Iris(Essential Collection)는 products.json에 없으므로 별도 등록
 const ESSENTIAL_ENTRY: SearchableProduct = {
   id: "essential",
-  name: "Essential Ring",
+  name: "Iris",
   description: "실버 · 18K 골드 · 로즈 골드 — 다이아몬드. 절제와 정밀의 시그니처 피스.",
   category: "essential",
   categoryLabel: "ESSENTIAL",

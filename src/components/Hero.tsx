@@ -1,194 +1,20 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, MeshRefractionMaterial } from "@react-three/drei";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { ArrowDown } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
-
-// With gl={{ alpha:false }} the canvas is opaque, so its clear color shows as the background.
-// Keep it in sync with bg-surface-base per theme so the section looks seamless.
-function ClearColor() {
-  const { gl } = useThree();
-  useEffect(() => {
-    const update = () => {
-      const isLight = document.documentElement.dataset.theme === "light";
-      gl.setClearColor(new THREE.Color(isLight ? "#fafafa" : "#09090b"), 1);
-    };
-    update();
-    const observer = new MutationObserver(update);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-    return () => observer.disconnect();
-  }, [gl]);
-  return null;
-}
-
-// Procedural achromatic studio envs (equirectangular canvas), tuned per material need:
-//   - Gems (forMetal=false): near-black surround + soft white softbox blobs. MeshRefractionMaterial
-//     ray-traces this crisply → bright/dark facet contrast = sparkle. Light mode adds dark reflectors
-//     so facets keep a dark side against the bright page.
-//   - Metal (forMetal=true): a vertical studio "sweep" gradient + SHARP-edged rectangular softboxes.
-//     A near-mirror reflecting a single flat colour reads as cheap grey plastic (no variation); the
-//     gradient gives the curved band a light→dark sweep and the crisp rectangles land as real
-//     polished-metal highlight streaks.
-function buildStudioEquirect(isLight: boolean, forMetal: boolean) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 2048;
-  canvas.height = 1024;
-  const ctx = canvas.getContext("2d")!;
-
-  const finish = () => {
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.mapping = THREE.EquirectangularReflectionMapping;
-    tex.colorSpace = THREE.SRGBColorSpace;
-    return tex;
-  };
-
-  if (forMetal) {
-    const grad = ctx.createLinearGradient(0, 0, 0, 1024);
-    if (isLight) {
-      grad.addColorStop(0, "#eeeeee");
-      grad.addColorStop(0.5, "#c2c2c2");
-      grad.addColorStop(1, "#8c8c8c");
-    } else {
-      grad.addColorStop(0, "#565656");
-      grad.addColorStop(0.5, "#262626");
-      grad.addColorStop(1, "#0d0d0d");
-    }
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 2048, 1024);
-    // soft-but-defined rectangular softboxes → crisp reflection streaks on the polished band
-    const box = (x: number, y: number, w: number, h: number, style: string) => {
-      ctx.save();
-      ctx.filter = "blur(7px)";
-      ctx.fillStyle = style;
-      ctx.fillRect(x, y, w, h);
-      ctx.restore();
-    };
-    box(180, 110, 560, 300, "#ffffff");
-    box(1180, 170, 660, 240, "#ffffff");
-    box(770, 470, 520, 110, "#ffffff");
-    if (isLight) {
-      // strong dark reflectors → the polished band shows deep dark reflection zones (contrast/form)
-      // instead of a uniform white field. Without these, a mirror on a bright env = white plastic.
-      box(720, 430, 600, 300, "rgba(0,0,0,0.8)");
-      box(150, 640, 480, 320, "rgba(0,0,0,0.72)");
-      box(1560, 790, 400, 260, "rgba(0,0,0,0.74)");
-    }
-    // crisp thin bars (hard edges read as bright lines sweeping across the band)
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(120, 700, 1000, 9);
-    ctx.fillRect(1280, 640, 620, 7);
-    return finish();
-  }
-
-  // Dark mode was #0a0a0a — near-total black between sparkle blobs made the facets read as a flat
-  // black hole rather than a cut stone. Lifted just enough to keep the facet structure legible while
-  // the blobs still land as clearly brighter sparkle points.
-  ctx.fillStyle = isLight ? "#bebebe" : "#181818";
-  ctx.fillRect(0, 0, 2048, 1024);
-  const blob = (x: number, y: number, r: number, a: number, dark = false) => {
-    const c = dark ? "0,0,0" : "255,255,255";
-    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-    g.addColorStop(0, `rgba(${c},${a})`);
-    g.addColorStop(1, `rgba(${c},0)`);
-    ctx.fillStyle = g;
-    ctx.fillRect(x - r, y - r, r * 2, r * 2);
-  };
-  // bright key/fill softboxes + small sparkle sources (both themes)
-  blob(540, 300, 340, 1);
-  blob(1460, 350, 300, 0.9);
-  blob(1024, 150, 520, 0.7);
-  blob(300, 640, 120, 1);
-  blob(1780, 560, 130, 0.95);
-  blob(1180, 760, 90, 1);
-  blob(760, 820, 70, 0.9);
-  // light mode only: strong dark reflectors so facets get a deep dark side against the bright
-  // surround — otherwise the colorless stones refract only light tones and read as white plastic.
-  if (isLight) {
-    blob(760, 380, 320, 0.92, true);
-    blob(1450, 560, 340, 0.88, true);
-    blob(320, 720, 260, 0.85, true);
-    blob(1780, 240, 240, 0.82, true);
-  }
-  return finish();
-}
-
-// Must run inside <Canvas> (client-only) so `document` is available. Builds BOTH themes' env maps
-// once at mount instead of rebuilding on every toggle: swapping to an already-baked texture is a
-// plain reference assignment, versus redrawing the equirect canvas and re-baking a fresh PMREM each
-// time the theme flips — that rebake (see metalEnv below) is what caused the ~0.5s relight lag.
-function useStudioEnvMaps() {
-  const { gl } = useThree();
-  const [isLight, setIsLight] = useState(
-    () =>
-      typeof document !== "undefined" &&
-      document.documentElement.dataset.theme === "light",
-  );
-  useEffect(() => {
-    const update = () =>
-      setIsLight(document.documentElement.dataset.theme === "light");
-    update();
-    const observer = new MutationObserver(update);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  // Raw equirect canvases for both themes — cheap enough to just build all four once and keep them.
-  const raw = useMemo(
-    () => ({
-      gemDark: buildStudioEquirect(false, false),
-      gemLight: buildStudioEquirect(true, false),
-      metalDark: buildStudioEquirect(false, true),
-      metalLight: buildStudioEquirect(true, true),
-    }),
-    [],
-  );
-
-  // The metal band reads its reflections from scene.environment. drei's <Environment> re-bakes this
-  // (PMREM) every time the source map changes, which is the actually-expensive part of the toggle —
-  // baking both themes once up front turns the toggle into a plain texture swap.
-  const pmrem = useMemo(() => {
-    const generator = new THREE.PMREMGenerator(gl);
-    generator.compileEquirectangularShader();
-    const dark = generator.fromEquirectangular(raw.metalDark).texture;
-    const light = generator.fromEquirectangular(raw.metalLight).texture;
-    generator.dispose();
-    return { dark, light };
-  }, [gl, raw]);
-
-  useEffect(
-    () => () => {
-      Object.values(raw).forEach((tex) => tex.dispose());
-      pmrem.dark.dispose();
-      pmrem.light.dispose();
-    },
-    [raw, pmrem],
-  );
-
-  return {
-    gemEnv: isLight ? raw.gemLight : raw.gemDark,
-    metalEnv: isLight ? pmrem.light : pmrem.dark,
-  };
-}
-
-// Returns false during SSR (window absent) — treated as "supported" until client confirms otherwise.
-function supportsWebGL(): boolean {
-  if (typeof window === "undefined") return true;
-  try {
-    const c = document.createElement("canvas");
-    return !!(c.getContext("webgl2") || c.getContext("webgl"));
-  } catch {
-    return false;
-  }
-}
+import {
+  ClearColor,
+  Lights,
+  RingModel,
+  useRingNodes,
+  useSceneEnvironment,
+  useStudioEnvMaps,
+  supportsWebGL,
+  type MousePos,
+} from "@/components/RingScene";
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
@@ -197,90 +23,6 @@ function easeOutCubic(t: number) {
 // Gentle symmetric ease — smooth accel/decel without the flat, snappy feel of cubic at the ends.
 function easeInOutSine(t: number) {
   return -(Math.cos(Math.PI * t) - 1) / 2;
-}
-
-type MousePos = { x: number; y: number };
-
-function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
-  const keyRef = useRef<THREE.PointLight>(null);
-  const rimMainRef = useRef<THREE.PointLight>(null);
-  const rimSideRef = useRef<THREE.PointLight>(null);
-  const smooth = useRef<MousePos>({ x: 0, y: 0 });
-
-  useFrame(() => {
-    smooth.current.x += (mouseRef.current.x - smooth.current.x) * 0.06;
-    smooth.current.y += (mouseRef.current.y - smooth.current.y) * 0.06;
-    const mx = smooth.current.x;
-    const my = smooth.current.y;
-    keyRef.current?.position.set(-2.5 + mx * 2, 4 + my * 2, 2);
-    rimMainRef.current?.position.set(-mx * 1.5, 2 - my * 0.5, -4);
-    rimSideRef.current?.position.set(2 - mx * 0.8, 1 + my * 0.3, -3);
-  });
-
-  // The metal gets its body tone + reflections from metalEnv; these just add subtle moving speculars.
-  // No ambient light on purpose — a flat ambient lifts the metal's blacks and flattens the contrast.
-  return (
-    <>
-      {/* Key — front-left */}
-      <pointLight
-        ref={keyRef}
-        position={[-2.5, 4, 2]}
-        intensity={9}
-        color="#ffffff"
-      />
-      {/* Fill — front-right */}
-      <pointLight position={[3, 1, 3]} intensity={4} color="#ffffff" />
-      {/* Rim — edge separation on the band */}
-      <pointLight
-        ref={rimMainRef}
-        position={[0, 2, -4]}
-        intensity={6}
-        color="#ffffff"
-      />
-      <pointLight
-        ref={rimSideRef}
-        position={[2, 1, -3]}
-        intensity={3}
-        color="#ffffff"
-      />
-    </>
-  );
-}
-
-// Diamond-specific material. Unlike buffer-based transmission (soft/hazy on tiny facets, and needs
-// bright geometry behind the gem), MeshRefractionMaterial ray-traces the envMap through the stone's
-// BVH — crisp per-facet brilliance straight from the studio env, no backdrop required. The drei
-// wrapper builds the BVH from this mesh's geometry automatically.
-function Diamond({
-  geometry,
-  position,
-  quaternion,
-  envMap,
-  bounces = 3,
-  aberrationStrength = 0.02,
-}: {
-  geometry: THREE.BufferGeometry;
-  position?: THREE.Vector3;
-  quaternion?: THREE.Quaternion;
-  envMap: THREE.Texture;
-  // The tiny pave melee are a much denser brilliant cut than the chunky marquises, so at full
-  // bounces + aberration they scintillate far too busily and clash. Lower values calm them down.
-  bounces?: number;
-  aberrationStrength?: number;
-}) {
-  return (
-    <mesh geometry={geometry} position={position} quaternion={quaternion}>
-      <MeshRefractionMaterial
-        envMap={envMap}
-        bounces={bounces}
-        ior={2.42}
-        fresnel={1}
-        aberrationStrength={aberrationStrength}
-        fastChroma
-        color="#ffffff"
-      />
-    </mesh>
-  );
 }
 
 function Ring({
@@ -300,17 +42,7 @@ function Ring({
   const smooth = useRef(0);
   const mouseSmooth = useRef<MousePos>({ x: 0, y: 0 });
   const { viewport } = useThree();
-  const { nodes } = useGLTF("/models/Hero_Ring.glb") as unknown as {
-    nodes: {
-      Band: THREE.Mesh;
-      MainStone: THREE.Mesh;
-      SideStone: THREE.Mesh;
-      SideStoneRight: THREE.Mesh;
-      MainStoneHousing: THREE.Mesh;
-      PaveLeft: THREE.Mesh;
-      PaveRight: THREE.Mesh;
-    };
-  };
+  const nodes = useRingNodes();
 
   useFrame((state) => {
     if (
@@ -377,67 +109,7 @@ function Ring({
         <group ref={spinRef}>
           <group ref={rollRef}>
             <group ref={innerRef}>
-              {/* base orientation: Hero_Ring lies flat in the XZ plane; stand it up to face the camera */}
-              <group rotation={[Math.PI / 2, 0, 0]}>
-                {/* normalize: model spans ≈12.77 GLB units across → bring it to ≈2.7 (matches the reveal scale math) */}
-                <group scale={0.21}>
-                  {/* centering offset: GLB global bbox center is at approx (19.245, 0, 0.769) */}
-                  <group position={[-19.245, 0, -0.769]}>
-                    {/* Band & housing — bright polished platinum, near-mirror (roughness 0.03). Roughness
-                  blurs the env and washes the reflection contrast out, so we keep it minimal; the
-                  metalEnv's mid-grey floor gives the body tone and the bright panels read as crisp
-                  streaks. The model's own chamfer (not roughness) handles the edge softening now. */}
-                    <mesh geometry={nodes.Band.geometry}>
-                      <meshStandardMaterial
-                        color="#cfcfcf"
-                        metalness={1}
-                        roughness={0}
-                        envMapIntensity={1}
-                      />
-                    </mesh>
-                    <mesh geometry={nodes.MainStoneHousing.geometry}>
-                      <meshStandardMaterial
-                        color="#cfcfcf"
-                        metalness={1}
-                        roughness={0}
-                        envMapIntensity={1}
-                      />
-                    </mesh>
-                    {/* Transmission stones — verts carry their own placement (identity node transform) */}
-                    <Diamond
-                      geometry={nodes.MainStone.geometry}
-                      envMap={envMap}
-                    />
-                    <Diamond
-                      geometry={nodes.SideStone.geometry}
-                      envMap={envMap}
-                    />
-                    <Diamond
-                      geometry={nodes.SideStoneRight.geometry}
-                      envMap={envMap}
-                    />
-                    {/* Pave — node carries its own translation+quaternion in GLB local space.
-                      Calmed down (fewer bounces, no chromatic aberration) so the dense melee doesn't
-                      out-sparkle and clash with the low-poly marquises. */}
-                    <Diamond
-                      geometry={nodes.PaveLeft.geometry}
-                      position={nodes.PaveLeft.position}
-                      quaternion={nodes.PaveLeft.quaternion}
-                      envMap={envMap}
-                      bounces={2}
-                      aberrationStrength={0.01}
-                    />
-                    <Diamond
-                      geometry={nodes.PaveRight.geometry}
-                      position={nodes.PaveRight.position}
-                      quaternion={nodes.PaveRight.quaternion}
-                      envMap={envMap}
-                      bounces={2}
-                      aberrationStrength={0.01}
-                    />
-                  </group>
-                </group>
-              </group>
+              <RingModel nodes={nodes} envMap={envMap} />
             </group>
           </group>
         </group>
@@ -445,8 +117,6 @@ function Ring({
     </group>
   );
 }
-
-useGLTF.preload("/models/Hero_Ring.glb");
 
 // Scene lives inside <Canvas> (client-only), so the env map — which touches `document` — is built
 // here rather than during SSR. The same studio env feeds both the metal reflections and the gems.
@@ -458,16 +128,7 @@ function Scene({
   mouseRef: React.RefObject<MousePos>;
 }) {
   const { gemEnv, metalEnv } = useStudioEnvMaps();
-  // metalEnv (mid-grey, pre-baked PMREM) drives the band's reflections via scene.environment; the
-  // gems refract their own darker raw env for crisp contrast. scene.background is left untouched
-  // (ClearColor owns it) so the page surface stays visible behind the ring.
-  // Set through useFrame's callback param rather than mutating useThree()'s returned `scene` directly
-  // (react-hooks/immutability forbids writing to a hook's return value).
-  useFrame((state) => {
-    if (state.scene.environment !== metalEnv) {
-      state.scene.environment = metalEnv;
-    }
-  });
+  useSceneEnvironment(metalEnv);
   return (
     <>
       <ClearColor />
