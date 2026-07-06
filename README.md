@@ -285,4 +285,7 @@ npm run dev
 
 ## 라이선스
 
-[MIT](LICENSE) © 2026 Carat
+이 저장소는 포트폴리오 열람 목적으로 공개되어 있습니다.
+사전 동의 없는 복제·재배포·상업적 이용을 금지합니다. 자세한 내용은 [LICENSE](LICENSE)를 참고하세요.
+
+© 2026 hyeonwoo1231. All Rights Reserved.
