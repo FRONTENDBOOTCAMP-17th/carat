@@ -1,44 +1,260 @@
 {
   "best-pieces": [
-    { "id": "best-pieces-0",  "name": "시그니처 원형 밴드",   "nameEn": "Signature Circular Band"    },
-    { "id": "best-pieces-1",  "name": "트위스트 골드 밴드",   "nameEn": "Twisted Gold Band"           },
-    { "id": "best-pieces-2",  "name": "다이아몬드 세팅 링",   "nameEn": "Diamond-Set Ring"            },
-    { "id": "best-pieces-3",  "name": "슬림 이터니티 링",     "nameEn": "Slim Eternity Ring"          },
-    { "id": "best-pieces-4",  "name": "볼드 아치 밴드",       "nameEn": "Bold Arch Band"              },
-    { "id": "best-pieces-5",  "name": "페어 컷 솔리테어",     "nameEn": "Pear-Cut Solitaire"          },
-    { "id": "best-pieces-6",  "name": "오픈 스플릿 밴드",     "nameEn": "Open Split Band"             },
-    { "id": "best-pieces-7",  "name": "멀티 스톤 클러스터",   "nameEn": "Multi-Stone Cluster"         },
-    { "id": "best-pieces-8",  "name": "플랫 시그넷 링",       "nameEn": "Flat Signet Ring"            },
-    { "id": "best-pieces-9",  "name": "웨이브 다이아몬드",     "nameEn": "Wave Diamond Ring"           },
-    { "id": "best-pieces-10", "name": "라운드 브릴리언트",     "nameEn": "Round Brilliant"             },
-    { "id": "best-pieces-11", "name": "채널 세팅 밴드",       "nameEn": "Channel-Set Band"            }
+    {
+      "id": "best-pieces-0",
+      "name": "트리오 스택 밴드",
+      "nameEn": "Trio Stack Band",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-02.webp"
+    },
+    {
+      "id": "best-pieces-1",
+      "name": "듀오 게이지 링",
+      "nameEn": "Duo Gauge Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-07.webp"
+    },
+    {
+      "id": "best-pieces-2",
+      "name": "아쿠아 트윈 링",
+      "nameEn": "Aqua Twin Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-08.webp"
+    },
+    {
+      "id": "best-pieces-3",
+      "name": "클래식 솔리테어 링",
+      "nameEn": "Classic Solitaire Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-10.webp"
+    },
+    {
+      "id": "best-pieces-4",
+      "name": "라운드 솔리테어 링",
+      "nameEn": "Round Solitaire Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-11.webp"
+    },
+    {
+      "id": "best-pieces-5",
+      "name": "플로럴 클러스터 링",
+      "nameEn": "Floral Cluster Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-15.webp"
+    },
+    {
+      "id": "best-pieces-6",
+      "name": "페어 헤일로 링",
+      "nameEn": "Pear Halo Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-19.webp"
+    },
+    {
+      "id": "best-pieces-7",
+      "name": "드롭 비브 네크리스",
+      "nameEn": "Drop Bib Necklace",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-01.webp"
+    },
+    {
+      "id": "best-pieces-8",
+      "name": "솔리테어 펜던트",
+      "nameEn": "Solitaire Pendant",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-03.webp"
+    },
+    {
+      "id": "best-pieces-9",
+      "name": "라운드 펜던트",
+      "nameEn": "Round Pendant",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-04.webp"
+    },
+    {
+      "id": "best-pieces-10",
+      "name": "듀오 드롭 이어링",
+      "nameEn": "Duo Drop Earrings",
+      "type": "earring",
+      "image": "/images/Jewelries/jewelry-12.webp"
+    },
+    {
+      "id": "best-pieces-11",
+      "name": "스퀘어 스터드 이어링",
+      "nameEn": "Square Stud Earrings",
+      "type": "earring",
+      "image": "/images/Jewelries/jewelry-14.webp"
+    }
   ],
   "collections": [
-    { "id": "collections-0",  "name": "에센셜 원형 밴드",     "nameEn": "Essential Circular Band"     },
-    { "id": "collections-1",  "name": "듀얼 레이어 링",       "nameEn": "Dual-Layer Ring"             },
-    { "id": "collections-2",  "name": "루프 아키텍처 링",     "nameEn": "Loop Architecture Ring"      },
-    { "id": "collections-3",  "name": "슬림 버티컬 링",       "nameEn": "Slim Vertical Ring"          },
-    { "id": "collections-4",  "name": "스퀘어 실루엣 링",     "nameEn": "Square Silhouette Ring"      },
-    { "id": "collections-5",  "name": "로프 텍스처 밴드",     "nameEn": "Rope Texture Band"           },
-    { "id": "collections-6",  "name": "코르셋 크로스 링",     "nameEn": "Corset Cross Ring"           },
-    { "id": "collections-7",  "name": "플루이드 커브 링",     "nameEn": "Fluid Curve Ring"            },
-    { "id": "collections-8",  "name": "그리드 패턴 링",       "nameEn": "Grid Pattern Ring"           },
-    { "id": "collections-9",  "name": "포인트 아치 링",       "nameEn": "Point Arch Ring"             },
-    { "id": "collections-10", "name": "오벌 프레임 링",       "nameEn": "Oval Frame Ring"             },
-    { "id": "collections-11", "name": "심플 스택 링",         "nameEn": "Simple Stacking Ring"        }
+    {
+      "id": "collections-0",
+      "name": "프로포즈 솔리테어 링",
+      "nameEn": "Proposal Solitaire Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-20.webp"
+    },
+    {
+      "id": "collections-1",
+      "name": "스타버스트 링",
+      "nameEn": "Starburst Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-22.webp"
+    },
+    {
+      "id": "collections-2",
+      "name": "브라이덜 세트 링",
+      "nameEn": "Bridal Set Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-24.webp"
+    },
+    {
+      "id": "collections-3",
+      "name": "골드 헤일로 링",
+      "nameEn": "Gold Halo Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-25.webp"
+    },
+    {
+      "id": "collections-4",
+      "name": "페어 삼석 링",
+      "nameEn": "Pear Three-Stone Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-26.webp"
+    },
+    {
+      "id": "collections-5",
+      "name": "라운드 헤일로 링",
+      "nameEn": "Round Halo Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-29.webp"
+    },
+    {
+      "id": "collections-6",
+      "name": "듀오 펜던트 세트",
+      "nameEn": "Duo Pendant Set",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-05.webp"
+    },
+    {
+      "id": "collections-7",
+      "name": "박스 펜던트 세트",
+      "nameEn": "Boxed Pendant Set",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-09.webp"
+    },
+    {
+      "id": "collections-8",
+      "name": "테니스 네크리스 세트",
+      "nameEn": "Tennis Necklace Set",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-13.webp"
+    },
+    {
+      "id": "collections-9",
+      "name": "플로럴 펜던트",
+      "nameEn": "Floral Pendant",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-16.webp"
+    },
+    {
+      "id": "collections-10",
+      "name": "솔리테어 스터드 이어링",
+      "nameEn": "Solitaire Stud Earrings",
+      "type": "earring",
+      "image": "/images/Jewelries/jewelry-18.webp"
+    },
+    {
+      "id": "collections-11",
+      "name": "파베 후프 이어링",
+      "nameEn": "Pavé Hoop Earrings",
+      "type": "earring",
+      "image": "/images/Jewelries/jewelry-31.webp"
+    }
   ],
   "fw-collections": [
-    { "id": "fw-collections-0",  "name": "F/W 시그니처 링",    "nameEn": "F/W Signature Ring"          },
-    { "id": "fw-collections-1",  "name": "다크 골드 밴드",      "nameEn": "Dark Gold Band"              },
-    { "id": "fw-collections-2",  "name": "블랙 스피넬 링",      "nameEn": "Black Spinel Ring"           },
-    { "id": "fw-collections-3",  "name": "브론즈 텍스처 링",    "nameEn": "Bronze Texture Ring"         },
-    { "id": "fw-collections-4",  "name": "체스트넛 레이어 링",  "nameEn": "Chestnut Layer Ring"         },
-    { "id": "fw-collections-5",  "name": "오닉스 솔리테어",     "nameEn": "Onyx Solitaire"              },
-    { "id": "fw-collections-6",  "name": "코퍼 멜트 링",        "nameEn": "Copper Melt Ring"            },
-    { "id": "fw-collections-7",  "name": "다크 번트 밴드",      "nameEn": "Dark Burnt Band"             },
-    { "id": "fw-collections-8",  "name": "윈터 프로스트 링",    "nameEn": "Winter Frost Ring"           },
-    { "id": "fw-collections-9",  "name": "에보니 아치 링",      "nameEn": "Ebony Arch Ring"             },
-    { "id": "fw-collections-10", "name": "스모키 쿼츠 링",     "nameEn": "Smoky Quartz Ring"           },
-    { "id": "fw-collections-11", "name": "차콜 슬림 밴드",      "nameEn": "Charcoal Slim Band"          }
+    {
+      "id": "fw-collections-0",
+      "name": "배깃 이터니티 밴드",
+      "nameEn": "Baguette Eternity Band",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-27.webp"
+    },
+    {
+      "id": "fw-collections-1",
+      "name": "스플릿 샹크 링",
+      "nameEn": "Split-Shank Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-30.webp"
+    },
+    {
+      "id": "fw-collections-2",
+      "name": "프린세스 컷 링",
+      "nameEn": "Princess-Cut Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-34.webp"
+    },
+    {
+      "id": "fw-collections-3",
+      "name": "스타버스트 링",
+      "nameEn": "Starburst Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-22.webp"
+    },
+    {
+      "id": "fw-collections-4",
+      "name": "골드 헤일로 링",
+      "nameEn": "Gold Halo Ring",
+      "type": "ring",
+      "image": "/images/Jewelries/jewelry-25.webp"
+    },
+    {
+      "id": "fw-collections-5",
+      "name": "스타 라인 네크리스",
+      "nameEn": "Star Line Necklace",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-17.webp"
+    },
+    {
+      "id": "fw-collections-6",
+      "name": "클러스터 펜던트",
+      "nameEn": "Cluster Pendant",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-21.webp"
+    },
+    {
+      "id": "fw-collections-7",
+      "name": "레이어드 펜던트",
+      "nameEn": "Layered Pendant",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-23.webp"
+    },
+    {
+      "id": "fw-collections-8",
+      "name": "헤리티지 네크리스",
+      "nameEn": "Heritage Necklace",
+      "type": "necklace",
+      "image": "/images/Jewelries/jewelry-28.webp"
+    },
+    {
+      "id": "fw-collections-9",
+      "name": "라운드 스터드 이어링",
+      "nameEn": "Round Stud Earrings",
+      "type": "earring",
+      "image": "/images/Jewelries/jewelry-32.webp"
+    },
+    {
+      "id": "fw-collections-10",
+      "name": "헤일로 스터드 이어링",
+      "nameEn": "Halo Stud Earrings",
+      "type": "earring",
+      "image": "/images/Jewelries/jewelry-33.webp"
+    },
+    {
+      "id": "fw-collections-11",
+      "name": "파베 뱅글",
+      "nameEn": "Pavé Bangle",
+      "type": "bracelet",
+      "image": "/images/Jewelries/jewelry-06.webp"
+    }
   ]
 }

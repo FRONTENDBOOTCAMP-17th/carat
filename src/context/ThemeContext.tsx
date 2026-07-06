@@ -22,10 +22,12 @@ function detectOsTheme(): Theme {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");
 
+  // 마운트 시 1회만: SSR 초기값("dark")을 localStorage/OS 감지값으로 보정하는 초기화 패턴
   useEffect(() => {
     const stored = localStorage.getItem("prisme_theme") as Theme | null;
     const hasUserPref = stored === "light" || stored === "dark";
     const resolved = hasUserPref ? stored : detectOsTheme();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setThemeState(resolved);
     document.documentElement.setAttribute("data-theme", resolved);
 

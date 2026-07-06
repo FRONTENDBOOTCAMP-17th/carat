@@ -19,6 +19,8 @@ export default function Navbar() {
   const wishlistLinkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
+    // 로그아웃(user 변경) 시 열려 있던 유저 메뉴를 닫는 의도적 동기화
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!user) setIsUserMenuOpen(false);
   }, [user]);
 

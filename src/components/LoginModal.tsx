@@ -65,7 +65,9 @@ export default function LoginModal() {
   }
 
   useEffect(() => {
+    // 모달이 열릴 때 폼 상태를 초기화하는 의도적 리셋
     if (isLoginModalOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMode(modalMode);
       setName(""); setEmail(""); setPassword(""); setConfirmPassword("");
       setShowPassword(false); setShowConfirmPassword(false);

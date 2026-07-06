@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLang } from "@/context/LanguageContext";
+import { productImage } from "@/lib/productImages";
 
 type CollectionCardProps = {
   id: string;
@@ -33,7 +35,15 @@ export default function CollectionCard({ id, title, category }: CollectionCardPr
       onKeyDown={(e) => { if (e.key === "Enter") router.push(`/products/${id}`); }}
     >
       <div className="relative mb-4">
-        <div className="aspect-4/5 bg-surface-elevated" role="img" aria-label={t.productCard.collectionImageAlt(title)} />
+        <div className="relative aspect-4/5 bg-surface-elevated overflow-hidden">
+          <Image
+            src={productImage(id)}
+            alt={t.productCard.collectionImageAlt(title)}
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </div>
         <button
           onClick={handleWishlist}
           className={`absolute top-2 right-2 size-11 flex items-center justify-center transition-[opacity,color] duration-200 ${
