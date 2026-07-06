@@ -1,8 +1,12 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, Environment, Lightformer } from "@react-three/drei";
-import { useEffect, useMemo, useRef } from "react";
+import {
+  useGLTF,
+  Environment,
+  MeshRefractionMaterial,
+} from "@react-three/drei";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { ArrowDown } from "lucide-react";
 import { useLang } from "@/context/LanguageContext";
@@ -27,6 +31,125 @@ function ClearColor() {
   return null;
 }
 
+// Procedural achromatic studio envs (equirectangular canvas), tuned per material need:
+//   - Gems (forMetal=false): near-black surround + soft white softbox blobs. MeshRefractionMaterial
+//     ray-traces this crisply → bright/dark facet contrast = sparkle. Light mode adds dark reflectors
+//     so facets keep a dark side against the bright page.
+//   - Metal (forMetal=true): a vertical studio "sweep" gradient + SHARP-edged rectangular softboxes.
+//     A near-mirror reflecting a single flat colour reads as cheap grey plastic (no variation); the
+//     gradient gives the curved band a light→dark sweep and the crisp rectangles land as real
+//     polished-metal highlight streaks.
+function buildStudioEquirect(isLight: boolean, forMetal: boolean) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 2048;
+  canvas.height = 1024;
+  const ctx = canvas.getContext("2d")!;
+
+  const finish = () => {
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  };
+
+  if (forMetal) {
+    const grad = ctx.createLinearGradient(0, 0, 0, 1024);
+    if (isLight) {
+      grad.addColorStop(0, "#eeeeee");
+      grad.addColorStop(0.5, "#c2c2c2");
+      grad.addColorStop(1, "#8c8c8c");
+    } else {
+      grad.addColorStop(0, "#565656");
+      grad.addColorStop(0.5, "#262626");
+      grad.addColorStop(1, "#0d0d0d");
+    }
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 2048, 1024);
+    // soft-but-defined rectangular softboxes → crisp reflection streaks on the polished band
+    const box = (x: number, y: number, w: number, h: number, style: string) => {
+      ctx.save();
+      ctx.filter = "blur(7px)";
+      ctx.fillStyle = style;
+      ctx.fillRect(x, y, w, h);
+      ctx.restore();
+    };
+    box(180, 110, 560, 300, "#ffffff");
+    box(1180, 170, 660, 240, "#ffffff");
+    box(770, 470, 520, 110, "#ffffff");
+    if (isLight) {
+      // strong dark reflectors → the polished band shows deep dark reflection zones (contrast/form)
+      // instead of a uniform white field. Without these, a mirror on a bright env = white plastic.
+      box(720, 430, 600, 300, "rgba(0,0,0,0.8)");
+      box(150, 640, 480, 320, "rgba(0,0,0,0.72)");
+      box(1560, 790, 400, 260, "rgba(0,0,0,0.74)");
+    }
+    // crisp thin bars (hard edges read as bright lines sweeping across the band)
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(120, 700, 1000, 9);
+    ctx.fillRect(1280, 640, 620, 7);
+    return finish();
+  }
+
+  ctx.fillStyle = isLight ? "#bebebe" : "#0a0a0a";
+  ctx.fillRect(0, 0, 2048, 1024);
+  const blob = (x: number, y: number, r: number, a: number, dark = false) => {
+    const c = dark ? "0,0,0" : "255,255,255";
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(${c},${a})`);
+    g.addColorStop(1, `rgba(${c},0)`);
+    ctx.fillStyle = g;
+    ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  };
+  // bright key/fill softboxes + small sparkle sources (both themes)
+  blob(540, 300, 340, 1);
+  blob(1460, 350, 300, 0.9);
+  blob(1024, 150, 520, 0.7);
+  blob(300, 640, 120, 1);
+  blob(1780, 560, 130, 0.95);
+  blob(1180, 760, 90, 1);
+  blob(760, 820, 70, 0.9);
+  // light mode only: strong dark reflectors so facets get a deep dark side against the bright
+  // surround — otherwise the colorless stones refract only light tones and read as white plastic.
+  if (isLight) {
+    blob(760, 380, 320, 0.92, true);
+    blob(1450, 560, 340, 0.88, true);
+    blob(320, 720, 260, 0.85, true);
+    blob(1780, 240, 240, 0.82, true);
+  }
+  return finish();
+}
+
+// Must run inside <Canvas> (client-only) so `document` is available. Rebuilds on theme switch.
+// Returns two envs: a dark one the gems refract (crisp), a brighter one the metal reflects.
+function useStudioEnvMaps() {
+  const [isLight, setIsLight] = useState(
+    () =>
+      typeof document !== "undefined" &&
+      document.documentElement.dataset.theme === "light",
+  );
+  useEffect(() => {
+    const update = () =>
+      setIsLight(document.documentElement.dataset.theme === "light");
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    return () => observer.disconnect();
+  }, []);
+  const gemEnv = useMemo(() => buildStudioEquirect(isLight, false), [isLight]);
+  const metalEnv = useMemo(() => buildStudioEquirect(isLight, true), [isLight]);
+  useEffect(
+    () => () => {
+      gemEnv.dispose();
+      metalEnv.dispose();
+    },
+    [gemEnv, metalEnv],
+  );
+  return { gemEnv, metalEnv };
+}
+
 // Returns false during SSR (window absent) — treated as "supported" until client confirms otherwise.
 function supportsWebGL(): boolean {
   if (typeof window === "undefined") return true;
@@ -40,6 +163,11 @@ function supportsWebGL(): boolean {
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
+}
+
+// Gentle symmetric ease — smooth accel/decel without the flat, snappy feel of cubic at the ends.
+function easeInOutSine(t: number) {
+  return -(Math.cos(Math.PI * t) - 1) / 2;
 }
 
 type MousePos = { x: number; y: number };
@@ -60,18 +188,19 @@ function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
     rimSideRef.current?.position.set(2 - mx * 0.8, 1 + my * 0.3, -3);
   });
 
-  // The Environment (HDRI) is the primary light — it already provides key+fill. Stacking strong
-  // direct lights on top blows the metal out to flat white, so these are kept low: just small
-  // mouse-tracked speculars that add a moving glint on the band. Neutral white per the brief.
+  // The metal gets its body tone + reflections from metalEnv; these just add subtle moving speculars.
+  // No ambient light on purpose — a flat ambient lifts the metal's blacks and flattens the contrast.
   return (
     <>
-      {/* Key glint — front-left */}
+      {/* Key — front-left */}
       <pointLight
         ref={keyRef}
         position={[-2.5, 4, 2]}
-        intensity={8}
+        intensity={9}
         color="#ffffff"
       />
+      {/* Fill — front-right */}
+      <pointLight position={[3, 1, 3]} intensity={4} color="#ffffff" />
       {/* Rim — edge separation on the band */}
       <pointLight
         ref={rimMainRef}
@@ -89,38 +218,58 @@ function Lights({ mouseRef }: { mouseRef: React.RefObject<MousePos> }) {
   );
 }
 
-// Shared diamond material for all transmission stones. GLB loader chain is unreliable for
-// KHR_materials_transmission, so we drive meshPhysicalMaterial directly (ior matches the GLB's 2.42).
+// Diamond-specific material. Unlike buffer-based transmission (soft/hazy on tiny facets, and needs
+// bright geometry behind the gem), MeshRefractionMaterial ray-traces the envMap through the stone's
+// BVH — crisp per-facet brilliance straight from the studio env, no backdrop required. The drei
+// wrapper builds the BVH from this mesh's geometry automatically.
 function Diamond({
   geometry,
   position,
   quaternion,
+  envMap,
+  bounces = 3,
+  aberrationStrength = 0.02,
 }: {
   geometry: THREE.BufferGeometry;
   position?: THREE.Vector3;
   quaternion?: THREE.Quaternion;
+  envMap: THREE.Texture;
+  // The tiny pave melee are a much denser brilliant cut than the chunky marquises, so at full
+  // bounces + aberration they scintillate far too busily and clash. Lower values calm them down.
+  bounces?: number;
+  aberrationStrength?: number;
 }) {
   return (
     <mesh geometry={geometry} position={position} quaternion={quaternion}>
-      <meshPhysicalMaterial
-        transmission={1}
-        ior={2.417}
-        roughness={0}
-        metalness={0}
-        thickness={0.5}
-        dispersion={4}
-        envMapIntensity={1.5}
+      <MeshRefractionMaterial
+        envMap={envMap}
+        bounces={bounces}
+        ior={2.42}
+        fresnel={1}
+        aberrationStrength={aberrationStrength}
+        fastChroma
         color="#ffffff"
-        side={THREE.FrontSide}
       />
     </mesh>
   );
 }
 
-function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
+function Ring({
+  progressRef,
+  mouseRef,
+  envMap,
+}: {
+  progressRef: React.RefObject<number>;
+  mouseRef: React.RefObject<MousePos>;
+  envMap: THREE.Texture;
+}) {
   const groupRef = useRef<THREE.Group>(null);
+  const tiltRef = useRef<THREE.Group>(null);
+  const spinRef = useRef<THREE.Group>(null);
+  const rollRef = useRef<THREE.Group>(null);
   const innerRef = useRef<THREE.Group>(null);
   const smooth = useRef(0);
+  const mouseSmooth = useRef<MousePos>({ x: 0, y: 0 });
   const { viewport } = useThree();
   const { nodes } = useGLTF("/models/Hero_Ring.glb") as unknown as {
     nodes: {
@@ -134,75 +283,132 @@ function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
     };
   };
 
-  useFrame(() => {
-    if (!innerRef.current || !groupRef.current) return;
-    smooth.current += (progressRef.current - smooth.current) * 0.06;
+  useFrame((state) => {
+    if (
+      !innerRef.current ||
+      !groupRef.current ||
+      !tiltRef.current ||
+      !spinRef.current ||
+      !rollRef.current
+    )
+      return;
+    smooth.current += (progressRef.current - smooth.current) * 0.055;
     const p = smooth.current;
-    const revealP = easeOutCubic(Math.min(Math.max(p / 0.55, 0), 1));
-    const moveP = easeOutCubic(Math.min(Math.max((p - 0.5) / 0.4, 0), 1));
-    // 회전: 초기엔 가파르게 누운 각도 → 정면에 가까운 각도
-    const rotX = Math.PI * -0.4 - revealP * Math.PI * 0.3;
-    const rotY = revealP * Math.PI * 0.1 + moveP * Math.PI * 0.12;
-    // 화면 평면(시선축) 기울기 — 양수 = 반시계. group에 적용해야 보임
-    // crownRoll: 첫 프레임에서 크라운(스톤)이 우상단을 향하도록 주는 초기 롤. revealP 진행 시 0으로 페이드해 essential 최종 포즈는 그대로.
-    const crownRoll = Math.PI;
-    const tiltZ =
-      0.6 + Math.sin(revealP * Math.PI) * 0.06 + crownRoll * (1 - revealP);
-    // 크기: 초기엔 화면 가득(heroScale) → 기준 크기(baseScale)로 축소
+    const t = state.clock.elapsedTime;
+
+    // One graceful journey: hero pose (lower-left, screen-filling) → settled beside ESSENTIAL
+    // COLLECTION on the right. Spread across most of the scroll and eased in-out so the move is slow
+    // and continuous rather than snapping. j drives position, Z roll and scale together.
+    const j = easeInOutSine(Math.min(Math.max((p - 0.05) / 0.85, 0), 1));
+
+    // Gentle position float so it's never dead-still (the turntable spin does most of the work).
+    const idleBob = Math.sin(t * 0.5) * 0.03;
+
+    // Scale: fills the screen at the hero, eases down to base size as it travels.
     const baseScale = Math.max(0.4, Math.min(1, viewport.width / 4.0));
     const heroScale = Math.max(baseScale * 2.7, viewport.height / 2.4);
-    const scale = heroScale + (baseScale - heroScale) * revealP;
-    // 이동: 축소가 끝난 뒤(baseScale 기준) 오른쪽으로 이동
+    groupRef.current.scale.setScalar(heroScale + (baseScale - heroScale) * j);
+
+    // Mouse parallax on the OUTER tilt group (screen space) — applied above the roll/pitch below, so
+    // "mouse up → ring leans back toward the cursor" stays intuitive no matter how the journey has
+    // rolled/pitched the ring. Tilting it shifts which facets catch the bright env panels, so
+    // brilliance travels across the stones (they're refraction-based and ignore lights).
+    mouseSmooth.current.x +=
+      (mouseRef.current.x - mouseSmooth.current.x) * 0.07;
+    mouseSmooth.current.y +=
+      (mouseRef.current.y - mouseSmooth.current.y) * 0.07;
+    tiltRef.current.rotation.x = -mouseSmooth.current.y * 0.12;
+    tiltRef.current.rotation.y = mouseSmooth.current.x * 0.18;
+
+    // Scroll-driven turntable around the vertical (Y) axis, applied ABOVE the static roll/lean so the
+    // first frame keeps the exact reference composition (spin = 0 there), then the whole ring swings
+    // round so the stones turn to face screen-left as it settles.
+    spinRef.current.rotation.set(0, j * Math.PI * -0.45, 0);
+
+    // Static first-frame pose (the reference composition): Z roll = diagonal / crown up-right, held
+    // through the journey; X lean = look slightly down onto the crown.
+    rollRef.current.rotation.set(0, 0, 0.6 + Math.PI);
+    innerRef.current.rotation.set(Math.PI * -0.4, 0, 0);
+
+    // Position: hero → settled on the RIGHT, while the gems turn to face left (toward the text) — so
+    // the ring sits right of centre looking back across the composition.
     const ringExtent = 1.35 * baseScale;
     const maxPosX = Math.max(0, viewport.width * 0.5 - ringExtent);
-    // 첫 프레임(hero)에서 반지 몸통을 좌하단으로 배치 — revealP 진행 시 0으로 사라짐
-    const heroOffsetX = -0.7 * (1 - revealP);
-    const heroOffsetY = -1.2 * (1 - revealP);
-    const posX = Math.min(moveP * viewport.width * 0.3, maxPosX) + heroOffsetX;
-    const posY = heroOffsetY - moveP * 0.15 * baseScale;
-    // 반지 포즈(눕힘/좌우)는 inner group에
-    innerRef.current.rotation.x = rotX;
-    innerRef.current.rotation.y = rotY;
-    // 화면 평면 기울기·크기·위치는 outer group에
-    groupRef.current.rotation.z = tiltZ;
-    groupRef.current.scale.setScalar(scale);
-    groupRef.current.position.x = posX;
-    groupRef.current.position.y = posY;
+    const settledX = Math.min(viewport.width * 0.22, maxPosX);
+    groupRef.current.position.x = -0.7 + (settledX + 0.7) * j;
+    groupRef.current.position.y =
+      -1.2 + (-0.15 * baseScale + 1.2) * j + idleBob;
   });
 
   return (
+    // groupRef: scale + position (scroll) · tiltRef: mouse parallax (screen space) · rollRef: Z roll
+    // (scroll) · innerRef: pitch (scroll). Split so parallax sits above the roll/pitch = screen-intuitive.
     <group ref={groupRef}>
-      <group ref={innerRef}>
-        {/* base orientation: Hero_Ring lies flat in the XZ plane; stand it up to face the camera */}
-        <group rotation={[Math.PI / 2, 0, 0]}>
-          {/* normalize: model spans ≈12.77 GLB units across → bring it to ≈2.7 (matches the reveal scale math) */}
-          <group scale={0.21}>
-            {/* centering offset: GLB global bbox center is at approx (19.245, 0, 0.769) */}
-            <group position={[-19.245, 0, -0.769]}>
-              {/* Band & housing — keep GLB metallic materials as-is */}
-              <mesh
-                geometry={nodes.Band.geometry}
-                material={nodes.Band.material}
-              />
-              <mesh
-                geometry={nodes.MainStoneHousing.geometry}
-                material={nodes.MainStoneHousing.material}
-              />
-              {/* Transmission stones — verts carry their own placement (identity node transform) */}
-              <Diamond geometry={nodes.MainStone.geometry} />
-              <Diamond geometry={nodes.SideStone.geometry} />
-              <Diamond geometry={nodes.SideStoneRight.geometry} />
-              {/* Pave — node carries its own translation+quaternion in GLB local space */}
-              <Diamond
-                geometry={nodes.PaveLeft.geometry}
-                position={nodes.PaveLeft.position}
-                quaternion={nodes.PaveLeft.quaternion}
-              />
-              <Diamond
-                geometry={nodes.PaveRight.geometry}
-                position={nodes.PaveRight.position}
-                quaternion={nodes.PaveRight.quaternion}
-              />
+      <group ref={tiltRef}>
+        <group ref={spinRef}>
+          <group ref={rollRef}>
+            <group ref={innerRef}>
+              {/* base orientation: Hero_Ring lies flat in the XZ plane; stand it up to face the camera */}
+              <group rotation={[Math.PI / 2, 0, 0]}>
+                {/* normalize: model spans ≈12.77 GLB units across → bring it to ≈2.7 (matches the reveal scale math) */}
+                <group scale={0.21}>
+                  {/* centering offset: GLB global bbox center is at approx (19.245, 0, 0.769) */}
+                  <group position={[-19.245, 0, -0.769]}>
+                    {/* Band & housing — bright polished platinum, near-mirror (roughness 0.03). Roughness
+                  blurs the env and washes the reflection contrast out, so we keep it minimal; the
+                  metalEnv's mid-grey floor gives the body tone and the bright panels read as crisp
+                  streaks. The model's own chamfer (not roughness) handles the edge softening now. */}
+                    <mesh geometry={nodes.Band.geometry}>
+                      <meshStandardMaterial
+                        color="#cfcfcf"
+                        metalness={1}
+                        roughness={0}
+                        envMapIntensity={1}
+                      />
+                    </mesh>
+                    <mesh geometry={nodes.MainStoneHousing.geometry}>
+                      <meshStandardMaterial
+                        color="#cfcfcf"
+                        metalness={1}
+                        roughness={0}
+                        envMapIntensity={1}
+                      />
+                    </mesh>
+                    {/* Transmission stones — verts carry their own placement (identity node transform) */}
+                    <Diamond
+                      geometry={nodes.MainStone.geometry}
+                      envMap={envMap}
+                    />
+                    <Diamond
+                      geometry={nodes.SideStone.geometry}
+                      envMap={envMap}
+                    />
+                    <Diamond
+                      geometry={nodes.SideStoneRight.geometry}
+                      envMap={envMap}
+                    />
+                    {/* Pave — node carries its own translation+quaternion in GLB local space.
+                      Calmed down (fewer bounces, no chromatic aberration) so the dense melee doesn't
+                      out-sparkle and clash with the low-poly marquises. */}
+                    <Diamond
+                      geometry={nodes.PaveLeft.geometry}
+                      position={nodes.PaveLeft.position}
+                      quaternion={nodes.PaveLeft.quaternion}
+                      envMap={envMap}
+                      bounces={2}
+                      aberrationStrength={0.01}
+                    />
+                    <Diamond
+                      geometry={nodes.PaveRight.geometry}
+                      position={nodes.PaveRight.position}
+                      quaternion={nodes.PaveRight.quaternion}
+                      envMap={envMap}
+                      bounces={2}
+                      aberrationStrength={0.01}
+                    />
+                  </group>
+                </group>
+              </group>
             </group>
           </group>
         </group>
@@ -212,6 +418,28 @@ function Ring({ progressRef }: { progressRef: React.RefObject<number> }) {
 }
 
 useGLTF.preload("/models/Hero_Ring.glb");
+
+// Scene lives inside <Canvas> (client-only), so the env map — which touches `document` — is built
+// here rather than during SSR. The same studio env feeds both the metal reflections and the gems.
+function Scene({
+  progressRef,
+  mouseRef,
+}: {
+  progressRef: React.RefObject<number>;
+  mouseRef: React.RefObject<MousePos>;
+}) {
+  const { gemEnv, metalEnv } = useStudioEnvMaps();
+  return (
+    <>
+      <ClearColor />
+      {/* metalEnv (mid-grey) drives the band's reflections via scene.environment; the gems refract
+          their own darker env for crisp contrast. background={false} keeps the page surface visible. */}
+      <Environment map={metalEnv} background={false} />
+      <Lights mouseRef={mouseRef} />
+      <Ring progressRef={progressRef} mouseRef={mouseRef} envMap={gemEnv} />
+    </>
+  );
+}
 
 export default function Hero() {
   const { t } = useLang();
@@ -267,10 +495,12 @@ export default function Hero() {
         progressRef.current = p;
         const heroFade = Math.min(p / 0.3, 1);
         if (overlayRef.current) {
+          // Dark mode: a real scrim (0.4). Light mode: a bright scrim on the bright page looks cheap,
+          // so keep it barely-there (~5%) and let the (also-reduced) text halo carry legibility.
           const isLight = document.documentElement.dataset.theme === "light";
-          overlayRef.current.style.opacity = isLight
-            ? "0"
-            : String(heroFade * 0.4);
+          overlayRef.current.style.opacity = String(
+            heroFade * (isLight ? 0.02 : 0.4),
+          );
         }
         if (heroTextRef.current) {
           heroTextRef.current.style.opacity = String(1 - heroFade);
@@ -324,80 +554,20 @@ export default function Hero() {
             role="img"
             aria-label={t.hero.canvasLabel}
             onCreated={({ gl }) => {
-              gl.toneMapping = THREE.ACESFilmicToneMapping;
+              // Neutral (Khronos PBR Neutral) instead of ACES: ACES rolls off highlights hard,
+              // compressing the extreme white↔black contrast that makes the stones & polished metal
+              // pop. Neutral preserves that punch — better for product/jewelry.
+              gl.toneMapping = THREE.NeutralToneMapping;
               gl.toneMappingExposure = 1.1;
               window.dispatchEvent(new Event("prisme:hero-ready"));
             }}
           >
-            <ClearColor />
-            {/* Neutral-white studio env (real-jewelry-lighting research):
-                - A light-grey surround = clean lightbox base. Transmission reads as *clear* only
-                  when there's bright neutral light BEHIND the gem to refract; a near-black surround
-                  made the diamond show black through it (looked opaque).
-                - Pure-white softboxes act as the key/fill "panels"; being brighter than the grey
-                  surround they still give crisp facet highlights (sparkle) without color cast.
-                - The darker gaps between panels are the "black-card" negative fill that adds the
-                  dark facets diamonds need for contrast.
-                Lightformers auto-face the origin, so only position/scale matter. */}
-            <Environment resolution={512} background={false}>
-              {/* Mid-grey surround (not near-black, not bright): dark enough that the mirror-polished
-                  band reflects *structure* instead of a flat white field, light enough that the gems
-                  still transmit a clean neutral tone. Bright white panels below are the actual key/fill. */}
-              <color attach="background" args={["#565656"]} />
-              {/* Key softbox — large, front-left */}
-              <Lightformer
-                form="rect"
-                intensity={2.2}
-                color="#ffffff"
-                position={[-5, 4, 3]}
-                scale={[8, 10, 1]}
-              />
-              {/* Fill softbox — front-right, softer (≈half the key) */}
-              <Lightformer
-                form="rect"
-                intensity={1.2}
-                color="#ffffff"
-                position={[5, 2, 3]}
-                scale={[6, 8, 1]}
-              />
-              {/* Overhead strip — top highlight rolling across the crown */}
-              <Lightformer
-                form="rect"
-                intensity={2}
-                color="#ffffff"
-                position={[0, 6, 1]}
-                scale={[10, 2, 1]}
-              />
-              {/* Back light-table — sits behind the gems so refracted rays reach a bright source,
-                  which is what makes the transmission read as *clear* rather than dark/opaque. */}
-              <Lightformer
-                form="rect"
-                intensity={1.8}
-                color="#ffffff"
-                position={[0, 0, -6]}
-                scale={[12, 12, 1]}
-              />
-              {/* Small bright accents → crisp point-source sparkle on facets */}
-              <Lightformer
-                form="ring"
-                intensity={4}
-                color="#ffffff"
-                position={[3, -1, 4]}
-                scale={1.2}
-              />
-              <Lightformer
-                form="circle"
-                intensity={3}
-                color="#ffffff"
-                position={[-3, 0, 4]}
-                scale={1}
-              />
-            </Environment>
-            <Lights mouseRef={mouseRef} />
-            <Ring progressRef={progressRef} />
+            <Scene progressRef={progressRef} mouseRef={mouseRef} />
           </Canvas>
         ) : (
-          // WebGL unavailable fallback — replace /images/ring-hero.webp with a still render export
+          // WebGL unavailable fallback — replace /images/ring-hero.webp with a still render export.
+          // 데코레이션용 fallback(WebGL 미지원 시에만 노출)이라 next/image 최적화 대상이 아님.
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src="/images/ring-hero.webp"
             alt=""
@@ -406,10 +576,17 @@ export default function Hero() {
           />
         )}
 
+        {/* Scrim: a soft radial of the page-surface colour (auto light/dark), strongest behind the
+            centred text and fading to transparent before the frame edges — keeps the ring's impact
+            at the edges while lifting text contrast. Opacity is scroll-driven in animate(). */}
         <div
           ref={overlayRef}
-          className="absolute inset-0 bg-surface-base"
-          style={{ opacity: 0 }}
+          className="absolute inset-0"
+          style={{
+            opacity: 0,
+            background:
+              "radial-gradient(ellipse 75% 75% at 50% 45%, var(--color-surface-base) 0%, transparent 70%)",
+          }}
           aria-hidden="true"
         />
 
@@ -417,6 +594,9 @@ export default function Hero() {
         <div
           ref={heroTextRef}
           className="absolute inset-0 flex flex-col items-center justify-center text-content-primary"
+          style={{
+            textShadow: "var(--hero-text-halo)",
+          }}
         >
           <h1
             className="mb-5 text-5xl sm:text-6xl lg:text-7xl font-medium"
@@ -433,7 +613,10 @@ export default function Hero() {
         <div
           ref={essentialTextRef}
           className="absolute top-0 bottom-0 left-4 sm:left-[7%] lg:left-[8%] right-4 sm:right-6 lg:right-8 flex flex-col text-content-primary"
-          style={{ opacity: 0 }}
+          style={{
+            opacity: 0,
+            textShadow: "var(--hero-text-halo)",
+          }}
         >
           <div className="mt-[13vh]">
             <p className="mb-2 sm:mb-3 text-xs tracking-descriptor text-content-secondary">

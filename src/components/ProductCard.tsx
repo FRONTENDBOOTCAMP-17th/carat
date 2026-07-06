@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLang } from "@/context/LanguageContext";
+import { productImage } from "@/lib/productImages";
 
 type ProductCardProps = {
   id: string;
@@ -36,7 +38,15 @@ export default function ProductCard({ id, name, description, category, href }: P
       onKeyDown={(e) => { if (e.key === "Enter") router.push(navigateTo); }}
     >
       <div className="relative mb-4">
-        <div className="aspect-square bg-surface-input" role="img" aria-label={t.productCard.imageAlt(name)} />
+        <div className="relative aspect-square bg-surface-input overflow-hidden">
+          <Image
+            src={productImage(id)}
+            alt={t.productCard.imageAlt(name)}
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </div>
         <button
           onClick={handleWishlist}
           className={`absolute top-2 right-2 size-11 flex items-center justify-center transition-[opacity,color] duration-200 ${

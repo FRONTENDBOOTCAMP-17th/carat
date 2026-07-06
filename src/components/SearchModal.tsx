@@ -23,12 +23,14 @@ export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onCl
     return [...direct, ...related].slice(0, 6);
   }, [query]);
 
-  // 쿼리 바뀌면 선택 초기화
+  // 쿼리 바뀌면 선택 초기화 (의도적 리셋)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setActiveIndex(-1); }, [query]);
 
-  // 열릴 때 포커스, 닫힐 때 상태 초기화
+  // 열릴 때 포커스, 닫힐 때 상태 초기화 (의도적 리셋)
   useEffect(() => {
     if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setQuery("");
       setActiveIndex(-1);
       return;

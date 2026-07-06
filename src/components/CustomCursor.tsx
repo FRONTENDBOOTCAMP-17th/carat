@@ -40,7 +40,7 @@ export default function CustomCursor() {
     let initialized = false;
     let wasHovering = false;
     let isAutoScrolling = false;
-    let originX = 0, originY = 0;
+    let originY = 0;
 
     const showNormalCursors = () => {
       if (!initialized) return;
@@ -63,7 +63,6 @@ export default function CustomCursor() {
     };
 
     const startAutoScroll = (x: number, y: number) => {
-      originX = x;
       originY = y;
       isAutoScrolling = true;
       autoScroll.style.transform = `translate(${x - halfAuto}px, ${y - halfAuto}px)`;
@@ -72,7 +71,6 @@ export default function CustomCursor() {
 
       const scrollLoop = () => {
         if (!isAutoScrolling) return;
-        const dx = mouseX - originX;
         const dy = mouseY - originY;
 
         autoScroll.toggleAttribute("data-up", dy < -DEAD_ZONE);

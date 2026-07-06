@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import PageShell from "@/components/PageShell";
 import WishlistButton from "@/components/WishlistButton";
 import BackButton from "@/components/BackButton";
 import RelatedScroll from "@/components/RelatedScroll";
 import Breadcrumb from "@/components/Breadcrumb";
 import { getProductById, getProductsByCategory } from "@/lib/products";
+import { productImage } from "@/lib/productImages";
 import { translations } from "@/lib/translations";
 import type { CategoryKey } from "@/lib/products";
 import type { Lang } from "@/lib/translations";
@@ -71,11 +73,16 @@ export default async function ProductPage({
         </nav>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-          <div
-            className="aspect-square bg-surface-input w-full"
-            role="img"
-            aria-label={t.productCard.imageAlt(product.name)}
-          />
+          <div className="relative aspect-square bg-surface-input w-full overflow-hidden">
+            <Image
+              src={productImage(product.id)}
+              alt={t.productCard.imageAlt(product.name)}
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+              priority
+            />
+          </div>
 
           <div className="flex flex-col">
             <p className="mb-3 text-xs tracking-label text-content-faint">

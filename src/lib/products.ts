@@ -6,6 +6,8 @@ export type RawProduct = {
   id: string;
   name: string;
   nameEn?: string;
+  type?: string;
+  image?: string;
 };
 
 export type Product = WishlistItem & {

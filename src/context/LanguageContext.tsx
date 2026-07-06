@@ -28,11 +28,14 @@ export function LanguageProvider({
 }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
 
+  // 마운트 시 1회만: SSR 초기값(initialLang)을 localStorage/OS 감지값으로 보정하는 초기화 패턴
   useEffect(() => {
     const stored = localStorage.getItem("prisme_lang") as Lang | null;
     const resolved = stored === "ko" || stored === "en" ? stored : detectOsLang();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (resolved !== lang) setLangState(resolved);
     document.documentElement.setAttribute("lang", resolved);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setLang = useCallback((l: Lang) => {

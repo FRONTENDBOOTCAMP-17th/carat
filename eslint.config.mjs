@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 리뷰어가 제공한 E2E 시나리오/테스트 (앱 소스 아님) — 린트 대상에서 제외
+    "review/**",
   ]),
 ]);
 

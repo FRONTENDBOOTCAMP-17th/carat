@@ -2,6 +2,10 @@
 
 가상의 주얼리 브랜드 PRISME를 주제로 제작한 프론트엔드 파이널 프로젝트입니다.
 
+**🔗 Live Demo — [project-carat.vercel.app](https://project-carat.vercel.app/)**
+
+![PRISME 대표 화면](public/images/README-Cover.webp)
+
 단순히 상품을 나열하는 이커머스가 아니라, 에디토리얼 매거진처럼 브랜드 경험 자체를 전달하는 방향으로 기획했습니다.
 
 브랜드명은 프랑스어로 프리즘을 뜻하는 _Prisme_ 에서 가져왔습니다. 하나의 소재도 빛과 시선의 각도에 따라 다른 인상을 만든다는 개념을 브랜드 아이덴티티에 반영했습니다.
@@ -20,6 +24,30 @@
 - 절제된 인터랙션
 
 을 통해 사용자가 브랜드를 탐색하는 과정 자체를 설계하는 데 집중했습니다.
+
+---
+
+## 3D 히어로 — 직접 제작한 에셋과 인터랙션
+
+홈 첫 화면의 반지는 외부에서 받아온 에셋이 아니라, **모델링부터 텍스처링, 스크롤 인터랙션까지 직접 제작**했습니다. 브랜드의 첫인상을 정지된 이미지가 아니라 스크롤에 반응하는 하나의 장면으로 설계하고 싶었기 때문입니다.
+
+### 모델링
+
+반지의 밴드·프롱·스톤 구조를 Blender로 직접 모델링하고, 카메라를 정면으로 마주 보도록 기본 자세를 잡았습니다.
+
+### 텍스처링 · 재질
+
+금속과 보석에 각각 PBR 재질을 입힌 뒤 glTF(`.glb`)로 내보냈습니다. 톤매핑은 ACES 대신 **Khronos PBR Neutral**을 선택했는데, ACES가 하이라이트를 강하게 눌러 스톤과 폴리시드 메탈 특유의 흑백 대비를 뭉개기 때문입니다. Neutral로 그 대비를 살려 주얼리다운 광택을 유지했습니다.
+
+### 씬 통합
+
+React Three Fiber + drei(`useGLTF`)로 모델을 로드하고, 스튜디오 환경맵과 BVH 기반 per-facet 반사를 적용해 별도 배경 없이도 각 면에서 광채가 살아나도록 구성했습니다. 모델은 `preload`로 미리 받아 첫 진입 시 지연을 줄였습니다.
+
+### 스크롤 애니메이팅
+
+스크롤 진행도를 `requestAnimationFrame` 루프에서 부드럽게 보간(lerp)해, 반지가 화면을 가로지르며 이동·회전(Z roll·pitch)하고 텍스트 레이아웃과 맞물리도록 만들었습니다. 여기에 마우스 움직임 기반 패럴랙스 틸트를 **스크롤 모션과 분리된 레이어**로 얹어, 화면 기준으로 자연스럽게 반응하도록 했습니다.
+
+`prefers-reduced-motion` 환경과 WebGL 미지원 환경에서는 각각 모션을 절제하거나 정지 이미지 폴백을 제공합니다.
 
 ---
 
@@ -235,11 +263,12 @@ touch 이후    → 필드별 실시간 유효성 재검사
 
 | 분야      | 기술                             |
 | --------- | -------------------------------- |
-| Framework | Next.js 16, React 19, TypeScript |
-| Styling   | Tailwind CSS v4                  |
-| 3D        | Three.js, React Three Fiber      |
-| Animation | Framer Motion                    |
-| Font      | Cinzel, Pretendard               |
+| Framework   | Next.js 16, React 19, TypeScript      |
+| Styling     | Tailwind CSS v4                       |
+| 3D 에셋     | Blender (모델링 · 텍스처링)           |
+| 3D 렌더링   | Three.js, React Three Fiber, drei     |
+| Animation   | Framer Motion                         |
+| Font        | Cinzel, Pretendard                    |
 
 ---
 
@@ -251,3 +280,9 @@ npm run dev
 ```
 
 브라우저에서 `http://localhost:3000` 으로 접속합니다.
+
+---
+
+## 라이선스
+
+[MIT](LICENSE) © 2026 Carat

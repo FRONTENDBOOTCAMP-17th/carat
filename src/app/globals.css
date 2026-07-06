@@ -38,6 +38,9 @@ html {
   /* Body */
   --c-bg: #09090b;
   --c-fg: #e4e4e7;
+
+  /* Hero text halo — background-coloured glow that lifts text off the ring (dark: full strength). */
+  --hero-text-halo: 0 0 18px var(--c-surface-base), 0 0 7px var(--c-surface-base);
 }
 
 /* oklch for supporting browsers */
@@ -83,6 +86,9 @@ html[data-theme="light"] {
 
   --c-bg: #fafafa;
   --c-fg: #18181b;
+
+  /* Light mode: near-invisible halo (~5%) — a strong white glow on the bright page looks cheap. */
+  --hero-text-halo: 0 0 6px color-mix(in srgb, var(--c-surface-base) 18%, transparent);
 }
 
 @supports (color: oklch(0% 0 0)) {
