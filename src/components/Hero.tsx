@@ -449,11 +449,18 @@ export default function Hero() {
   const progressRef = useRef(0);
   const mouseRef = useRef<MousePos>({ x: 0, y: 0 });
   const navRevealedRef = useRef(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const essentialTextRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
+  // The ring's per-pixel raytraced refraction has no reason to keep costing a frame budget once the
+  // 400vh section has fully scrolled past — without this the Canvas rAF loop (frameloop="always")
+  // runs forever for the rest of the page.
+  const [inView, setInView] = useState(true);
 
+  // Cheap, always-on: keeps target/mouseRef fresh so the scene doesn't jump when the rAF loop
+  // below resumes after re-entering view.
   useEffect(() => {
     const onScroll = () => {
       target.current = window.scrollY / (window.innerHeight * 3);
@@ -471,15 +478,36 @@ export default function Hero() {
         y: -(touch.clientY / window.innerHeight) * 2 + 1,
       };
     };
+    window.addEventListener("scroll", onScroll);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: "50% 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+
     let isMobile = window.innerWidth < 640;
     const onResize = () => {
       isMobile = window.innerWidth < 640;
     };
-    window.addEventListener("scroll", onScroll);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
-    onScroll();
 
     let frame: number;
     const prefersReducedMotion = window.matchMedia(
@@ -487,7 +515,10 @@ export default function Hero() {
     ).matches;
 
     if (prefersReducedMotion) {
-      window.dispatchEvent(new Event("prisme:nav-reveal"));
+      if (!navRevealedRef.current) {
+        navRevealedRef.current = true;
+        window.dispatchEvent(new Event("prisme:nav-reveal"));
+      }
     } else {
       const animate = () => {
         smooth.current += (target.current - smooth.current) * 0.08;
@@ -526,18 +557,16 @@ export default function Hero() {
     }
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [inView]);
 
   const [desc1, desc2] = t.hero.essentialDesc.split("\n");
 
   return (
     <section
+      ref={sectionRef}
       className="relative h-[400vh] bg-surface-base"
       aria-label={t.hero.sectionLabel}
     >
@@ -548,9 +577,12 @@ export default function Hero() {
             camera={{ position: [0, 0, 4], fov: 45 }}
             // alpha:false → Three.js가 transmission 패스를 흰색으로 클리어하는 milky 버그를 근본 차단.
             // 배경은 ClearColor가 테마별 surface 색으로 채워 화면상 동일하게 유지.
-            gl={{ alpha: false }}
+            // powerPreference: hybrid-GPU 노트북에서 브라우저가 내장 GPU를 고르면 이 정도의
+            // per-pixel raymarched refraction은 렉이 심해진다 — 디스크리트 GPU를 명시적으로 요청.
+            gl={{ alpha: false, powerPreference: "high-performance" }}
             dpr={[1, 2]}
             performance={{ min: 0.5 }}
+            frameloop={inView ? "always" : "never"}
             role="img"
             aria-label={t.hero.canvasLabel}
             onCreated={({ gl }) => {
