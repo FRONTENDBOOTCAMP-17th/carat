@@ -9,14 +9,35 @@ import * as THREE from "three";
 // journey (Hero.tsx) and the drag-to-orbit Essential Collection viewer (EssentialRingViewer.tsx)
 // both mount these instead of duplicating the studio lighting / material / geometry setup.
 
+// base/input hex duplicated from globals.css's --c-surface-base / --c-surface-input (light/dark)
+// rather than read live via getComputedStyle — CSS var lookups here would need to invert
+// getComputedStyle's oklch() serialization back into something THREE.Color.setStyle() can parse,
+// which isn't guaranteed across browsers. Hardcoding matches buildStudioEquirect's own convention.
+// stage: NOT a design-system token. surface-input is Tailwind's zinc family, which carries a faint
+// cool/blue cast — fine for form-field chrome, but reads as an unfinished "bluish grey" behind a
+// product shot. True R=G=B neutral (zero hue/saturation) avoids favoring any one metal tone and
+// matches the ecommerce-photography convention of a deliberately distinct, colorless product stage.
+const CLEAR_COLORS = {
+  base: { light: "#fafafa", dark: "#09090b" },
+  input: { light: "#d4d4d8", dark: "#3f3f46" },
+  stage: { light: "#d9d9d9", dark: "#2b2b2b" },
+} as const;
+
 // With gl={{ alpha:false }} the canvas is opaque, so its clear color shows as the background.
-// Keep it in sync with bg-surface-base per theme so the section looks seamless.
-export function ClearColor() {
+// variant="base" (default, Hero): matches bg-surface-base so the section blends into the page.
+// variant="stage" (Essential viewer): a deliberately distinct warm-neutral backdrop rather than
+// blending with the page (common product-photo convention).
+export function ClearColor({
+  variant = "base",
+}: {
+  variant?: keyof typeof CLEAR_COLORS;
+} = {}) {
   const { gl } = useThree();
   useEffect(() => {
     const update = () => {
       const isLight = document.documentElement.dataset.theme === "light";
-      gl.setClearColor(new THREE.Color(isLight ? "#fafafa" : "#09090b"), 1);
+      const { light, dark } = CLEAR_COLORS[variant];
+      gl.setClearColor(new THREE.Color(isLight ? light : dark), 1);
     };
     update();
     const observer = new MutationObserver(update);
@@ -25,7 +46,7 @@ export function ClearColor() {
       attributeFilter: ["data-theme"],
     });
     return () => observer.disconnect();
-  }, [gl]);
+  }, [gl, variant]);
   return null;
 }
 
@@ -124,7 +145,13 @@ export function buildStudioEquirect(isLight: boolean, forMetal: boolean) {
 // once at mount instead of rebuilding on every toggle: swapping to an already-baked texture is a
 // plain reference assignment, versus redrawing the equirect canvas and re-baking a fresh PMREM each
 // time the theme flips — that rebake (see metalEnv below) is what caused a visible relight lag.
-export function useStudioEnvMaps() {
+export function useStudioEnvMaps(
+  // The dark-theme gem env is a near-black surround by design (Hero wants crisp sparkle contrast
+  // against a dark page) — but a standalone product shot isn't ambient page decor, so the Essential
+  // viewer pins gemTheme to "light" regardless of the page theme so stones read clear/bright rather
+  // than going near-black. Metal still follows the real page theme (silver/gold/rose-gold band tone).
+  gemTheme?: "light" | "dark",
+) {
   const { gl } = useThree();
   const [isLight, setIsLight] = useState(
     () =>
@@ -175,8 +202,9 @@ export function useStudioEnvMaps() {
     [raw, pmrem],
   );
 
+  const gemIsLight = gemTheme ? gemTheme === "light" : isLight;
   return {
-    gemEnv: isLight ? raw.gemLight : raw.gemDark,
+    gemEnv: gemIsLight ? raw.gemLight : raw.gemDark,
     metalEnv: isLight ? pmrem.light : pmrem.dark,
   };
 }
@@ -316,10 +344,17 @@ export function RingModel({
   nodes,
   envMap,
   metalColor = "#cfcfcf",
+  // The achromatic studio env (buildStudioEquirect) was tuned for a neutral platinum/silver mirror,
+  // where a razor-sharp roughness=0 reflection reads as "expensive chrome." Tinting that same mirror
+  // gold/rose-gold exposes the trick — a colored perfect mirror on a colorless env reads as "plastic
+  // with a color filter." A touch of roughness breaks the hard mirror edge and reads as genuine
+  // polished metal instead. Left at 0 by default so Hero's tuned silver look is unaffected.
+  roughness = 0,
 }: {
   nodes: RingGLTFNodes;
   envMap: THREE.Texture;
   metalColor?: string;
+  roughness?: number;
 }) {
   return (
     // base orientation: Hero_Ring lies flat in the XZ plane; stand it up to face the camera
@@ -328,15 +363,13 @@ export function RingModel({
       <group scale={0.21}>
         {/* centering offset: GLB global bbox center is at approx (19.245, 0, 0.769) */}
         <group position={[-19.245, 0, -0.769]}>
-          {/* Band & housing — bright polished platinum, near-mirror (roughness 0.03). Roughness
-              blurs the env and washes the reflection contrast out, so we keep it minimal; the
-              metalEnv's mid-grey floor gives the body tone and the bright panels read as crisp
-              streaks. The model's own chamfer (not roughness) handles the edge softening now. */}
+          {/* Band & housing — bright polished metal, near-mirror by default. The model's own chamfer
+              (not roughness) handles the edge softening for the neutral Hero look. */}
           <mesh geometry={nodes.Band.geometry}>
             <meshStandardMaterial
               color={metalColor}
               metalness={1}
-              roughness={0}
+              roughness={roughness}
               envMapIntensity={1}
             />
           </mesh>
@@ -344,7 +377,7 @@ export function RingModel({
             <meshStandardMaterial
               color={metalColor}
               metalness={1}
-              roughness={0}
+              roughness={roughness}
               envMapIntensity={1}
             />
           </mesh>

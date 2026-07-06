@@ -8,10 +8,16 @@ import BackButton from "@/components/BackButton";
 import EssentialRingViewer from "@/components/EssentialRingViewer";
 import { useLang } from "@/context/LanguageContext";
 
+// swatch: 색상 선택 UI의 동그란 스와치 점 색 (원래 채도 유지 — 옵션 구분용이라 선명해야 함).
+// metal: 3D 뷰어 금속 재질에 실제로 먹이는 색 (metalness=1 → 이 색이 곧 반사색). 채도를 너무 높이면
+// 무채색 환경맵 위에서 "색 필터 씌운 거울"처럼 싸구려로 보이고(그래서 골드/로즈골드는 원래 채도의
+// 40%선), 반대로 명도를 너무 올리면(90%대) 반사에 색이 거의 안 남아 정반대로 색이 죽어버림 — PBR
+// 금속은 명도를 중간톤(약 70% 선)에 두고 채도로 색감을 살리는 쪽이 정석. 실버는 원래 무채색이라 그대로.
+// roughness는 별개 축 — swatch/metal과 무관하게 유지.
 const SWATCHES = {
-  silver:    { swatch: "#C8C8C8", tint: "rgba(200, 200, 210, 0.12)" },
-  gold:      { swatch: "#C9A84C", tint: "rgba(201, 168, 76, 0.12)" },
-  "rose-gold": { swatch: "#B76E79", tint: "rgba(183, 110, 121, 0.12)" },
+  silver:    { swatch: "#C8C8C8", metal: "#C8C8C8", tint: "rgba(200, 200, 210, 0.12)", roughness: 0 },
+  gold:      { swatch: "#C9A84C", metal: "#CDBF98", tint: "rgba(201, 168, 76, 0.12)", roughness: 0.12 },
+  "rose-gold": { swatch: "#B76E79", metal: "#DBBDC2", tint: "rgba(183, 110, 121, 0.12)", roughness: 0.12 },
 } as const;
 
 type ColorId = keyof typeof SWATCHES;
@@ -42,9 +48,10 @@ export default function EssentialPage() {
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           {/* 3D model */}
-          <div className="relative aspect-square bg-surface-input overflow-hidden">
+          <div className="relative aspect-square bg-surface-stage overflow-hidden">
             <EssentialRingViewer
-              metalColor={swatch.swatch}
+              metalColor={swatch.metal}
+              roughness={swatch.roughness}
               fallbackTint={swatch.tint}
               canvasLabel={p.viewerLabel(color.label)}
             />

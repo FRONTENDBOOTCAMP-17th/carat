@@ -19,19 +19,32 @@ import {
 // which reads as a normal fixed 3-point studio rig here since OrbitControls owns the interaction.
 const STATIC_MOUSE: MousePos = { x: 0, y: 0 };
 
-function ViewerScene({ metalColor }: { metalColor: string }) {
+function ViewerScene({
+  metalColor,
+  roughness,
+}: {
+  metalColor: string;
+  roughness: number;
+}) {
   const nodes = useRingNodes();
-  const { gemEnv, metalEnv } = useStudioEnvMaps();
+  const { gemEnv, metalEnv } = useStudioEnvMaps("light");
   useSceneEnvironment(metalEnv);
   const mouseRef = useRef<MousePos>(STATIC_MOUSE);
   return (
     <>
-      <ClearColor />
+      <ClearColor variant="stage" />
       <Lights mouseRef={mouseRef} />
-      {/* Same diagonal "reference pose" Hero settles into — OrbitControls orbits the camera around
-          it instead of animating the ring itself. */}
-      <group rotation={[Math.PI * -0.4, 0, 0.6 + Math.PI]} scale={1.2}>
-        <RingModel nodes={nodes} envMap={gemEnv} metalColor={metalColor} />
+      {/* Rolled back to Hero's exact reference pose — a reduced-tilt attempt visually tipped the
+          ring onto a "/" diagonal instead (X/Z Euler rotation don't decompose independently, so a
+          smaller tweak isn't just "a bit less tilt"). Revisit only with visual feedback in hand;
+          in the meantime OrbitControls' free drag already lets the user reorient it themselves. */}
+      <group rotation={[Math.PI * -0.4, 0, 0.6 + Math.PI]} scale={0.96}>
+        <RingModel
+          nodes={nodes}
+          envMap={gemEnv}
+          metalColor={metalColor}
+          roughness={roughness}
+        />
       </group>
     </>
   );
@@ -39,10 +52,15 @@ function ViewerScene({ metalColor }: { metalColor: string }) {
 
 export default function EssentialRingViewer({
   metalColor,
+  roughness = 0,
   fallbackTint,
   canvasLabel,
 }: {
   metalColor: string;
+  // See RingModel's roughness comment — colored metals on this achromatic env need a touch of
+  // roughness to read as real polished metal instead of a tinted mirror. Pass per-swatch from the
+  // page (silver: 0, gold/rose-gold: a small nonzero value).
+  roughness?: number;
   fallbackTint: string;
   canvasLabel: string;
 }) {
@@ -51,6 +69,9 @@ export default function EssentialRingViewer({
   // Pause rendering the moment this leaves view — same reasoning as Hero's Canvas: the per-pixel
   // raytraced refraction has no reason to keep costing a frame budget while scrolled past.
   const [inView, setInView] = useState(true);
+  // Convention: auto-rotate invites interaction on load, but stops for good the moment the user
+  // grabs it — it should stay exactly where they leave it, not resume spinning underneath them.
+  const [autoRotate, setAutoRotate] = useState(true);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -81,7 +102,7 @@ export default function EssentialRingViewer({
           }}
         >
           <Suspense fallback={null}>
-            <ViewerScene metalColor={metalColor} />
+            <ViewerScene metalColor={metalColor} roughness={roughness} />
           </Suspense>
           <OrbitControls
             enableZoom={false}
@@ -90,8 +111,9 @@ export default function EssentialRingViewer({
             dampingFactor={0.08}
             minPolarAngle={Math.PI / 3}
             maxPolarAngle={Math.PI - Math.PI / 3}
-            autoRotate
+            autoRotate={autoRotate}
             autoRotateSpeed={1.2}
+            onStart={() => setAutoRotate(false)}
           />
         </Canvas>
       ) : (
