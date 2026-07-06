@@ -2,7 +2,7 @@
 
 가상의 주얼리 브랜드 PRISME를 주제로 제작한 프론트엔드 파이널 프로젝트입니다.
 
-**🔗 Live Demo — [project-carat.vercel.app](https://project-carat.vercel.app/)**
+**🔗 Live Demo:** [project-carat.vercel.app](https://project-carat.vercel.app/)
 
 ![PRISME 대표 화면](public/images/README-Cover.webp)
 
@@ -27,7 +27,7 @@
 
 ---
 
-## 3D 히어로 — 직접 제작한 에셋과 인터랙션
+## 3D 히어로: 직접 제작한 에셋과 인터랙션
 
 홈 첫 화면의 반지는 외부에서 받아온 에셋이 아니라, **모델링부터 텍스처링, 스크롤 인터랙션까지 직접 제작**했습니다. 브랜드의 첫인상을 정지된 이미지가 아니라 스크롤에 반응하는 하나의 장면으로 설계하고 싶었기 때문입니다.
 
@@ -116,8 +116,8 @@ surface-base / raised / elevated      배경 계층
 
 ```
 app/
-├── /                        홈 — 3D 히어로 · 시즌 배너 · Best Pieces · 컬렉션 소개
-├── /essential               Essential Collection — 컬러 선택형 제품 상세
+├── /                        홈: 3D 히어로 · 시즌 배너 · Best Pieces · 컬렉션 소개
+├── /essential               Essential Collection: 컬러 선택형 제품 상세
 ├── /best-pieces             Best Pieces
 ├── /collections             Collections
 ├── /fw-collections          FW Collections
@@ -225,7 +225,7 @@ touch 이후    → 필드별 실시간 유효성 재검사
 
 ## 전역 상태
 
-테마와 언어는 모든 페이지에 공통으로 적용되는 직교 축입니다. 페이지 라우팅이나 콘텐츠 블록을 바꾸지 않으며, 각 페이지의 UX 분기와 독립적으로 동작합니다.
+테마와 언어는 모든 페이지에 공통으로 적용되는 설정입니다. 페이지 라우팅이나 콘텐츠 블록을 바꾸지 않고, 각 페이지의 UX 분기와 독립적으로 동작합니다.
 
 ### 테마 (`dark` / `light`)
 
