@@ -1,11 +1,7 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  useGLTF,
-  Environment,
-  MeshRefractionMaterial,
-} from "@react-three/drei";
+import { useGLTF, MeshRefractionMaterial } from "@react-three/drei";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { ArrowDown } from "lucide-react";
@@ -90,7 +86,10 @@ function buildStudioEquirect(isLight: boolean, forMetal: boolean) {
     return finish();
   }
 
-  ctx.fillStyle = isLight ? "#bebebe" : "#0a0a0a";
+  // Dark mode was #0a0a0a — near-total black between sparkle blobs made the facets read as a flat
+  // black hole rather than a cut stone. Lifted just enough to keep the facet structure legible while
+  // the blobs still land as clearly brighter sparkle points.
+  ctx.fillStyle = isLight ? "#bebebe" : "#181818";
   ctx.fillRect(0, 0, 2048, 1024);
   const blob = (x: number, y: number, r: number, a: number, dark = false) => {
     const c = dark ? "0,0,0" : "255,255,255";
@@ -119,9 +118,12 @@ function buildStudioEquirect(isLight: boolean, forMetal: boolean) {
   return finish();
 }
 
-// Must run inside <Canvas> (client-only) so `document` is available. Rebuilds on theme switch.
-// Returns two envs: a dark one the gems refract (crisp), a brighter one the metal reflects.
+// Must run inside <Canvas> (client-only) so `document` is available. Builds BOTH themes' env maps
+// once at mount instead of rebuilding on every toggle: swapping to an already-baked texture is a
+// plain reference assignment, versus redrawing the equirect canvas and re-baking a fresh PMREM each
+// time the theme flips — that rebake (see metalEnv below) is what caused the ~0.5s relight lag.
 function useStudioEnvMaps() {
+  const { gl } = useThree();
   const [isLight, setIsLight] = useState(
     () =>
       typeof document !== "undefined" &&
@@ -138,16 +140,43 @@ function useStudioEnvMaps() {
     });
     return () => observer.disconnect();
   }, []);
-  const gemEnv = useMemo(() => buildStudioEquirect(isLight, false), [isLight]);
-  const metalEnv = useMemo(() => buildStudioEquirect(isLight, true), [isLight]);
+
+  // Raw equirect canvases for both themes — cheap enough to just build all four once and keep them.
+  const raw = useMemo(
+    () => ({
+      gemDark: buildStudioEquirect(false, false),
+      gemLight: buildStudioEquirect(true, false),
+      metalDark: buildStudioEquirect(false, true),
+      metalLight: buildStudioEquirect(true, true),
+    }),
+    [],
+  );
+
+  // The metal band reads its reflections from scene.environment. drei's <Environment> re-bakes this
+  // (PMREM) every time the source map changes, which is the actually-expensive part of the toggle —
+  // baking both themes once up front turns the toggle into a plain texture swap.
+  const pmrem = useMemo(() => {
+    const generator = new THREE.PMREMGenerator(gl);
+    generator.compileEquirectangularShader();
+    const dark = generator.fromEquirectangular(raw.metalDark).texture;
+    const light = generator.fromEquirectangular(raw.metalLight).texture;
+    generator.dispose();
+    return { dark, light };
+  }, [gl, raw]);
+
   useEffect(
     () => () => {
-      gemEnv.dispose();
-      metalEnv.dispose();
+      Object.values(raw).forEach((tex) => tex.dispose());
+      pmrem.dark.dispose();
+      pmrem.light.dispose();
     },
-    [gemEnv, metalEnv],
+    [raw, pmrem],
   );
-  return { gemEnv, metalEnv };
+
+  return {
+    gemEnv: isLight ? raw.gemLight : raw.gemDark,
+    metalEnv: isLight ? pmrem.light : pmrem.dark,
+  };
 }
 
 // Returns false during SSR (window absent) — treated as "supported" until client confirms otherwise.
@@ -429,12 +458,19 @@ function Scene({
   mouseRef: React.RefObject<MousePos>;
 }) {
   const { gemEnv, metalEnv } = useStudioEnvMaps();
+  // metalEnv (mid-grey, pre-baked PMREM) drives the band's reflections via scene.environment; the
+  // gems refract their own darker raw env for crisp contrast. scene.background is left untouched
+  // (ClearColor owns it) so the page surface stays visible behind the ring.
+  // Set through useFrame's callback param rather than mutating useThree()'s returned `scene` directly
+  // (react-hooks/immutability forbids writing to a hook's return value).
+  useFrame((state) => {
+    if (state.scene.environment !== metalEnv) {
+      state.scene.environment = metalEnv;
+    }
+  });
   return (
     <>
       <ClearColor />
-      {/* metalEnv (mid-grey) drives the band's reflections via scene.environment; the gems refract
-          their own darker env for crisp contrast. background={false} keeps the page surface visible. */}
-      <Environment map={metalEnv} background={false} />
       <Lights mouseRef={mouseRef} />
       <Ring progressRef={progressRef} mouseRef={mouseRef} envMap={gemEnv} />
     </>
@@ -450,6 +486,7 @@ export default function Hero() {
   const mouseRef = useRef<MousePos>({ x: 0, y: 0 });
   const navRevealedRef = useRef(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const canvasWrapRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const essentialTextRef = useRef<HTMLDivElement>(null);
@@ -498,6 +535,30 @@ export default function Hero() {
     );
     observer.observe(el);
     return () => observer.disconnect();
+  }, []);
+
+  // Short cross-fade so the ring's relight on theme toggle reads as an intentional transition
+  // rather than a pop, even though the env maps themselves now swap almost instantly.
+  useEffect(() => {
+    const el = canvasWrapRef.current;
+    if (!el) return;
+    let timeout: ReturnType<typeof setTimeout>;
+    const onThemeChange = () => {
+      el.style.opacity = "0";
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        el.style.opacity = "1";
+      }, 120);
+    };
+    const observer = new MutationObserver(onThemeChange);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    return () => {
+      observer.disconnect();
+      clearTimeout(timeout);
+    };
   }, []);
 
   useEffect(() => {
@@ -571,42 +632,47 @@ export default function Hero() {
       aria-label={t.hero.sectionLabel}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
-        {hasWebGL ? (
-          <Canvas
-            className="absolute inset-0"
-            camera={{ position: [0, 0, 4], fov: 45 }}
-            // alpha:false → Three.js가 transmission 패스를 흰색으로 클리어하는 milky 버그를 근본 차단.
-            // 배경은 ClearColor가 테마별 surface 색으로 채워 화면상 동일하게 유지.
-            // powerPreference: hybrid-GPU 노트북에서 브라우저가 내장 GPU를 고르면 이 정도의
-            // per-pixel raymarched refraction은 렉이 심해진다 — 디스크리트 GPU를 명시적으로 요청.
-            gl={{ alpha: false, powerPreference: "high-performance" }}
-            dpr={[1, 2]}
-            performance={{ min: 0.5 }}
-            frameloop={inView ? "always" : "never"}
-            role="img"
-            aria-label={t.hero.canvasLabel}
-            onCreated={({ gl }) => {
-              // Neutral (Khronos PBR Neutral) instead of ACES: ACES rolls off highlights hard,
-              // compressing the extreme white↔black contrast that makes the stones & polished metal
-              // pop. Neutral preserves that punch — better for product/jewelry.
-              gl.toneMapping = THREE.NeutralToneMapping;
-              gl.toneMappingExposure = 1.1;
-              window.dispatchEvent(new Event("prisme:hero-ready"));
-            }}
-          >
-            <Scene progressRef={progressRef} mouseRef={mouseRef} />
-          </Canvas>
-        ) : (
-          // WebGL unavailable fallback — replace /images/ring-hero.webp with a still render export.
-          // 데코레이션용 fallback(WebGL 미지원 시에만 노출)이라 next/image 최적화 대상이 아님.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src="/images/ring-hero.webp"
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-          />
-        )}
+        <div
+          ref={canvasWrapRef}
+          className="absolute inset-0 transition-opacity duration-300 ease-out"
+        >
+          {hasWebGL ? (
+            <Canvas
+              className="absolute inset-0"
+              camera={{ position: [0, 0, 4], fov: 45 }}
+              // alpha:false → Three.js가 transmission 패스를 흰색으로 클리어하는 milky 버그를 근본 차단.
+              // 배경은 ClearColor가 테마별 surface 색으로 채워 화면상 동일하게 유지.
+              // powerPreference: hybrid-GPU 노트북에서 브라우저가 내장 GPU를 고르면 이 정도의
+              // per-pixel raymarched refraction은 렉이 심해진다 — 디스크리트 GPU를 명시적으로 요청.
+              gl={{ alpha: false, powerPreference: "high-performance" }}
+              dpr={[1, 2]}
+              performance={{ min: 0.5 }}
+              frameloop={inView ? "always" : "never"}
+              role="img"
+              aria-label={t.hero.canvasLabel}
+              onCreated={({ gl }) => {
+                // Neutral (Khronos PBR Neutral) instead of ACES: ACES rolls off highlights hard,
+                // compressing the extreme white↔black contrast that makes the stones & polished metal
+                // pop. Neutral preserves that punch — better for product/jewelry.
+                gl.toneMapping = THREE.NeutralToneMapping;
+                gl.toneMappingExposure = 1.1;
+                window.dispatchEvent(new Event("prisme:hero-ready"));
+              }}
+            >
+              <Scene progressRef={progressRef} mouseRef={mouseRef} />
+            </Canvas>
+          ) : (
+            // WebGL unavailable fallback — replace /images/ring-hero.webp with a still render export.
+            // 데코레이션용 fallback(WebGL 미지원 시에만 노출)이라 next/image 최적화 대상이 아님.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src="/images/ring-hero.webp"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+            />
+          )}
+        </div>
 
         {/* Scrim: a soft radial of the page-surface colour (auto light/dark), strongest behind the
             centred text and fading to transparent before the frame edges — keeps the ring's impact
