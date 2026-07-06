@@ -23,7 +23,7 @@ const SWATCHES = {
 type ColorId = keyof typeof SWATCHES;
 
 export default function EssentialPage() {
-  const [selected, setSelected] = useState<ColorId>("gold");
+  const [selected, setSelected] = useState<ColorId>("silver");
   const { t } = useLang();
   const p = t.pages.essential;
 

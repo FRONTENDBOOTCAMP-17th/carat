@@ -12,7 +12,7 @@ import {
   useRingNodes,
   useSceneEnvironment,
   useStudioEnvMaps,
-  supportsWebGL,
+  canRenderRingScene,
   type MousePos,
 } from "@/components/RingScene";
 
@@ -140,7 +140,7 @@ function Scene({
 
 export default function Hero() {
   const { t } = useLang();
-  const hasWebGL = useMemo(() => supportsWebGL(), []);
+  const hasWebGL = useMemo(() => canRenderRingScene(), []);
   const target = useRef(0);
   const smooth = useRef(0);
   const progressRef = useRef(0);
@@ -323,8 +323,8 @@ export default function Hero() {
               <Scene progressRef={progressRef} mouseRef={mouseRef} />
             </Canvas>
           ) : (
-            // WebGL unavailable fallback — replace /images/ring-hero.webp with a still render export.
-            // 데코레이션용 fallback(WebGL 미지원 시에만 노출)이라 next/image 최적화 대상이 아님.
+            // Static fallback (no-WebGL clients + Gecko-on-Android, see canRenderRingScene).
+            // 데코레이션용 fallback이라 next/image 최적화 대상이 아님.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src="/images/ring-hero.webp"
@@ -358,13 +358,13 @@ export default function Hero() {
           }}
         >
           <h1
-            className="mb-5 text-6xl sm:text-7xl lg:text-8xl font-medium"
+            className="mb-5 text-5xl sm:text-7xl lg:text-8xl font-medium"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             PRISME
           </h1>
           <div className="flex justify-center flex-col">
-            <span className="block text-center text-lg">{t.hero.tagline1}</span>
+            <span className="block text-center text-base sm:text-lg">{t.hero.tagline1}</span>
           </div>
         </div>
 

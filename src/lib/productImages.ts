@@ -3,7 +3,9 @@ import productsData from "@/data/products.json";
 // Each catalogue product carries its own `image` (assigned to match the photo's jewelry type — see
 // src/data/products.json). This resolves an id → its image, with a deterministic hash fallback for
 // anything not in the catalogue (e.g. the Essential ring).
-const byId: Record<string, string> = {};
+const byId: Record<string, string> = {
+  essential: "/images/Jewelries/IRIS_Thumbnail.webp",
+};
 for (const items of Object.values(productsData)) {
   for (const p of items as { id: string; image?: string }[]) {
     if (p.image) byId[p.id] = p.image;

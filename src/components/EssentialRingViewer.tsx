@@ -11,7 +11,7 @@ import {
   useRingNodes,
   useSceneEnvironment,
   useStudioEnvMaps,
-  supportsWebGL,
+  canRenderRingScene,
   type MousePos,
 } from "@/components/RingScene";
 
@@ -38,7 +38,7 @@ function ViewerScene({
           ring onto a "/" diagonal instead (X/Z Euler rotation don't decompose independently, so a
           smaller tweak isn't just "a bit less tilt"). Revisit only with visual feedback in hand;
           in the meantime OrbitControls' free drag already lets the user reorient it themselves. */}
-      <group rotation={[Math.PI * -0.4, 0, 0.6 + Math.PI]} scale={0.96}>
+      <group rotation={[Math.PI * 0.4, 0, 0.6 + Math.PI]} scale={0.96}>
         <RingModel
           nodes={nodes}
           envMap={gemEnv}
@@ -64,7 +64,7 @@ export default function EssentialRingViewer({
   fallbackTint: string;
   canvasLabel: string;
 }) {
-  const hasWebGL = useMemo(() => supportsWebGL(), []);
+  const hasWebGL = useMemo(() => canRenderRingScene(), []);
   const wrapRef = useRef<HTMLDivElement>(null);
   // Pause rendering the moment this leaves view — same reasoning as Hero's Canvas: the per-pixel
   // raytraced refraction has no reason to keep costing a frame budget while scrolled past.

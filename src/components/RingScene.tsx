@@ -231,6 +231,22 @@ export function supportsWebGL(): boolean {
   }
 }
 
+// Whether to mount the live 3D ring at all, vs. fall back to the static still / tint.
+// Gecko Firefox on Android reports WebGL2 support, but the gems' MeshRefractionMaterial — which
+// packs its BVH into float/integer textures and ray-traces them in the fragment shader — renders
+// blown-out white there, while the plain-material band looks fine. Rather than ship visibly broken
+// stones to that engine, treat it like a no-WebGL client so the fallback shows instead.
+// The UA test is deliberately narrow: "Firefox/" + "Android" catches Gecko on Android (mobile and
+// tablet) while excluding desktop Firefox (no "Android", renders correctly) and iOS Firefox (reports
+// "FxiOS", not "Firefox/" — it's WebKit under the hood, a separate engine).
+export function canRenderRingScene(): boolean {
+  if (typeof window === "undefined") return true;
+  if (!supportsWebGL()) return false;
+  const ua = navigator.userAgent;
+  const isGeckoAndroid = /Firefox\//.test(ua) && /Android/.test(ua);
+  return !isGeckoAndroid;
+}
+
 export type MousePos = { x: number; y: number };
 
 export function Lights({
