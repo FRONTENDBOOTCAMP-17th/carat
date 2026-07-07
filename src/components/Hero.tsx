@@ -402,7 +402,9 @@ export default function Hero() {
               src="/images/hero-fallback.webp"
               alt=""
               aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+              // 20% 확대 + 우하단으로 이동시켜 반지 우측 ~15%가 프레임 밖으로 크롭되게(부모의
+              // overflow-hidden이 잘라냄) — 화면을 꽉 채운 정적 이미지가 밋밋해 보이지 않도록.
+              className="absolute inset-0 w-full h-full object-contain pointer-events-none scale-[1.2] translate-x-[8%] translate-y-[6%]"
             />
           )}
         </div>
