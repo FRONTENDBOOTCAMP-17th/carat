@@ -66,7 +66,6 @@ function SignInPrompt() {
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
-      <Heart size={32} strokeWidth={1} className="text-content-secondary" aria-label={p.heartLabel} />
       <p className="text-xs tracking-label text-content-faint">{p.signInTitle}</p>
       <p className="text-xs text-content-secondary">{p.signInSub}</p>
       <button
