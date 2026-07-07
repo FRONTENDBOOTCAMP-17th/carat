@@ -4,6 +4,7 @@
 기획, 디자인, 프론트엔드 개발, 3D 에셋 제작까지 1인으로 진행했습니다.
 
 **Live Demo:** [project-carat.vercel.app](https://project-carat.vercel.app/)
+**발표 자료:** [PRISME-presentation.pdf](docs/PRISME-presentation.pdf)
 
 <img src="docs/gifs/hero-scroll.gif" alt="히어로 스크롤 인터랙션" width="100%" />
 
