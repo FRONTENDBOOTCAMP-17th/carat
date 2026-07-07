@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -19,12 +19,27 @@ import {
 // 고정되는데, 여기서는 OrbitControls가 인터랙션을 담당하므로 일반적인 고정 3점 스튜디오 조명처럼 보인다.
 const STATIC_MOUSE: MousePos = { x: 0, y: 0 };
 
+// 3D 씬이 첫 프레임을 그리면(= GLB 로드 + 환경맵 베이킹 완료) 한 번만 알린다.
+// 이 시점이 정적 placeholder를 걷어내도 되는 순간이다.
+function ReadySignal({ onReady }: { onReady: () => void }) {
+  const fired = useRef(false);
+  useFrame(() => {
+    if (!fired.current) {
+      fired.current = true;
+      onReady();
+    }
+  });
+  return null;
+}
+
 function ViewerScene({
   metalColor,
   roughness,
+  onReady,
 }: {
   metalColor: string;
   roughness: number;
+  onReady: () => void;
 }) {
   const nodes = useRingNodes();
   const { gemEnv, metalEnv } = useStudioEnvMaps("light");
@@ -33,6 +48,7 @@ function ViewerScene({
   return (
     <>
       <ClearColor variant="stage" />
+      <ReadySignal onReady={onReady} />
       <Lights mouseRef={mouseRef} />
       {/* Hero의 정확한 기준 포즈로 되돌림 — 기울기를 줄이려던 시도가 오히려 링을 "/" 대각선으로
           기울어 보이게 만들었음(X/Z 오일러 회전은 독립적으로 분해되지 않아서, 살짝 조정한다고
@@ -72,6 +88,9 @@ export default function EssentialRingViewer({
   // 관례: 자동 회전은 로드 시 인터랙션을 유도하지만, 사용자가 한 번 잡으면 영구적으로 멈춘다 —
   // 사용자가 놓은 위치 그대로 있어야지, 밑에서 다시 돌기 시작하면 안 됨.
   const [autoRotate, setAutoRotate] = useState(true);
+  // GLB 로드 + 환경맵 베이킹은 수 초가 걸린다. 그 동안 빈 스테이지 대신 실제 뷰어 포즈·배경과
+  // 일치하는 정적 스틸을 덮어두고, 첫 프레임이 그려지면 페이드아웃시킨다.
+  const [sceneReady, setSceneReady] = useState(false);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -87,35 +106,63 @@ export default function EssentialRingViewer({
   return (
     <div ref={wrapRef} className="absolute inset-0">
       {hasWebGL ? (
-        <Canvas
-          className="absolute inset-0"
-          camera={{ position: [0, 0, 4], fov: 45 }}
-          gl={{ alpha: false, powerPreference: "high-performance" }}
-          dpr={[1, 2]}
-          performance={{ min: 0.5 }}
-          frameloop={inView ? "always" : "never"}
-          role="img"
-          aria-label={canvasLabel}
-          onCreated={({ gl }) => {
-            gl.toneMapping = THREE.NeutralToneMapping;
-            gl.toneMappingExposure = 1.1;
-          }}
-        >
-          <Suspense fallback={null}>
-            <ViewerScene metalColor={metalColor} roughness={roughness} />
-          </Suspense>
-          <OrbitControls
-            enableZoom={false}
-            enablePan={false}
-            enableDamping
-            dampingFactor={0.08}
-            minPolarAngle={Math.PI / 3}
-            maxPolarAngle={Math.PI - Math.PI / 3}
-            autoRotate={autoRotate}
-            autoRotateSpeed={1.2}
-            onStart={() => setAutoRotate(false)}
-          />
-        </Canvas>
+        <>
+          <Canvas
+            className="absolute inset-0"
+            camera={{ position: [0, 0, 4], fov: 45 }}
+            gl={{ alpha: false, powerPreference: "high-performance" }}
+            dpr={[1, 2]}
+            performance={{ min: 0.5 }}
+            frameloop={inView ? "always" : "never"}
+            role="img"
+            aria-label={canvasLabel}
+            onCreated={({ gl }) => {
+              gl.toneMapping = THREE.NeutralToneMapping;
+              gl.toneMappingExposure = 1.1;
+            }}
+          >
+            <Suspense fallback={null}>
+              <ViewerScene
+                metalColor={metalColor}
+                roughness={roughness}
+                onReady={() => setSceneReady(true)}
+              />
+            </Suspense>
+            <OrbitControls
+              enableZoom={false}
+              enablePan={false}
+              enableDamping
+              dampingFactor={0.08}
+              minPolarAngle={Math.PI / 3}
+              maxPolarAngle={Math.PI - Math.PI / 3}
+              autoRotate={autoRotate}
+              autoRotateSpeed={1.2}
+              onStart={() => setAutoRotate(false)}
+            />
+          </Canvas>
+          {/* 로딩 placeholder: 3D 준비 전까지 실제 포즈·스테이지 배경과 일치하는 정적 스틸을 덮어두고,
+              첫 프레임이 그려지면 페이드아웃한다. 라이트/다크는 CSS(html[data-theme])로 전환해
+              하이드레이션 플래시를 피한다. */}
+          <div
+            className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
+              sceneReady ? "opacity-0" : "opacity-100"
+            }`}
+            aria-hidden="true"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/essential-fallback-light.webp"
+              alt=""
+              className="essential-fallback-light absolute inset-0 h-full w-full object-cover"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/essential-fallback-dark.webp"
+              alt=""
+              className="essential-fallback-dark absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+        </>
       ) : (
         // WebGL 미지원 시 폴백 — 이 제품은 아직 촬영된 스틸컷이 없어서, 아무것도 없는 대신
         // 스와치 틴트 워시로 대체함.

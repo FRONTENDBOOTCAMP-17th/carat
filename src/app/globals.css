@@ -261,6 +261,16 @@ html[data-theme="light"] {
 }
 
 /* =============================================
+   ESSENTIAL 3D 뷰어 로딩 placeholder
+   테마별 스틸을 html[data-theme]로 전환 — anti-flash 스크립트가 설정한
+   속성을 CSS가 즉시 읽어 JS 상태 없이 플래시/하이드레이션 불일치를 피한다.
+   ============================================ */
+html[data-theme="light"] .essential-fallback-dark,
+html[data-theme="dark"] .essential-fallback-light {
+  display: none;
+}
+
+/* =============================================
    포커스 링
    ============================================ */
 :focus-visible:not(input):not(textarea):not(select) {
