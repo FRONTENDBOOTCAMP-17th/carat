@@ -93,6 +93,14 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     type: "website",
   },
+  icons: {
+    icon: [
+      // icon.svg가 자체 prefers-color-scheme 미디어쿼리로 다크/라이트를 처리하지만,
+      // Firefox는 SVG 파비콘 내부의 미디어쿼리를 반영하지 않으므로 PNG를 폴백으로 명시.
+      { url: "/icons/icon-light.png", type: "image/png", media: "(prefers-color-scheme: light)" },
+      { url: "/icons/icon-dark.png", type: "image/png", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
 };
 
 export default async function RootLayout({
