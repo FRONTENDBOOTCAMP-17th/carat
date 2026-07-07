@@ -534,6 +534,9 @@ const ko = {
       emptySub: "마음에 드는 작품을 발견하면 추가해 보세요.",
       browseLink: "컬렉션 살펴보기 →",
       heartLabel: "하트 아이콘",
+      signInTitle: "로그인이 필요합니다.",
+      signInSub: "위시리스트를 확인하려면 로그인해 주세요.",
+      signInCta: "로그인",
     },
     notFound: {
       tag: "PAGE NOT FOUND",
@@ -1098,6 +1101,9 @@ const en: typeof ko = {
       emptySub: "When you find a piece you love, add it here.",
       browseLink: "Browse collections →",
       heartLabel: "Heart icon",
+      signInTitle: "Sign in required.",
+      signInSub: "Please sign in to view your wishlist.",
+      signInCta: "Sign in",
     },
     notFound: {
       tag: "PAGE NOT FOUND",
