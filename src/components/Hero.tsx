@@ -405,6 +405,11 @@ export default function Hero() {
               // 20% 확대 + 우하단으로 이동시켜 반지 우측 ~15%가 프레임 밖으로 크롭되게(부모의
               // overflow-hidden이 잘라냄) — 화면을 꽉 채운 정적 이미지가 밋밋해 보이지 않도록.
               className="absolute inset-0 w-full h-full object-contain pointer-events-none scale-[1.2] translate-x-[8%] translate-y-[6%]"
+              // WebGL 폴백 경로에서도 Canvas의 onCreated와 동일하게 준비 신호를 보낸다 —
+              // 이게 없으면 로딩 화면이 hero-ready를 못 받아 8초 타임아웃까지 그대로 노출된다.
+              // 로드 실패(onError) 시에도 로딩 화면이 걸리지 않도록 같은 신호를 쏜다.
+              onLoad={() => window.dispatchEvent(new Event("prisme:hero-ready"))}
+              onError={() => window.dispatchEvent(new Event("prisme:hero-ready"))}
             />
           )}
         </div>
