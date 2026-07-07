@@ -159,7 +159,8 @@ export default function SearchModal({ isOpen, onClose }: { isOpen: boolean; onCl
                 </ul>
               )}
 
-              <p className="mt-3 text-xs text-content-secondary tracking-label">{t.search.escHint}</p>
+              <p className="mt-3 text-xs text-content-secondary tracking-label hidden sm:block">{t.search.escHint}</p>
+              <p className="mt-3 text-xs text-content-secondary tracking-label sm:hidden">{t.search.tapHint}</p>
             </form>
           </motion.div>
         </motion.div>

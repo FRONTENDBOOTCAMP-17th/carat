@@ -76,6 +76,7 @@ const ko = {
     placeholder: "작품명 또는 컬렉션 검색",
     submit: "검색",
     escHint: "ESC로 닫기",
+    tapHint: "바깥 영역을 탭해 닫기",
   },
   wishlistBtn: {
     add: "위시리스트에 추가",
@@ -621,6 +622,7 @@ const en: typeof ko = {
     placeholder: "Search pieces or collections",
     submit: "Search",
     escHint: "Press ESC to close",
+    tapHint: "Tap outside to close",
   },
   wishlistBtn: {
     add: "Add to wishlist",
