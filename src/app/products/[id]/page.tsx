@@ -10,6 +10,7 @@ import RelatedScroll from "@/components/RelatedScroll";
 import Breadcrumb from "@/components/Breadcrumb";
 import { getProductById, getProductsByCategory } from "@/lib/products";
 import { productImage } from "@/lib/productImages";
+import { blurFor } from "@/lib/blurData";
 import { translations } from "@/lib/translations";
 import type { CategoryKey } from "@/lib/products";
 import type { Lang } from "@/lib/translations";
@@ -44,6 +45,8 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const p = t.pages.product;
+  const imgSrc = productImage(product.id);
+  const blur = blurFor(imgSrc);
 
   const related = product.category
     ? getProductsByCategory(product.category as CategoryKey, lang).filter((r) => r.id !== product.id)
@@ -75,12 +78,14 @@ export default async function ProductPage({
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           <div className="relative aspect-square bg-surface-input w-full overflow-hidden">
             <Image
-              src={productImage(product.id)}
+              src={imgSrc}
               alt={t.productCard.imageAlt(product.name)}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover"
               priority
+              placeholder={blur ? "blur" : "empty"}
+              blurDataURL={blur}
             />
           </div>
 

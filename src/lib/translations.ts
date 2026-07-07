@@ -18,7 +18,7 @@ const ko = {
     primaryNav: "주요 메뉴",
     secondaryNav: "탐색",
     links: {
-      essential: "Essential",
+      essential: "Iris",
       collections: "Collections",
       bestPieces: "Best Pieces",
       fwCollections: "FW Collections",
@@ -563,7 +563,7 @@ const en: typeof ko = {
     primaryNav: "Main menu",
     secondaryNav: "Explore",
     links: {
-      essential: "Essential",
+      essential: "Iris",
       collections: "Collections",
       bestPieces: "Best Pieces",
       fwCollections: "FW Collections",

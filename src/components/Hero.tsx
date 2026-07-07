@@ -28,10 +28,12 @@ function easeInOutSine(t: number) {
 function Ring({
   progressRef,
   mouseRef,
+  isMobileRef,
   envMap,
 }: {
   progressRef: React.RefObject<number>;
   mouseRef: React.RefObject<MousePos>;
+  isMobileRef: React.RefObject<boolean>;
   envMap: THREE.Texture;
 }) {
   const groupRef = useRef<THREE.Group>(null);
@@ -41,7 +43,7 @@ function Ring({
   const innerRef = useRef<THREE.Group>(null);
   const smooth = useRef(0);
   const mouseSmooth = useRef<MousePos>({ x: 0, y: 0 });
-  const { viewport } = useThree();
+  const { viewport, size } = useThree();
   const nodes = useRingNodes();
 
   useFrame((state) => {
@@ -65,9 +67,18 @@ function Ring({
     // Gentle position float so it's never dead-still (the turntable spin does most of the work).
     const idleBob = Math.sin(t * 0.5) * 0.03;
 
+    const isMobile = isMobileRef.current;
+
     // Scale: fills the screen at the hero, eases down to base size as it travels.
-    const baseScale = Math.max(0.4, Math.min(1, viewport.width / 4.0));
-    const heroScale = Math.max(baseScale * 2.7, viewport.height / 2.4);
+    // Mobile (layout B): the ring recedes to a centred backdrop under full-width overlay text, so
+    // cap the hero size to the narrow width (a height-based hero overflows absurdly tall on portrait)
+    // and settle a touch smaller so it reads as background, not a competing subject.
+    const baseScale = isMobile
+      ? 1.25 * Math.max(0.4, Math.min(0.85, viewport.width / 3.4))
+      : Math.max(0.4, Math.min(1, viewport.width / 4.0));
+    const heroScale = isMobile
+      ? Math.min(viewport.height / 2.6, viewport.width * 1.05)
+      : Math.max(baseScale * 2.7, viewport.height / 2.4);
     groupRef.current.scale.setScalar(heroScale + (baseScale - heroScale) * j);
 
     // Mouse parallax on the OUTER tilt group (screen space) — applied above the roll/pitch below, so
@@ -91,14 +102,22 @@ function Ring({
     rollRef.current.rotation.set(0, 0, 0.6 + Math.PI);
     innerRef.current.rotation.set(Math.PI * -0.4, 0, 0);
 
-    // Position: hero → settled on the RIGHT, while the gems turn to face left (toward the text) — so
-    // the ring sits right of centre looking back across the composition.
+    // Position: desktop → settled on the RIGHT, gems turned to face left toward the text.
+    // Mobile (layout B): settle the ring LOW and to the RIGHT — a diagonal drop from the hero pose,
+    // reading larger so it doesn't look dead-static like a dead-centre backdrop did. The text sits
+    // above it (header-cleared) and the scrim keeps it legible; the ring may bleed slightly off the
+    // right edge, which is intentional.
     const ringExtent = 1.35 * baseScale;
     const maxPosX = Math.max(0, viewport.width * 0.5 - ringExtent);
-    const settledX = Math.min(viewport.width * 0.22, maxPosX);
-    groupRef.current.position.x = -0.7 + (settledX + 0.7) * j;
-    groupRef.current.position.y =
-      -1.2 + (-0.15 * baseScale + 1.2) * j + idleBob;
+    // px→world: viewport.width world units span size.width CSS px, so 20px right = this much.
+    const px20 = (20 / size.width) * viewport.width;
+    const settledX = isMobile
+      ? viewport.width * 0.14 + px20
+      : Math.min(viewport.width * 0.22, maxPosX);
+    const heroX = isMobile ? -0.25 : -0.7;
+    groupRef.current.position.x = heroX + (settledX - heroX) * j;
+    const settledY = isMobile ? -0.32 : -0.15 * baseScale;
+    groupRef.current.position.y = -1.2 + (settledY + 1.2) * j + idleBob;
   });
 
   return (
@@ -123,9 +142,11 @@ function Ring({
 function Scene({
   progressRef,
   mouseRef,
+  isMobileRef,
 }: {
   progressRef: React.RefObject<number>;
   mouseRef: React.RefObject<MousePos>;
+  isMobileRef: React.RefObject<boolean>;
 }) {
   const { gemEnv, metalEnv } = useStudioEnvMaps();
   useSceneEnvironment(metalEnv);
@@ -133,7 +154,12 @@ function Scene({
     <>
       <ClearColor />
       <Lights mouseRef={mouseRef} />
-      <Ring progressRef={progressRef} mouseRef={mouseRef} envMap={gemEnv} />
+      <Ring
+        progressRef={progressRef}
+        mouseRef={mouseRef}
+        isMobileRef={isMobileRef}
+        envMap={gemEnv}
+      />
     </>
   );
 }
@@ -145,6 +171,9 @@ export default function Hero() {
   const smooth = useRef(0);
   const progressRef = useRef(0);
   const mouseRef = useRef<MousePos>({ x: 0, y: 0 });
+  // Shared with the Canvas' Ring (choreography) and the DOM scrim/text below — kept as a ref so the
+  // rAF loop reads the live value without re-subscribing on every resize.
+  const isMobileRef = useRef(false);
   const navRevealedRef = useRef(false);
   const sectionRef = useRef<HTMLElement>(null);
   const canvasWrapRef = useRef<HTMLDivElement>(null);
@@ -176,14 +205,20 @@ export default function Hero() {
         y: -(touch.clientY / window.innerHeight) * 2 + 1,
       };
     };
+    const onResize = () => {
+      isMobileRef.current = window.innerWidth < 640;
+    };
     window.addEventListener("scroll", onScroll);
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("resize", onResize, { passive: true });
     onScroll();
+    onResize();
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
@@ -225,12 +260,6 @@ export default function Hero() {
   useEffect(() => {
     if (!inView) return;
 
-    let isMobile = window.innerWidth < 640;
-    const onResize = () => {
-      isMobile = window.innerWidth < 640;
-    };
-    window.addEventListener("resize", onResize, { passive: true });
-
     let frame: number;
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -250,10 +279,17 @@ export default function Hero() {
         if (overlayRef.current) {
           // Dark mode: a real scrim (0.4). Light mode: a bright scrim on the bright page looks cheap,
           // so keep it barely-there (~5%) and let the (also-reduced) text halo carry legibility.
+          // Mobile (layout B): the full-width text overlays a centred ring, so the scrim has to do
+          // real legibility work — push it much stronger in both themes than on desktop.
           const isLight = document.documentElement.dataset.theme === "light";
-          overlayRef.current.style.opacity = String(
-            heroFade * (isLight ? 0.02 : 0.4),
-          );
+          const scrimMax = isMobileRef.current
+            ? isLight
+              ? 0.32
+              : 0.62
+            : isLight
+              ? 0.02
+              : 0.4;
+          overlayRef.current.style.opacity = String(heroFade * scrimMax);
         }
         if (heroTextRef.current) {
           heroTextRef.current.style.opacity = String(1 - heroFade);
@@ -267,7 +303,7 @@ export default function Hero() {
           }
           const essentialEase = easeOutCubic(essentialP);
           essentialTextRef.current.style.opacity = String(essentialEase);
-          essentialTextRef.current.style.transform = `translateX(${isMobile ? 0 : -essentialEase * 20}px)`;
+          essentialTextRef.current.style.transform = `translateX(${isMobileRef.current ? 0 : -essentialEase * 20}px)`;
         }
         if (scrollHintRef.current)
           scrollHintRef.current.style.opacity = String(
@@ -279,7 +315,6 @@ export default function Hero() {
     }
 
     return () => {
-      window.removeEventListener("resize", onResize);
       cancelAnimationFrame(frame);
     };
   }, [inView]);
@@ -320,7 +355,11 @@ export default function Hero() {
                 window.dispatchEvent(new Event("prisme:hero-ready"));
               }}
             >
-              <Scene progressRef={progressRef} mouseRef={mouseRef} />
+              <Scene
+                progressRef={progressRef}
+                mouseRef={mouseRef}
+                isMobileRef={isMobileRef}
+              />
             </Canvas>
           ) : (
             // Static fallback (no-WebGL clients + Gecko-on-Android, see canRenderRingScene).
@@ -364,7 +403,9 @@ export default function Hero() {
             PRISME
           </h1>
           <div className="flex justify-center flex-col">
-            <span className="block text-center text-base sm:text-lg">{t.hero.tagline1}</span>
+            <span className="block text-center text-base sm:text-lg">
+              {t.hero.tagline1}
+            </span>
           </div>
         </div>
 
@@ -377,7 +418,10 @@ export default function Hero() {
             textShadow: "var(--hero-text-halo)",
           }}
         >
-          <div className="mt-[13vh]">
+          {/* Mobile: clear the fixed header (Navbar py-5 + logo h-11 ≈ 84px = pt-21) so ESSENTIAL
+              COLLECTION doesn't crowd it once the nav reveals — the 13vh baseline was set pre-header.
+              Margin + padding stack (13vh + 84px) to avoid a calc() arbitrary value; desktop drops it. */}
+          <div className="mt-[13vh] pt-21 sm:pt-0">
             <p className="mb-2 sm:mb-3 text-xs tracking-descriptor text-content-secondary">
               {t.hero.collectionLabel}
             </p>

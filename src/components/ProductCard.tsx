@@ -6,6 +6,7 @@ import { Heart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLang } from "@/context/LanguageContext";
 import { productImage } from "@/lib/productImages";
+import { blurFor } from "@/lib/blurData";
 
 type ProductCardProps = {
   id: string;
@@ -21,6 +22,8 @@ export default function ProductCard({ id, name, description, category, href }: P
   const { t } = useLang();
   const inWishlist = wishlist.some((w) => w.id === id);
   const navigateTo = href ?? `/products/${id}`;
+  const imgSrc = productImage(id);
+  const blur = blurFor(imgSrc);
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -40,11 +43,13 @@ export default function ProductCard({ id, name, description, category, href }: P
       <div className="relative mb-4">
         <div className="relative aspect-square bg-surface-input overflow-hidden">
           <Image
-            src={productImage(id)}
+            src={imgSrc}
             alt={t.productCard.imageAlt(name)}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
+            placeholder={blur ? "blur" : "empty"}
+            blurDataURL={blur}
           />
         </div>
         <button

@@ -247,6 +247,19 @@ html[data-theme="light"] {
   }
 }
 
+/* Coarse (touch) pointers don't match the @media (pointer: fine) block above, so without this the
+   custom-cursor nodes fall back to static flow — the autoscroll indicator's 24px SVG would then take
+   space at the top of <body>, above the header. Pin them out of flow unconditionally; on touch they
+   stay invisible (inline opacity:0) and inert (pointer-events:none) since the JS never activates. */
+.cursor-dot,
+.cursor-ring,
+.cursor-autoscroll {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
 /* =============================================
    FOCUS RING
    ============================================ */
