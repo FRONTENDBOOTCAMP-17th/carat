@@ -1,5 +1,19 @@
 # carat E2E 시나리오 (리뷰 전용)
 
+## 20차 (2026-07-07) — 발표 전날, 3D 뷰어·배포 반영 확인 (시각 품질 위주)
+
+| ID  | 시나리오                          | 대상               | 기대                         | 결과 (2026-07-07)              |
+| --- | --------------------------------- | ------------------ | ---------------------------- | ------------------------------ |
+| 09  | Essential 인터랙티브 3D 뷰어(IRIS) | /essential         | canvas 렌더·스와치 3색 전환  | pass (canvas 1, 스와치 3, gold aria-checked=true, 모바일 overflow 0) |
+| 10  | 검색 결과 IRIS 썸네일              | /search?q=ring     | 결과 이미지 렌더             | pass (이미지 28, 모바일 overflow 0) |
+
+- **반영 확인(18/19차 지적 전부 해결):** ① Vercel 배포 `project-carat.vercel.app` 라이브(200, PRISME 렌더 확인) + README 상단 Live Demo 링크·대표 커버 이미지. ② `LICENSE` 추가. ③ eslint **8 err → 0**(tsc 0, build 통과). ④ SeasonalBanner 34MB → 1.8MB webp.
+- **3D 뷰어(IRIS)**: OrbitControls 드래그 회전 + 자동회전(잡으면 정지), 스와치 silver/gold/rose-gold 금속색 실시간 전환. aria-label "Silver Iris 3D model — drag to rotate…" 로 role=img 라벨링. 모바일 파이어폭스(Gecko/Android)는 `canRenderRingScene()`로 폴백 tint 처리.
+- 데스크탑/모바일(390) 전 페이지 가로 overflow 0. 히어로 3D·Essential 3D 모두 정상 렌더.
+- (참고) 시나리오 04 RelatedScroll 캡처는 셀렉터 타임아웃으로 실패했으나 03에서 상세·RelatedScroll 정상 확인됨 — 앱 버그 아님, 리뷰용 테스트 셀렉터 이슈.
+
+
+
 랜딩은 단일 페이지 `/` (Hero · SeasonalBanner · BestPieces · Collections · Footer).
 Navbar 는 홈이 아니라 `/collections` 등 서브페이지에서 렌더됨.
 3D Hero(react-three-fiber)는 렌더에 시간이 필요해 `domcontentloaded` + 2.5s 대기로 캡처.

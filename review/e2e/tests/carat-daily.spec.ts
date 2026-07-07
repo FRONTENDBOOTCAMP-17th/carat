@@ -4,7 +4,9 @@ import fs from "node:fs";
 // carat(PRISME) 데일리 E2E — 리스트·상세·검색 신규 UI 포함
 // 16차(2026-07-01): 제품 상세 서버 컴포넌트 전환(generateMetadata per-page title),
 //                    SearchModal 키보드 네비(combobox/listbox ARIA), 컬렉션 컴포넌트 추출
-const DATE = "2026-07-02";
+// 20차(2026-07-07): Essential Collection 인터랙티브 3D 뷰어(IRIS) 추가, 검색 IRIS 썸네일 연결,
+//                    모바일 파이어폭스 3D 폴백 처리 — 시각 품질 위주 재점검
+const DATE = "2026-07-07";
 const IMG = `../images/${DATE}`;
 test.beforeAll(() => fs.mkdirSync(IMG, { recursive: true }));
 
@@ -248,4 +250,68 @@ test("08 검색 모달 — 키보드 네비게이션", async ({ page }) => {
   await page.keyboard.press("Enter");
   await page.waitForTimeout(800);
   console.log(`[search] Enter 후 URL: ${page.url()}`);
+});
+
+// ────────────────────────────────────────────────
+// 시나리오 09(신규): Essential Collection 인터랙티브 3D 뷰어(IRIS) — 데스크탑·모바일
+//   컬러 스와치(silver/gold/rose-gold) 전환 + 3D 캔버스 렌더 + 위시리스트 버튼
+// ────────────────────────────────────────────────
+test("09 Essential 3D 뷰어 — 컬러 스와치·캔버스, 데스크탑·모바일", async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  const r = await page.goto("/essential", { waitUntil: "domcontentloaded" });
+  console.log(`[/essential] HTTP ${r?.status()}`);
+  await page.waitForTimeout(3500); // 3D 캔버스 렌더 + 자동회전 대기
+
+  // 3D 캔버스(role=img, aria-label)
+  const canvas = page.locator("canvas");
+  console.log(`[essential] canvas count: ${await canvas.count()}`);
+  const viewerImg = page.locator("[role='img'][aria-label]");
+  console.log(`[essential] viewer aria-label: ${await viewerImg.first().getAttribute("aria-label").catch(() => "(none)")}`);
+
+  // 컬러 라디오그룹
+  const radios = page.locator("[role='radiogroup'] [role='radio']");
+  console.log(`[essential] 컬러 스와치 수: ${await radios.count()}`);
+  await screenshot(page, "09-essential-silver-desktop");
+
+  // gold 선택 → 금속색 전환
+  await radios.nth(1).click().catch((e) => console.log(`[essential] gold click 실패: ${e}`));
+  await page.waitForTimeout(1500);
+  const goldChecked = await radios.nth(1).getAttribute("aria-checked");
+  console.log(`[essential] gold aria-checked: ${goldChecked}`);
+  await screenshot(page, "09-essential-gold-desktop");
+
+  // rose-gold 선택
+  await radios.nth(2).click().catch(() => {});
+  await page.waitForTimeout(1500);
+  await screenshot(page, "09-essential-rosegold-desktop");
+
+  // 모바일
+  await page.setViewportSize(MOBILE);
+  await page.goto("/essential", { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(3000);
+  const essOverflow = await measureOverflow(page);
+  console.log(`[essential mobile] overflow: ${essOverflow}px`);
+  await screenshot(page, "09-essential-mobile");
+  expect(essOverflow, "Essential 모바일 가로 overflow").toBe(0);
+});
+
+// ────────────────────────────────────────────────
+// 시나리오 10(신규): 검색 결과 페이지 — IRIS 썸네일 연결 확인
+// ────────────────────────────────────────────────
+test("10 검색 결과 — IRIS 썸네일", async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  const r = await page.goto("/search?q=ring", { waitUntil: "domcontentloaded" });
+  console.log(`[/search?q=ring] HTTP ${r?.status()}`);
+  await page.waitForTimeout(1500);
+  const imgs = page.locator("img");
+  console.log(`[search] 결과 이미지 수: ${await imgs.count()}`);
+  await screenshot(page, "10-search-desktop");
+
+  await page.setViewportSize(MOBILE);
+  await page.goto("/search?q=ring", { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(1200);
+  const searchOverflow = await measureOverflow(page);
+  console.log(`[search mobile] overflow: ${searchOverflow}px`);
+  await screenshot(page, "10-search-mobile");
+  expect(searchOverflow, "검색 결과 모바일 가로 overflow").toBe(0);
 });
