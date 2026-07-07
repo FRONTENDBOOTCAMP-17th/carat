@@ -1,8 +1,8 @@
 import productsData from "@/data/products.json";
 
-// Each catalogue product carries its own `image` (assigned to match the photo's jewelry type — see
-// src/data/products.json). This resolves an id → its image, with a deterministic hash fallback for
-// anything not in the catalogue (e.g. the Essential ring).
+// 카탈로그의 각 상품은 자체 `image`를 가짐 (사진의 주얼리 종류에 맞춰 할당됨 — src/data/products.json
+// 참고). 이 함수는 id → 이미지를 매칭해주며, 카탈로그에 없는 항목(예: Essential 반지)에 대해서는
+// 결정적(deterministic) 해시 폴백을 사용함.
 const byId: Record<string, string> = {
   essential: "/images/Jewelries/IRIS_Thumbnail.webp",
 };

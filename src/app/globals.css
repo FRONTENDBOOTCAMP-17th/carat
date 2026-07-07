@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /* =============================================
-   PRISME FONT SYSTEM
-   Variables injected by layout.tsx
+   PRISME 폰트 시스템
+   변수는 layout.tsx에서 주입됨
    ============================================ */
 :root {
   --font-sans:    var(--font-pretendard);
@@ -10,27 +10,27 @@
 }
 
 /* =============================================
-   LEVEL 1 — RAW THEME VARIABLES
-   Defined on <html> (dark = default).
-   Overridden by html[data-theme="light"].
-   Tailwind @theme inline references these via var(),
-   so ALL utility classes respond to theme changes.
+   레벨 1 — 원시 테마 변수
+   <html>에 정의됨 (dark = 기본값).
+   html[data-theme="light"]에서 오버라이드됨.
+   Tailwind @theme inline이 var()를 통해 이 값들을 참조하므로
+   모든 유틸리티 클래스가 테마 변경에 반응함.
    ============================================ */
 
 html {
-  /* Surface — dark defaults */
+  /* Surface — 다크 기본값 */
   --c-surface-base:     #09090b;
   --c-surface-darkest:  #0d0d10;
   --c-surface-raised:   #18181b;
   --c-surface-elevated: #27272a;
   --c-surface-input:    #3f3f46;
   --c-surface-overlay:  rgba(0, 0, 0, 0.5);
-  /* Pure R=G=B neutral (zero hue/saturation) — deliberately NOT the zinc family (which carries a
-     faint cool/blue cast). Used behind the Essential 3D viewer so no metal tone is favored; keep in
-     sync with RingScene.tsx's CLEAR_COLORS.stage (WebGL clear color can't reliably read CSS vars). */
+  /* 순수 R=G=B 중립색(색조/채도 0) — zinc 계열(옅은 청색 기운이 있음)을 의도적으로 배제.
+     Essential 3D 뷰어 배경에 사용되어 특정 금속 톤에 치우치지 않게 함. RingScene.tsx의
+     CLEAR_COLORS.stage와 동기화 상태 유지할 것 (WebGL clear color는 CSS 변수를 안정적으로 읽지 못함). */
   --c-surface-stage:    #2b2b2b;
 
-  /* Content — dark defaults (off-white, not pure white) */
+  /* Content — 다크 기본값 (순백이 아닌 오프화이트) */
   --c-content-primary:   #e4e4e7;
   --c-content-secondary: rgba(228, 228, 231, 0.80);
   --c-content-tertiary:  rgba(228, 228, 231, 0.70);
@@ -39,15 +39,15 @@ html {
   --c-content-dimmed:    #71717a;
   --c-content-faint:     #a1a1aa;
 
-  /* Body */
+  /* 본문 */
   --c-bg: #09090b;
   --c-fg: #e4e4e7;
 
-  /* Hero text halo — background-coloured glow that lifts text off the ring (dark: full strength). */
+  /* Hero 텍스트 헤일로 — 배경색과 같은 톤의 글로우로 텍스트를 링에서 띄워 보이게 함 (dark: 최대 강도). */
   --hero-text-halo: 0 0 18px var(--c-surface-base), 0 0 7px var(--c-surface-base);
 }
 
-/* oklch for supporting browsers */
+/* oklch 지원 브라우저용 */
 @supports (color: oklch(0% 0 0)) {
   html {
     --c-surface-base:     var(--color-zinc-950);
@@ -70,7 +70,7 @@ html {
   }
 }
 
-/* Light mode */
+/* 라이트 모드 */
 html[data-theme="light"] {
   --c-surface-base:     #fafafa;
   --c-surface-darkest:  #f4f4f5;
@@ -80,7 +80,7 @@ html[data-theme="light"] {
   --c-surface-overlay:  rgba(0, 0, 0, 0.3);
   --c-surface-stage:    #d9d9d9;
 
-  /* Off-black, not pure black */
+  /* 순흑이 아닌 오프블랙 */
   --c-content-primary:   #18181b;
   --c-content-secondary: rgba(24, 24, 27, 0.80);
   --c-content-tertiary:  rgba(24, 24, 27, 0.70);
@@ -92,7 +92,7 @@ html[data-theme="light"] {
   --c-bg: #fafafa;
   --c-fg: #18181b;
 
-  /* Light mode: near-invisible halo (~5%) — a strong white glow on the bright page looks cheap. */
+  /* 라이트 모드: 거의 보이지 않는 헤일로(~5%) — 밝은 페이지 위의 강한 흰색 글로우는 싸구려처럼 보임. */
   --hero-text-halo: 0 0 6px color-mix(in srgb, var(--c-surface-base) 18%, transparent);
 }
 
@@ -119,18 +119,18 @@ html[data-theme="light"] {
 }
 
 /* =============================================
-   LEVEL 2 — TAILWIND DESIGN TOKENS
-   @theme inline references --c-* raw vars.
-   Generated utility classes will contain
-   e.g.  .bg-surface-darkest { background-color: var(--c-surface-darkest) }
-   which responds to runtime theme changes.
+   레벨 2 — TAILWIND 디자인 토큰
+   @theme inline이 --c-* 원시 변수를 참조함.
+   생성되는 유틸리티 클래스는 다음과 같은 형태를 가짐
+   예:  .bg-surface-darkest { background-color: var(--c-surface-darkest) }
+   런타임 테마 변경에 반응함.
    ============================================ */
 @theme inline {
-  /* Fonts */
+  /* 폰트 */
   --font-sans:    var(--font-pretendard);
   --font-display: var(--font-cinzel);
 
-  /* Letter-spacing scale */
+  /* 자간 스케일 */
   --tracking-1: 0.07em;
   --tracking-2: 0.18em;
   --tracking-3: 0.2em;
@@ -138,7 +138,7 @@ html[data-theme="light"] {
   --tracking-5: 0.26em;
   --tracking-6: 0.3em;
 
-  /* Letter-spacing semantic */
+  /* 자간 시맨틱 */
   --tracking-label:      var(--tracking-1);
   --tracking-heading:    var(--tracking-2);
   --tracking-link:       var(--tracking-3);
@@ -147,10 +147,10 @@ html[data-theme="light"] {
   --tracking-logo:       var(--tracking-6);
 
 
-  /* Layout */
+  /* 레이아웃 */
   --max-width-container: 1440px;
 
-  /* Color tokens — reference --c-* so utilities are themeable */
+  /* 색상 토큰 — 유틸리티가 테마 가능하도록 --c-*를 참조함 */
   --color-surface-base:     var(--c-surface-base);
   --color-surface-darkest:  var(--c-surface-darkest);
   --color-surface-raised:   var(--c-surface-raised);
@@ -172,7 +172,7 @@ html[data-theme="light"] {
 }
 
 /* =============================================
-   CUSTOM CURSOR
+   커스텀 커서
    ============================================ */
 @media (pointer: fine) {
   .has-custom-cursor,
@@ -247,10 +247,10 @@ html[data-theme="light"] {
   }
 }
 
-/* Coarse (touch) pointers don't match the @media (pointer: fine) block above, so without this the
-   custom-cursor nodes fall back to static flow — the autoscroll indicator's 24px SVG would then take
-   space at the top of <body>, above the header. Pin them out of flow unconditionally; on touch they
-   stay invisible (inline opacity:0) and inert (pointer-events:none) since the JS never activates. */
+/* 굵은(터치) 포인터는 위의 @media (pointer: fine) 블록과 매칭되지 않으므로, 이 규칙이 없으면
+   커스텀 커서 노드가 정적 흐름으로 되돌아가 — 오토스크롤 인디케이터의 24px SVG가 <body> 상단,
+   헤더 위쪽 공간을 차지하게 됨. 무조건 흐름에서 벗어나게 고정하고, 터치 환경에서는 JS가 활성화되지
+   않으므로 계속 보이지 않고(inline opacity:0) 비활성(pointer-events:none) 상태를 유지함. */
 .cursor-dot,
 .cursor-ring,
 .cursor-autoscroll {
@@ -261,7 +261,7 @@ html[data-theme="light"] {
 }
 
 /* =============================================
-   FOCUS RING
+   포커스 링
    ============================================ */
 :focus-visible:not(input):not(textarea):not(select) {
   outline: 0.5px solid var(--c-content-primary);
@@ -270,7 +270,7 @@ html[data-theme="light"] {
 }
 
 /* =============================================
-   BASE
+   기본 스타일
    ============================================ */
 @layer base {
   html {

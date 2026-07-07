@@ -21,7 +21,7 @@ function SearchContent() {
   return (
     <PageShell>
       <div className="flex-1 w-full max-w-container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24">
-        {/* Header */}
+        {/* 헤더 */}
         <header className="mb-12">
           <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
             {p.section}
@@ -39,7 +39,7 @@ function SearchContent() {
           )}
         </header>
 
-        {/* Typo suggestion */}
+        {/* 오타 교정 제안 */}
         {suggestion && (
           <div className="mb-10 px-4 py-3 border border-surface-elevated">
             <p className="text-xs text-content-secondary">
@@ -55,7 +55,7 @@ function SearchContent() {
           </div>
         )}
 
-        {/* Direct matches */}
+        {/* 직접 매치 */}
         {direct.length > 0 && (
           <section aria-labelledby="search-direct-heading" className="mb-16">
             <h2
@@ -80,7 +80,7 @@ function SearchContent() {
           </section>
         )}
 
-        {/* Related */}
+        {/* 연관 상품 */}
         {related.length > 0 && (
           <section aria-labelledby="search-related-heading">
             <h2
@@ -105,7 +105,7 @@ function SearchContent() {
           </section>
         )}
 
-        {/* No results */}
+        {/* 검색 결과 없음 */}
         {query && direct.length === 0 && related.length === 0 && !suggestion && (
           <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
             <p className="text-sm text-content-secondary">{p.noMatch(query)}</p>
@@ -119,7 +119,7 @@ function SearchContent() {
           </div>
         )}
 
-        {/* Empty query */}
+        {/* 검색어 없음 */}
         {!query && (
           <p className="text-xs text-content-secondary text-center py-24">
             {p.emptyQuery}

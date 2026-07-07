@@ -66,7 +66,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
 
   return (
     <>
-      {/* Overlay */}
+      {/* 오버레이 */}
       <div
         className={`fixed inset-0 z-40 bg-surface-overlay transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -75,7 +75,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
         aria-hidden="true"
       />
 
-      {/* Panel */}
+      {/* 패널 */}
       <div
         ref={panelRef}
         id="primary-menu"
@@ -86,7 +86,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Header */}
+        {/* 헤더 */}
         <div className="flex items-center justify-between px-6 py-5">
           <span className="text-sm tracking-logo text-content-primary" style={{ fontFamily: "var(--font-cinzel)" }}>
             PRISME
@@ -103,7 +103,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
 
         <div className="mx-6 h-px bg-surface-elevated" aria-hidden="true" />
 
-        {/* Primary nav */}
+        {/* 주요 내비게이션 */}
         <nav aria-label={t.drawer.primaryNav} className="px-6 pt-10 pb-6">
           <ul className="space-y-7">
             {primaryLinks.map(({ label, href }) => (
@@ -124,7 +124,7 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
 
         <div className="mx-6 h-px bg-surface-elevated" aria-hidden="true" />
 
-        {/* Secondary nav */}
+        {/* 보조 내비게이션 */}
         <nav aria-label={t.drawer.secondaryNav} className="px-6 pt-7">
           <ul className="space-y-4">
             {secondaryLinks.map(({ label, href }) => (
@@ -141,11 +141,11 @@ export default function NavDrawer({ isOpen, onClose }: NavDrawerProps) {
           </ul>
         </nav>
 
-        {/* Bottom */}
+        {/* 하단 */}
         <div className="mt-auto px-6 pb-8">
           <div className="h-px bg-surface-elevated mb-6" aria-hidden="true" />
 
-          {/* Theme toggle */}
+          {/* 테마 토글 */}
           <div className="flex items-center justify-between mb-5">
             <span className="text-xs tracking-label text-content-secondary">{t.drawer.theme.label}</span>
             <div className="flex items-center gap-0.5" role="group" aria-label={t.drawer.theme.label}>

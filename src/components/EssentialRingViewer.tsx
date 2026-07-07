@@ -15,8 +15,8 @@ import {
   type MousePos,
 } from "@/components/RingScene";
 
-// Never updated — the light rig (built for Hero's mouse-parallax) just settles at its base position,
-// which reads as a normal fixed 3-point studio rig here since OrbitControls owns the interaction.
+// 절대 업데이트되지 않음 — Hero의 마우스 패럴랙스용으로 만들어진 조명 리그가 그냥 기본 위치에
+// 고정되는데, 여기서는 OrbitControls가 인터랙션을 담당하므로 일반적인 고정 3점 스튜디오 조명처럼 보인다.
 const STATIC_MOUSE: MousePos = { x: 0, y: 0 };
 
 function ViewerScene({
@@ -34,10 +34,10 @@ function ViewerScene({
     <>
       <ClearColor variant="stage" />
       <Lights mouseRef={mouseRef} />
-      {/* Rolled back to Hero's exact reference pose — a reduced-tilt attempt visually tipped the
-          ring onto a "/" diagonal instead (X/Z Euler rotation don't decompose independently, so a
-          smaller tweak isn't just "a bit less tilt"). Revisit only with visual feedback in hand;
-          in the meantime OrbitControls' free drag already lets the user reorient it themselves. */}
+      {/* Hero의 정확한 기준 포즈로 되돌림 — 기울기를 줄이려던 시도가 오히려 링을 "/" 대각선으로
+          기울어 보이게 만들었음(X/Z 오일러 회전은 독립적으로 분해되지 않아서, 살짝 조정한다고
+          "기울기가 조금 덜한" 결과가 나오지 않음). 시각적 피드백을 직접 보면서만 다시 손댈 것;
+          그 동안은 OrbitControls의 자유 드래그로 사용자가 직접 방향을 조정할 수 있음. */}
       <group rotation={[Math.PI * 0.4, 0, 0.6 + Math.PI]} scale={0.96}>
         <RingModel
           nodes={nodes}
@@ -57,20 +57,20 @@ export default function EssentialRingViewer({
   canvasLabel,
 }: {
   metalColor: string;
-  // See RingModel's roughness comment — colored metals on this achromatic env need a touch of
-  // roughness to read as real polished metal instead of a tinted mirror. Pass per-swatch from the
-  // page (silver: 0, gold/rose-gold: a small nonzero value).
+  // RingModel의 roughness 주석 참고 — 이 무채색 환경맵 위에서 색이 있는 금속은 색 필터를 씌운
+  // 거울이 아니라 진짜 폴리시드 메탈처럼 보이려면 약간의 roughness가 필요함. 페이지에서 스와치별로
+  // 전달함(silver: 0, gold/rose-gold: 작은 0이 아닌 값).
   roughness?: number;
   fallbackTint: string;
   canvasLabel: string;
 }) {
   const hasWebGL = useMemo(() => canRenderRingScene(), []);
   const wrapRef = useRef<HTMLDivElement>(null);
-  // Pause rendering the moment this leaves view — same reasoning as Hero's Canvas: the per-pixel
-  // raytraced refraction has no reason to keep costing a frame budget while scrolled past.
+  // 화면 밖으로 나가는 즉시 렌더링을 일시정지 — Hero의 Canvas와 같은 이유: 스크롤을 지나친 뒤에도
+  // 픽셀 단위 레이트레이싱 굴절이 계속 프레임 예산을 쓸 이유가 없음.
   const [inView, setInView] = useState(true);
-  // Convention: auto-rotate invites interaction on load, but stops for good the moment the user
-  // grabs it — it should stay exactly where they leave it, not resume spinning underneath them.
+  // 관례: 자동 회전은 로드 시 인터랙션을 유도하지만, 사용자가 한 번 잡으면 영구적으로 멈춘다 —
+  // 사용자가 놓은 위치 그대로 있어야지, 밑에서 다시 돌기 시작하면 안 됨.
   const [autoRotate, setAutoRotate] = useState(true);
 
   useEffect(() => {
@@ -117,8 +117,8 @@ export default function EssentialRingViewer({
           />
         </Canvas>
       ) : (
-        // WebGL unavailable fallback — no photographed still exists yet for this piece, so fall
-        // back to the swatch tint wash rather than nothing.
+        // WebGL 미지원 시 폴백 — 이 제품은 아직 촬영된 스틸컷이 없어서, 아무것도 없는 대신
+        // 스와치 틴트 워시로 대체함.
         <div
           className="absolute inset-0 transition-colors duration-700"
           style={{ backgroundColor: fallbackTint }}

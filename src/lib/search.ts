@@ -1,6 +1,6 @@
 import productsData from "@/data/products.json";
 
-// ─── Types ─────────────────────────────────────────────────────────────────
+// ─── 타입 ──────────────────────────────────────────────────────────────────
 
 export type SearchableProduct = {
   id: string;
@@ -17,7 +17,7 @@ export type SearchResult = {
   suggestion: string | null;     // 오타 교정 쿼리
 };
 
-// ─── Product catalogue ─────────────────────────────────────────────────────
+// ─── 상품 카탈로그 ─────────────────────────────────────────────────────────
 
 const CATEGORY_META: Record<string, { label: string }> = {
   "best-pieces":   { label: "BEST PIECES" },
@@ -54,7 +54,7 @@ export function getAllSearchProducts(): SearchableProduct[] {
   return out;
 }
 
-// ─── Normalize ─────────────────────────────────────────────────────────────
+// ─── 정규화 ────────────────────────────────────────────────────────────────
 
 function normalize(s: string): string {
   return s
@@ -64,7 +64,7 @@ function normalize(s: string): string {
     .trim();
 }
 
-// ─── Levenshtein distance (1-D DP) ─────────────────────────────────────────
+// ─── 레벤슈타인 거리 (1차원 DP) ────────────────────────────────────────────
 
 function levenshtein(a: string, b: string): number {
   const m = a.length, n = b.length;
@@ -82,7 +82,7 @@ function levenshtein(a: string, b: string): number {
   return prev[n];
 }
 
-// ─── Synonym expansion ─────────────────────────────────────────────────────
+// ─── 동의어 확장 ───────────────────────────────────────────────────────────
 
 const SYNONYMS: Record<string, string[]> = {
   반지:       ["ring", "링"],
@@ -120,7 +120,7 @@ function expandWords(words: string[]): string[] {
   return Array.from(expanded);
 }
 
-// ─── Scoring ────────────────────────────────────────────────────────────────
+// ─── 스코어링 ──────────────────────────────────────────────────────────────
 
 function scoreProduct(p: SearchableProduct, expandedWords: string[]): number {
   const name = normalize(p.name);
@@ -136,7 +136,7 @@ function scoreProduct(p: SearchableProduct, expandedWords: string[]): number {
   return score;
 }
 
-// ─── Vocabulary (for fuzzy correction) ─────────────────────────────────────
+// ─── 어휘 목록 (오타 교정용) ───────────────────────────────────────────────
 
 function buildVocabulary(): string[] {
   const vocab = new Set<string>();
@@ -144,7 +144,7 @@ function buildVocabulary(): string[] {
     normalize(p.name).split(" ").forEach((w) => { if (w.length >= 2) vocab.add(w); });
     if (p.description) normalize(p.description).split(" ").forEach((w) => { if (w.length >= 2) vocab.add(w); });
   }
-  // Add synonym keys too
+  // 동의어 키도 추가
   Object.keys(SYNONYMS).forEach((k) => vocab.add(normalize(k)));
   return Array.from(vocab);
 }
@@ -163,7 +163,7 @@ function closestVocabWord(queryWord: string, vocab: string[]): string | null {
   return best?.word ?? null;
 }
 
-// ─── Main search function ───────────────────────────────────────────────────
+// ─── 메인 검색 함수 ────────────────────────────────────────────────────────
 
 export function searchProducts(query: string): SearchResult {
   const q = normalize(query);

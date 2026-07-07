@@ -12,7 +12,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import type { Lang } from "@/lib/translations";
 
 /* -----------------------------
-   Cinzel (headline)
+   Cinzel (헤드라인용)
 ------------------------------*/
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -22,7 +22,7 @@ const cinzel = Cinzel({
 });
 
 /* -----------------------------
-   Pretendard (local - FIXED PATH)
+   Pretendard (로컬 - 고정 경로)
 ------------------------------*/
 const pretendard = localFont({
   src: [
@@ -119,7 +119,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {/* Anti-flash: set data-theme before React hydration */}
+        {/* 깜빡임 방지: React 하이드레이션 전에 data-theme을 설정 */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var s=localStorage.getItem('prisme_theme');var t=s==='light'||s==='dark'?s:(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`,

@@ -186,7 +186,7 @@ export default function LoginModal() {
             onClick={attemptClose}
           >
             <div ref={panelRef} className="relative w-full max-w-sm bg-surface-raised p-8" onClick={(e) => e.stopPropagation()} onKeyDown={handlePanelKeyDown}>
-              {/* Confirm-close overlay */}
+              {/* 닫기 확인 오버레이 */}
               {showConfirmClose && (
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-surface-raised px-8">
                   <p className="text-center text-sm leading-relaxed text-content-primary" style={{ whiteSpace: "pre-line" }}>
@@ -204,7 +204,7 @@ export default function LoginModal() {
               )}
 
               <div inert={showConfirmClose || undefined}>
-                {/* Header */}
+                {/* 헤더 */}
                 <div className="flex items-start justify-between mb-8">
                   <div>
                     <p className="text-xs tracking-label text-content-faint font-normal mb-2">PRISME</p>
@@ -218,7 +218,7 @@ export default function LoginModal() {
                 </div>
 
                 <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-                  {/* Name — signup only */}
+                  {/* 이름 — 회원가입 전용 */}
                   {!isLogin && (
                     <div className="flex flex-col gap-1.5">
                       <label htmlFor="signup-name" className="text-xs tracking-label text-content-faint font-normal">NAME</label>
@@ -227,14 +227,14 @@ export default function LoginModal() {
                     </div>
                   )}
 
-                  {/* Email */}
+                  {/* 이메일 */}
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="auth-email" className="text-xs tracking-label text-content-faint font-normal">EMAIL</label>
                     <input id="auth-email" type="email" autoComplete="email" value={email} onChange={(e) => handleChange("email", e.target.value)} onBlur={(e) => handleBlur("email", e.target.value)} className={inputCls(!!err("email"))} placeholder="name@domain.com" required aria-invalid={!!err("email")} aria-describedby={err("email") ? "error-email" : undefined} />
                     {err("email") && <p id="error-email" className="text-xs text-red-400" role="alert">{err("email")}</p>}
                   </div>
 
-                  {/* Password */}
+                  {/* 비밀번호 */}
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="auth-password" className="text-xs tracking-label text-content-faint font-normal">PASSWORD</label>
                     <div className="relative">
@@ -246,7 +246,7 @@ export default function LoginModal() {
                     {err("password") && <p id="error-password" className="text-xs text-red-400" role="alert">{err("password")}</p>}
                   </div>
 
-                  {/* Confirm password — signup only */}
+                  {/* 비밀번호 확인 — 회원가입 전용 */}
                   {!isLogin && (
                     <div className="flex flex-col gap-1.5">
                       <label htmlFor="signup-confirm" className="text-xs tracking-label text-content-faint font-normal">CONFIRM PASSWORD</label>

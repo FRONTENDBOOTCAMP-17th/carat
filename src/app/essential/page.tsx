@@ -47,7 +47,7 @@ export default function EssentialPage() {
         </nav>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-          {/* 3D model */}
+          {/* 3D 모델 */}
           <div className="relative aspect-square bg-surface-stage overflow-hidden">
             <EssentialRingViewer
               metalColor={swatch.metal}
@@ -57,7 +57,7 @@ export default function EssentialPage() {
             />
           </div>
 
-          {/* Info */}
+          {/* 정보 */}
           <div className="flex flex-col">
             <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
               {p.sectionLabel}
@@ -73,7 +73,7 @@ export default function EssentialPage() {
               {p.desc}
             </p>
 
-            {/* Color Selection */}
+            {/* 색상 선택 */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <p className="text-xs tracking-label text-content-secondary">

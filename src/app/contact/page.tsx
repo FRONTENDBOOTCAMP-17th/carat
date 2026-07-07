@@ -72,7 +72,7 @@ export default function ContactPage() {
         </nav>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-          {/* Info */}
+          {/* 정보 */}
           <div>
             <p className="mb-3 text-xs tracking-label text-content-faint font-normal">
               {p.section}
@@ -103,7 +103,7 @@ export default function ContactPage() {
             </dl>
           </div>
 
-          {/* Form */}
+          {/* 폼 */}
           <div>
             {submitted ? (
               <div className="flex flex-col justify-center h-full min-h-64 gap-4">
@@ -128,7 +128,7 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-                {/* Name */}
+                {/* 이름 */}
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="contact-name" className="text-xs tracking-label text-content-faint font-normal">
                     NAME
@@ -152,7 +152,7 @@ export default function ContactPage() {
                   )}
                 </div>
 
-                {/* Email */}
+                {/* 이메일 */}
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="contact-email" className="text-xs tracking-label text-content-faint font-normal">
                     EMAIL
@@ -176,7 +176,7 @@ export default function ContactPage() {
                   )}
                 </div>
 
-                {/* Message */}
+                {/* 메시지 */}
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="contact-message" className="text-xs tracking-label text-content-faint font-normal">
                     MESSAGE

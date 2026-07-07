@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 
 const SCALE_DEFAULT = 1;
 const SCALE_HOVER = 30 / 28; // ≈ 1.071
-const DEAD_ZONE = 10; // px — no scroll within this radius
-const MAX_SPEED = 20; // px per frame
+const DEAD_ZONE = 10; // px — 이 반경 이내에서는 스크롤 안 함
+const MAX_SPEED = 20; // 프레임당 px
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);

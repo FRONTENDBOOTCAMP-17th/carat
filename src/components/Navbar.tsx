@@ -64,7 +64,7 @@ export default function Navbar() {
     <>
       <nav aria-label={t.nav.primaryNav} className="w-full bg-surface-base">
         <div className="max-w-container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-5">
-          {/* Logo */}
+          {/* 로고 */}
           <Link
             href="/"
             aria-label={t.nav.homeLabel}
@@ -84,9 +84,9 @@ export default function Navbar() {
             </svg>
           </Link>
 
-          {/* Right: Lang + Search + User + Menu */}
+          {/* 우측: 언어 + 검색 + 유저 + 메뉴 */}
           <div className="flex items-center gap-1">
-            {/* Language toggle */}
+            {/* 언어 토글 */}
             <div
               className="flex items-center mr-1"
               role="group"
@@ -124,7 +124,7 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Search */}
+            {/* 검색 */}
             <button
               onClick={() => setIsSearchOpen(true)}
               className="flex items-center justify-center size-11 text-content-tertiary hover:text-content-primary transition-colors"
@@ -135,7 +135,7 @@ export default function Navbar() {
               <Search size={18} strokeWidth={1.5} aria-hidden="true" />
             </button>
 
-            {/* User */}
+            {/* 유저 */}
             <div ref={userMenuRef} className="relative">
               <button
                 ref={userButtonRef}
@@ -182,7 +182,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Menu */}
+            {/* 메뉴 */}
             <button
               onClick={() => setIsDrawerOpen(true)}
               className="flex items-center justify-center size-11 -mr-4 text-content-tertiary hover:text-content-primary transition-colors"

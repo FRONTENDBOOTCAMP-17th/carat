@@ -46,7 +46,7 @@ export default function RelatedScroll({
     <div>
       <p className="mb-8 text-xs tracking-label text-content-faint">{label}</p>
       <div className="relative">
-        {/* Left chevron — absolute overlay, opacity만 전환해서 layout shift 없음 */}
+        {/* 왼쪽 화살표 — absolute overlay, opacity만 전환해서 layout shift 없음 */}
         <button
           onClick={() => scroll("left")}
           className={`absolute left-0 top-22 -translate-y-1/2 z-10 size-9 flex items-center justify-center text-content-secondary hover:text-content-primary transition-[opacity,color] duration-200 ${
@@ -59,7 +59,7 @@ export default function RelatedScroll({
           <ChevronLeft size={16} strokeWidth={1.5} aria-hidden="true" />
         </button>
 
-        {/* Left edge gradient */}
+        {/* 왼쪽 가장자리 그라디언트 */}
         <div
           className={`absolute left-0 top-0 h-full w-16 z-5 pointer-events-none transition-opacity duration-200 ${
             canScrollLeft ? "opacity-100" : "opacity-0"
@@ -68,7 +68,7 @@ export default function RelatedScroll({
           aria-hidden="true"
         />
 
-        {/* Scroll container */}
+        {/* 스크롤 컨테이너 */}
         <div
           ref={scrollRef}
           className="flex gap-6 overflow-x-auto pb-4"
@@ -85,7 +85,7 @@ export default function RelatedScroll({
           ))}
         </div>
 
-        {/* Right edge gradient */}
+        {/* 오른쪽 가장자리 그라디언트 */}
         <div
           className={`absolute right-0 top-0 h-full w-16 z-5 pointer-events-none transition-opacity duration-200 ${
             canScrollRight ? "opacity-100" : "opacity-0"
@@ -94,7 +94,7 @@ export default function RelatedScroll({
           aria-hidden="true"
         />
 
-        {/* Right chevron */}
+        {/* 오른쪽 화살표 */}
         <button
           onClick={() => scroll("right")}
           className={`absolute right-0 top-22 -translate-y-1/2 z-10 size-9 flex items-center justify-center text-content-secondary hover:text-content-primary transition-[opacity,color] duration-200 ${
