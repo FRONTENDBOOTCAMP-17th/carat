@@ -399,7 +399,7 @@ export default function Hero() {
             // 데코레이션용 fallback이라 next/image 최적화 대상이 아님.
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src="/images/ring-hero.webp"
+              src="/images/hero-fallback.webp"
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -436,7 +436,7 @@ export default function Hero() {
             PRISME
           </h1>
           <div className="flex justify-center flex-col">
-            <span className="block text-center text-base sm:text-lg">
+            <span className="block text-center text-sm sm:text-lg">
               {t.hero.tagline1}
             </span>
           </div>

@@ -14,9 +14,6 @@
 
 ## 스크린샷
 
-![홈 — 3D 히어로](docs/screenshots/home-hero.png)
-_홈 — 스크롤에 반응하는 3D 히어로_
-
 ![IRIS ORIGINAL](docs/screenshots/essential.png)
 _IRIS ORIGINAL — Iris 시그니처 피스_
 
@@ -285,7 +282,7 @@ touch 이후    → 필드별 실시간 유효성 재검사
 | 3D 에셋   | Blender (모델링 · 텍스처링)       |
 | 3D 렌더링 | Three.js, React Three Fiber, drei |
 | Animation | Framer Motion                     |
-| Font      | Cinzel, Pretendard                |
+| Typeface  | Cinzel, Pretendard                |
 
 ---
 
