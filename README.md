@@ -4,7 +4,7 @@
 
 **🔗 Live Demo:** [project-carat.vercel.app](https://project-carat.vercel.app/)
 
-![PRISME 대표 화면](public/images/README-Cover.webp)
+![히어로 스크롤 인터랙션](docs/gifs/hero-scroll.gif)
 
 단순히 상품을 나열하는 이커머스가 아니라, 에디토리얼 매거진처럼 브랜드 경험 자체를 전달하는 방향으로 기획했습니다.
 
@@ -57,9 +57,7 @@ React Three Fiber + drei(`useGLTF`)로 모델을 로드하고, 스튜디오 환�
 
 ### 스크롤 애니메이팅
 
-스크롤 진행도를 `requestAnimationFrame` 루프에서 부드럽게 보간(lerp)해, 반지가 화면을 가로지르며 이동·회전(Z roll·pitch)하고 텍스트 레이아웃과 맞물리도록 만들었습니다. 여기에 마우스 움직임 기반 패럴랙스 틸트를 **스크롤 모션과 분리된 레이어**로 얹어, 화면 기준으로 자연스럽게 반응하도록 했습니다.
-
-![히어로 스크롤 인터랙션](docs/gifs/hero-scroll.gif)
+맨 위 GIF에서 보이는 움직임이 이 부분입니다. 스크롤 진행도를 `requestAnimationFrame` 루프에서 부드럽게 보간(lerp)해, 반지가 화면을 가로지르며 이동·회전(Z roll·pitch)하고 텍스트 레이아웃과 맞물리도록 만들었습니다. 여기에 마우스 움직임 기반 패럴랙스 틸트를 **스크롤 모션과 분리된 레이어**로 얹어, 화면 기준으로 자연스럽게 반응하도록 했습니다.
 
 `prefers-reduced-motion` 환경과 WebGL 미지원 환경에서는 각각 모션을 절제하거나 정지 이미지 폴백을 제공합니다.
 
