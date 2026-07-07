@@ -4,7 +4,7 @@
 
 **🔗 Live Demo:** [project-carat.vercel.app](https://project-carat.vercel.app/)
 
-![히어로 스크롤 인터랙션](docs/gifs/hero-scroll.gif)
+<img src="docs/gifs/hero-scroll.gif" alt="히어로 스크롤 인터랙션" width="100%" />
 
 단순히 상품을 나열하는 이커머스가 아니라, 에디토리얼 매거진처럼 브랜드 경험 자체를 전달하는 방향으로 기획했습니다.
 
@@ -53,7 +53,7 @@ _Collections — 에디토리얼 그리드_
 
 React Three Fiber + drei(`useGLTF`)로 모델을 로드하고, 스튜디오 환경맵과 BVH 기반 per-facet 반사를 적용해 별도 배경 없이도 각 면에서 광채가 살아나도록 구성했습니다. 모델은 `preload`로 미리 받아 첫 진입 시 지연을 줄였습니다. 같은 모델을 IRIS ORIGINAL 페이지에서는 드래그로 회전 가능한 오빗 뷰어로 재사용합니다.
 
-![Iris 오빗 뷰어](docs/gifs/iris-orbit.gif)
+<img src="docs/gifs/iris-orbit.gif" alt="Iris 오빗 뷰어" width="100%" />
 
 ### 스크롤 애니메이팅
 
