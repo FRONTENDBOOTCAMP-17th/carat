@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 // Shared building blocks for every scene that shows the Hero_Ring model — the scroll-driven Hero
-// journey (Hero.tsx) and the drag-to-orbit Essential Collection viewer (EssentialRingViewer.tsx)
+// journey (Hero.tsx) and the drag-to-orbit IRIS ORIGINAL viewer (EssentialRingViewer.tsx)
 // both mount these instead of duplicating the studio lighting / material / geometry setup.
 
 // base/input hex duplicated from globals.css's --c-surface-base / --c-surface-input (light/dark)

@@ -98,9 +98,9 @@ const ko = {
     sectionLabel: "PRISME 메인 히어로",
     canvasLabel: "스크롤에 반응하는 반지 3D 애니메이션",
     tagline1: "현대 주얼리의 본질을 가장 순수한 형태와 완벽한 균형으로.",
-    collectionLabel: "COLLECTION",
-    essentialLine1: "ESSENTIAL",
-    essentialLine2: "COLLECTION",
+    collectionLabel: "EXPLORE",
+    essentialLine1: "IRIS",
+    essentialLine2: "ORIGINAL",
     essentialDesc:
       "절제와 정밀이 만나는 지점.\n가장 단순한 형태 안에 소재의 본질을 담았습니다.",
     cta: "컬렉션 살펴보기 →",
@@ -142,7 +142,7 @@ const ko = {
   pages: {
     essential: {
       backNav: "이전 페이지로 돌아가기",
-      sectionLabel: "ESSENTIAL COLLECTION",
+      sectionLabel: "ORIGINAL",
       title: "IRIS",
       desc: "균형을 통해 형성되고 우아함으로 정의된 반지. PRISME의 시그니처 피스로, 현대적인 조형성과 정교한 소재가 만나는 가장 순수한 표현입니다.",
       materialSelect: "소재 선택",
@@ -643,9 +643,9 @@ const en: typeof ko = {
     sectionLabel: "PRISME hero section",
     canvasLabel: "3D ring animation responding to scroll",
     tagline1: "The essence of contemporary jewelry, in its purest form and perfect balance.",
-    collectionLabel: "COLLECTION",
-    essentialLine1: "ESSENTIAL",
-    essentialLine2: "COLLECTION",
+    collectionLabel: "EXPLORE",
+    essentialLine1: "IRIS",
+    essentialLine2: "ORIGINAL",
     essentialDesc:
       "Where restraint meets precision.\nThe essence of material, held within the simplest form.",
     cta: "Explore the collection →",
@@ -687,7 +687,7 @@ const en: typeof ko = {
   pages: {
     essential: {
       backNav: "Back",
-      sectionLabel: "ESSENTIAL COLLECTION",
+      sectionLabel: "ORIGINAL",
       title: "IRIS",
       desc: "Shaped through balance, defined by elegance. PRISME's signature piece — the purest expression of where contemporary form meets refined material.",
       materialSelect: "Material",

@@ -20,7 +20,7 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-// Gentle symmetric ease — smooth accel/decel without the flat, snappy feel of cubic at the ends.
+// 완만하고 대칭적인 이징 — 양 끝에서 cubic 특유의 뚝뚝 끊기는 느낌 없이 부드럽게 가속/감속한다.
 function easeInOutSine(t: number) {
   return -(Math.cos(Math.PI * t) - 1) / 2;
 }
@@ -59,32 +59,70 @@ function Ring({
     const p = smooth.current;
     const t = state.clock.elapsedTime;
 
-    // One graceful journey: hero pose (lower-left, screen-filling) → settled beside ESSENTIAL
-    // COLLECTION on the right. Spread across most of the scroll and eased in-out so the move is slow
-    // and continuous rather than snapping. j drives position, Z roll and scale together.
+    // 하나의 우아한 여정: 히어로 포즈(좌하단, 화면을 가득 채움) → IRIS ORIGINAL 옆(우측)에 안착.
+    // 스크롤 대부분에 걸쳐 펼쳐지고 in-out으로 이징해서 뚝뚝 끊기지 않고 느리고 연속적으로 움직인다.
+    // j가 아래 모든 히어로→안착 보간(scale · position · rotation)을 함께 구동한다.
     const j = easeInOutSine(Math.min(Math.max((p - 0.05) / 0.85, 0), 1));
 
-    // Gentle position float so it's never dead-still (the turntable spin does most of the work).
+    // 완전히 정지해 보이지 않도록 위치를 살짝 띄운다 (턴테이블 회전이 대부분의 역할을 함).
     const idleBob = Math.sin(t * 0.5) * 0.03;
 
     const isMobile = isMobileRef.current;
 
-    // Scale: fills the screen at the hero, eases down to base size as it travels.
-    // Mobile (layout B): the ring recedes to a centred backdrop under full-width overlay text, so
-    // cap the hero size to the narrow width (a height-based hero overflows absurdly tall on portrait)
-    // and settle a touch smaller so it reads as background, not a competing subject.
+    // 안착 크기(scale이 j=1일 때 도달하는 값). 모바일(레이아웃 B): 반지가 풀와이드 오버레이 텍스트
+    // 아래 중앙 배경으로 물러나므로 상한을 좁게 잡고, 안착 시 살짝 더 작게 만들어 경쟁하는 주인공이
+    // 아니라 배경처럼 읽히게 한다.
     const baseScale = isMobile
       ? 1.25 * Math.max(0.4, Math.min(0.85, viewport.width / 3.4))
-      : Math.max(0.4, Math.min(1, viewport.width / 4.0));
-    const heroScale = isMobile
-      ? Math.min(viewport.height / 2.6, viewport.width * 1.05)
-      : Math.max(baseScale * 2.7, viewport.height / 2.4);
-    groupRef.current.scale.setScalar(heroScale + (baseScale - heroScale) * j);
+      : Math.max(0.4, Math.min(1.6, viewport.width / 4.0));
+    const ringExtent = 1.35 * baseScale;
+    // edgeMargin: maxPosX 그대로면 반지 오른쪽 끝이 뷰포트 끝에 정확히 닿아 애매하게 걸친 것처럼
+    // 보인다 — 안착 시 안정적으로 프레임 안에 들어오도록 살짝 더 안쪽으로 당긴다.
+    const edgeMargin = 0.35;
+    const maxPosX = Math.max(0, viewport.width * 0.5 - ringExtent - edgeMargin);
+    // px→world 변환: viewport.width 월드 단위가 size.width CSS px에 대응하므로, 오른쪽으로 20px는 이만큼이다.
+    const px20 = (20 / size.width) * viewport.width;
 
-    // Mouse parallax on the OUTER tilt group (screen space) — applied above the roll/pitch below, so
-    // "mouse up → ring leans back toward the cursor" stays intuitive no matter how the journey has
-    // rolled/pitched the ring. Tilting it shifts which facets catch the bright env panels, so
-    // brilliance travels across the stones (they're refraction-based and ignore lights).
+    // ── 히어로 포즈 vs 안착 포즈 값을 모바일/데스크톱별로 한곳에 모음 ──
+    // heroScale/heroX/heroRollZ/heroPitchX: 스크롤 시작(j=0), 화면을 가득 채운 첫인상.
+    // settledX/settledY/settledRollZ/settledPitchX: 스크롤 끝(j=1), IRIS ORIGINAL 옆에 자리 잡은 모습.
+    // scale은 baseScale(위)과 더 이상 연동하지 않는 독립 다이얼이라, 안착 크기를 조정해도
+    // 히어로 크기는 안 변함(반대도 마찬가지) — heroScale만 별도로 조정.
+    const cfg = isMobile
+      ? {
+          heroScale: Math.min(viewport.height / 2.6, viewport.width * 1.05),
+          heroX: -0.25,
+          // 안착 시 가로(X) 위치 — 모바일은 아래쪽 우측에 안착, 화면 정중앙 배경처럼 안 보이게.
+          settledX: viewport.width * 0.14 + px20,
+          // 안착 시 세로(Y) 위치
+          settledY: -0.32,
+          heroRollZ: 0.6 + Math.PI,
+          settledRollZ: 0.6 + Math.PI,
+          heroPitchX: Math.PI * -0.4,
+          settledPitchX: Math.PI * -0.4,
+        }
+      : {
+          // baseScale의 상한(위 1.6)을 올릴 경우, 이 하한(2.5)도 그보다 충분히 크게 유지할 것.
+          heroScale: Math.max(2.5, viewport.height / 2.4),
+          heroX: -0.7,
+          // 안착 시 가로(X) 위치 — 우측에 안착, 보석이 텍스트를 향해 왼쪽을 보도록 회전.
+          settledX: Math.min(viewport.width * 0.24, maxPosX),
+          // 안착 시 세로(Y) 위치
+          settledY: -0.15 * baseScale,
+          heroRollZ: 0.6 + Math.PI, // 대각선/크라운이 우측 상단을 향함
+          settledRollZ: 0.6 + Math.PI, // 안착 시 Z roll(대각선 기울기) — 여기만 바꾸면 안착 각도만 변경됨
+          heroPitchX: Math.PI * -0.4, // 크라운을 살짝 내려다보는 각도
+          settledPitchX: Math.PI * -0.5, // 안착 시 X lean(내려다보는 각도) — 여기만 바꾸면 안착 각도만 변경됨
+        };
+
+    groupRef.current.scale.setScalar(
+      cfg.heroScale + (baseScale - cfg.heroScale) * j,
+    );
+
+    // 가장 바깥 tilt 그룹(화면 좌표계)에 마우스 패럴랙스를 적용 — 아래 roll/pitch보다 위에 적용해서,
+    // 여정 중 반지가 얼마나 회전/기울어졌든 "마우스를 위로 → 반지가 커서 쪽으로 기운다"는 감각이
+    // 항상 직관적으로 유지된다. 기울이면 밝은 환경맵 패널을 반사하는 면이 바뀌면서
+    // 광채가 보석 표면을 옮겨다닌다(보석은 굴절 기반이라 조명을 무시함).
     mouseSmooth.current.x +=
       (mouseRef.current.x - mouseSmooth.current.x) * 0.07;
     mouseSmooth.current.y +=
@@ -92,37 +130,32 @@ function Ring({
     tiltRef.current.rotation.x = -mouseSmooth.current.y * 0.12;
     tiltRef.current.rotation.y = mouseSmooth.current.x * 0.18;
 
-    // Scroll-driven turntable around the vertical (Y) axis, applied ABOVE the static roll/lean so the
-    // first frame keeps the exact reference composition (spin = 0 there), then the whole ring swings
-    // round so the stones turn to face screen-left as it settles.
+    // 스크롤에 따라 수직(Y)축으로 도는 턴테이블 회전 — 아래의 roll/lean보다 위에 적용해서
+    // 첫 프레임은 기준 구도를 그대로 유지하고(그 지점에서 spin = 0), 이후 반지 전체가 돌아가면서
+    // 안착할 때 보석이 화면 왼쪽을 향하게 된다.
     spinRef.current.rotation.set(0, j * Math.PI * -0.45, 0);
 
-    // Static first-frame pose (the reference composition): Z roll = diagonal / crown up-right, held
-    // through the journey; X lean = look slightly down onto the crown.
-    rollRef.current.rotation.set(0, 0, 0.6 + Math.PI);
-    innerRef.current.rotation.set(Math.PI * -0.4, 0, 0);
+    // Z roll · X lean: 히어로 값 → 안착 값으로 j에 따라 보간(scale·position과 동일한 패턴).
+    rollRef.current.rotation.set(
+      0,
+      0,
+      cfg.heroRollZ + (cfg.settledRollZ - cfg.heroRollZ) * j,
+    );
+    innerRef.current.rotation.set(
+      cfg.heroPitchX + (cfg.settledPitchX - cfg.heroPitchX) * j,
+      0,
+      0,
+    );
 
-    // Position: desktop → settled on the RIGHT, gems turned to face left toward the text.
-    // Mobile (layout B): settle the ring LOW and to the RIGHT — a diagonal drop from the hero pose,
-    // reading larger so it doesn't look dead-static like a dead-centre backdrop did. The text sits
-    // above it (header-cleared) and the scrim keeps it legible; the ring may bleed slightly off the
-    // right edge, which is intentional.
-    const ringExtent = 1.35 * baseScale;
-    const maxPosX = Math.max(0, viewport.width * 0.5 - ringExtent);
-    // px→world: viewport.width world units span size.width CSS px, so 20px right = this much.
-    const px20 = (20 / size.width) * viewport.width;
-    const settledX = isMobile
-      ? viewport.width * 0.14 + px20
-      : Math.min(viewport.width * 0.22, maxPosX);
-    const heroX = isMobile ? -0.25 : -0.7;
-    groupRef.current.position.x = heroX + (settledX - heroX) * j;
-    const settledY = isMobile ? -0.32 : -0.15 * baseScale;
-    groupRef.current.position.y = -1.2 + (settledY + 1.2) * j + idleBob;
+    // 위치: 히어로(화면 밖 좌하단) → 안착(cfg.settledX/settledY). 반지가 오른쪽 가장자리 밖으로
+    // 살짝 삐져나가는 것은 의도된 것이다.
+    groupRef.current.position.x = cfg.heroX + (cfg.settledX - cfg.heroX) * j;
+    groupRef.current.position.y = -1.2 + (cfg.settledY + 1.2) * j + idleBob;
   });
 
   return (
-    // groupRef: scale + position (scroll) · tiltRef: mouse parallax (screen space) · rollRef: Z roll
-    // (scroll) · innerRef: pitch (scroll). Split so parallax sits above the roll/pitch = screen-intuitive.
+    // groupRef: scale + position(스크롤) · tiltRef: 마우스 패럴랙스(화면 좌표계) · rollRef: Z roll
+    // (스크롤) · innerRef: pitch(스크롤). 패럴랙스가 roll/pitch보다 위에 오도록 분리해서 화면 기준으로 직관적이게 함.
     <group ref={groupRef}>
       <group ref={tiltRef}>
         <group ref={spinRef}>
@@ -137,8 +170,8 @@ function Ring({
   );
 }
 
-// Scene lives inside <Canvas> (client-only), so the env map — which touches `document` — is built
-// here rather than during SSR. The same studio env feeds both the metal reflections and the gems.
+// Scene은 <Canvas> 안(클라이언트 전용)에 있으므로, document를 다루는 환경맵을
+// SSR 중이 아니라 여기서 만든다. 같은 스튜디오 환경맵이 금속 반사와 보석에 모두 쓰인다.
 function Scene({
   progressRef,
   mouseRef,
@@ -171,8 +204,8 @@ export default function Hero() {
   const smooth = useRef(0);
   const progressRef = useRef(0);
   const mouseRef = useRef<MousePos>({ x: 0, y: 0 });
-  // Shared with the Canvas' Ring (choreography) and the DOM scrim/text below — kept as a ref so the
-  // rAF loop reads the live value without re-subscribing on every resize.
+  // Canvas의 Ring(안무 담당)과 아래 DOM 스크림/텍스트가 함께 참조 — ref로 유지해서
+  // rAF 루프가 리사이즈마다 재구독하지 않고도 최신 값을 읽는다.
   const isMobileRef = useRef(false);
   const navRevealedRef = useRef(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -181,13 +214,13 @@ export default function Hero() {
   const heroTextRef = useRef<HTMLDivElement>(null);
   const essentialTextRef = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
-  // The ring's per-pixel raytraced refraction has no reason to keep costing a frame budget once the
-  // 400vh section has fully scrolled past — without this the Canvas rAF loop (frameloop="always")
-  // runs forever for the rest of the page.
+  // 반지의 픽셀 단위 레이트레이싱 굴절은 400vh 섹션을 완전히 지나간 뒤에는
+  // 프레임 예산을 계속 쓸 이유가 없다 — 이게 없으면 Canvas의 rAF 루프(frameloop="always")가
+  // 페이지 나머지 부분에서도 영원히 돌아간다.
   const [inView, setInView] = useState(true);
 
-  // Cheap, always-on: keeps target/mouseRef fresh so the scene doesn't jump when the rAF loop
-  // below resumes after re-entering view.
+  // 가볍고 항상 켜져 있음: target/mouseRef를 최신 상태로 유지해서, 화면에 다시 들어와
+  // 아래 rAF 루프가 재개될 때 장면이 튀지 않게 한다.
   useEffect(() => {
     const onScroll = () => {
       target.current = window.scrollY / (window.innerHeight * 3);
@@ -233,8 +266,8 @@ export default function Hero() {
     return () => observer.disconnect();
   }, []);
 
-  // Short cross-fade so the ring's relight on theme toggle reads as an intentional transition
-  // rather than a pop, even though the env maps themselves now swap almost instantly.
+  // 테마 전환 시 반지 재조명이 뚝 끊기지 않고 의도된 전환처럼 보이도록 짧게 크로스페이드 —
+  // 환경맵 자체는 거의 즉시 바뀌지만 그렇다.
   useEffect(() => {
     const el = canvasWrapRef.current;
     if (!el) return;
@@ -272,15 +305,15 @@ export default function Hero() {
       }
     } else {
       const animate = () => {
-        smooth.current += (target.current - smooth.current) * 0.08;
+        smooth.current += (target.current - smooth.current) * 0.055;
         const p = smooth.current;
         progressRef.current = p;
         const heroFade = Math.min(p / 0.3, 1);
         if (overlayRef.current) {
-          // Dark mode: a real scrim (0.4). Light mode: a bright scrim on the bright page looks cheap,
-          // so keep it barely-there (~5%) and let the (also-reduced) text halo carry legibility.
-          // Mobile (layout B): the full-width text overlays a centred ring, so the scrim has to do
-          // real legibility work — push it much stronger in both themes than on desktop.
+          // 다크 모드: 확실한 스크림(0.4). 라이트 모드: 밝은 페이지 위의 밝은 스크림은 싸구려처럼 보여서
+          // 거의 안 보이게(~5%) 두고 (역시 줄어든) 텍스트 halo가 가독성을 담당하게 한다.
+          // 모바일(레이아웃 B): 풀와이드 텍스트가 중앙 반지 위에 겹치므로, 스크림이 실제로
+          // 가독성을 책임져야 해서 두 테마 모두에서 데스크톱보다 훨씬 강하게 넣는다.
           const isLight = document.documentElement.dataset.theme === "light";
           const scrimMax = isMobileRef.current
             ? isLight
@@ -347,9 +380,9 @@ export default function Hero() {
               role="img"
               aria-label={t.hero.canvasLabel}
               onCreated={({ gl }) => {
-                // Neutral (Khronos PBR Neutral) instead of ACES: ACES rolls off highlights hard,
-                // compressing the extreme white↔black contrast that makes the stones & polished metal
-                // pop. Neutral preserves that punch — better for product/jewelry.
+                // ACES 대신 Neutral(Khronos PBR Neutral): ACES는 하이라이트를 강하게 눌러서
+                // 보석과 폴리시드 메탈을 돋보이게 하는 극단적인 흑백 대비를 뭉갠다.
+                // Neutral은 그 대비를 살려준다 — 제품/주얼리 촬영에 더 적합.
                 gl.toneMapping = THREE.NeutralToneMapping;
                 gl.toneMappingExposure = 1.1;
                 window.dispatchEvent(new Event("prisme:hero-ready"));
@@ -362,7 +395,7 @@ export default function Hero() {
               />
             </Canvas>
           ) : (
-            // Static fallback (no-WebGL clients + Gecko-on-Android, see canRenderRingScene).
+            // 정적 폴백(WebGL 미지원 클라이언트 + 안드로이드 Gecko, canRenderRingScene 참고).
             // 데코레이션용 fallback이라 next/image 최적화 대상이 아님.
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -374,9 +407,9 @@ export default function Hero() {
           )}
         </div>
 
-        {/* Scrim: a soft radial of the page-surface colour (auto light/dark), strongest behind the
-            centred text and fading to transparent before the frame edges — keeps the ring's impact
-            at the edges while lifting text contrast. Opacity is scroll-driven in animate(). */}
+        {/* 스크림: 페이지 배경색(라이트/다크 자동)의 부드러운 radial — 중앙 텍스트 뒤에서 가장 진하고
+            화면 가장자리 전에 투명해진다 — 가장자리에서는 반지의 임팩트를 살리면서 텍스트 대비는 높인다.
+            불투명도는 animate()에서 스크롤에 따라 구동된다. */}
         <div
           ref={overlayRef}
           className="absolute inset-0"
@@ -388,7 +421,7 @@ export default function Hero() {
           aria-hidden="true"
         />
 
-        {/* Initial centered hero text */}
+        {/* 초기 중앙 정렬 히어로 텍스트 */}
         <div
           ref={heroTextRef}
           className="absolute inset-0 flex flex-col items-center justify-center text-content-primary"
@@ -409,7 +442,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Essential Collection overlay */}
+        {/* IRIS ORIGINAL 오버레이 */}
         <div
           ref={essentialTextRef}
           className="absolute top-0 bottom-0 left-4 sm:left-[7%] lg:left-[8%] right-4 sm:right-6 lg:right-8 flex flex-col text-content-primary"
@@ -418,9 +451,9 @@ export default function Hero() {
             textShadow: "var(--hero-text-halo)",
           }}
         >
-          {/* Mobile: clear the fixed header (Navbar py-5 + logo h-11 ≈ 84px = pt-21) so ESSENTIAL
-              COLLECTION doesn't crowd it once the nav reveals — the 13vh baseline was set pre-header.
-              Margin + padding stack (13vh + 84px) to avoid a calc() arbitrary value; desktop drops it. */}
+          {/* 모바일: 고정 헤더(Navbar py-5 + 로고 h-11 ≈ 84px = pt-21)를 피해서 네비가 드러났을 때
+              IRIS ORIGINAL이 안 겹치게 한다 — 13vh 기준값은 헤더 도입 전에 잡은 것.
+              margin + padding을 쌓아서 calc() 임의값을 피함; 데스크톱에서는 이 여백을 뺀다. */}
           <div className="mt-[13vh] pt-21 sm:pt-0">
             <p className="mb-2 sm:mb-3 text-xs tracking-descriptor text-content-secondary">
               {t.hero.collectionLabel}
@@ -451,7 +484,7 @@ export default function Hero() {
           </a>
         </div>
 
-        {/* Scroll hint */}
+        {/* 스크롤 힌트 */}
         <div
           ref={scrollHintRef}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-content-muted pointer-events-none"

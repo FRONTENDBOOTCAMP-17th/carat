@@ -76,10 +76,23 @@ const pretendard = localFont({
   display: "swap",
 });
 
+const SITE_URL = "https://project-carat.vercel.app";
+const SITE_DESCRIPTION =
+  "가상의 주얼리 브랜드 PRISME — 스크롤 중심 에디토리얼 레이아웃과 3D 인터랙션으로 브랜드 경험을 전달하는 프론트엔드 프로젝트.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://prisme.co"),
+  metadataBase: new URL(SITE_URL),
   title: { default: "PRISME", template: "%s | PRISME" },
-  description: "Jewelry editorial experience",
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    title: "PRISME",
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: "PRISME",
+    images: [{ url: "/images/README-Cover.webp", width: 2547, height: 1236 }],
+    locale: "ko_KR",
+    type: "website",
+  },
 };
 
 export default async function RootLayout({

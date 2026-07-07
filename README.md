@@ -12,6 +12,19 @@
 
 ---
 
+## 스크린샷
+
+![홈 — 3D 히어로](docs/screenshots/home-hero.png)
+_홈 — 스크롤에 반응하는 3D 히어로_
+
+![IRIS ORIGINAL](docs/screenshots/essential.png)
+_IRIS ORIGINAL — Iris 시그니처 피스_
+
+![Collections 목록](docs/screenshots/collections.png)
+_Collections — 에디토리얼 그리드_
+
+---
+
 ## 프로젝트 목표
 
 주얼리는 구매 이전에 이미지와 분위기를 먼저 경험하는 제품이라고 생각했습니다.
@@ -41,11 +54,15 @@
 
 ### 씬 통합
 
-React Three Fiber + drei(`useGLTF`)로 모델을 로드하고, 스튜디오 환경맵과 BVH 기반 per-facet 반사를 적용해 별도 배경 없이도 각 면에서 광채가 살아나도록 구성했습니다. 모델은 `preload`로 미리 받아 첫 진입 시 지연을 줄였습니다.
+React Three Fiber + drei(`useGLTF`)로 모델을 로드하고, 스튜디오 환경맵과 BVH 기반 per-facet 반사를 적용해 별도 배경 없이도 각 면에서 광채가 살아나도록 구성했습니다. 모델은 `preload`로 미리 받아 첫 진입 시 지연을 줄였습니다. 같은 모델을 IRIS ORIGINAL 페이지에서는 드래그로 회전 가능한 오빗 뷰어로 재사용합니다.
+
+![Iris 오빗 뷰어](docs/gifs/iris-orbit.gif)
 
 ### 스크롤 애니메이팅
 
 스크롤 진행도를 `requestAnimationFrame` 루프에서 부드럽게 보간(lerp)해, 반지가 화면을 가로지르며 이동·회전(Z roll·pitch)하고 텍스트 레이아웃과 맞물리도록 만들었습니다. 여기에 마우스 움직임 기반 패럴랙스 틸트를 **스크롤 모션과 분리된 레이어**로 얹어, 화면 기준으로 자연스럽게 반응하도록 했습니다.
+
+![히어로 스크롤 인터랙션](docs/gifs/hero-scroll.gif)
 
 `prefers-reduced-motion` 환경과 WebGL 미지원 환경에서는 각각 모션을 절제하거나 정지 이미지 폴백을 제공합니다.
 
@@ -117,7 +134,7 @@ surface-base / raised / elevated      배경 계층
 ```
 app/
 ├── /                        홈: 3D 히어로 · 시즌 배너 · Best Pieces · 컬렉션 소개
-├── /essential               Essential Collection: 컬러 선택형 제품 상세
+├── /essential               IRIS ORIGINAL: 컬러 선택형 제품 상세
 ├── /best-pieces             Best Pieces
 ├── /collections             Collections
 ├── /fw-collections          FW Collections
@@ -148,7 +165,7 @@ app/
   │   │         ├─ 같은 컬렉션 다른 피스 클릭 → /products/:id
   │   │         └─ 컨텍스트 링크 클릭 → /materials · /care-guide
   │   │
-  │   ├─ Essential 컬렉션 → /essential
+  │   ├─ IRIS ORIGINAL → /essential
   │   │   └─ 컬러 선택 → 위시리스트 추가 → [인증 분기]
   │   │
   │   └─ 검색 → /search?q=...
@@ -261,14 +278,14 @@ touch 이후    → 필드별 실시간 유효성 재검사
 
 ## 기술 스택
 
-| 분야      | 기술                             |
-| --------- | -------------------------------- |
-| Framework   | Next.js 16, React 19, TypeScript      |
-| Styling     | Tailwind CSS v4                       |
-| 3D 에셋     | Blender (모델링 · 텍스처링)           |
-| 3D 렌더링   | Three.js, React Three Fiber, drei     |
-| Animation   | Framer Motion                         |
-| Font        | Cinzel, Pretendard                    |
+| 분야      | 기술                              |
+| --------- | --------------------------------- |
+| Framework | Next.js 16, React 19, TypeScript  |
+| Styling   | Tailwind CSS v4                   |
+| 3D 에셋   | Blender (모델링 · 텍스처링)       |
+| 3D 렌더링 | Three.js, React Three Fiber, drei |
+| Animation | Framer Motion                     |
+| Font      | Cinzel, Pretendard                |
 
 ---
 
@@ -285,7 +302,7 @@ npm run dev
 
 ## 이미지 출처
 
-히어로의 3D 반지는 직접 모델링·텍스처링한 에셋이며, 제품 목록의 주얼리 사진은 [Pexels](https://www.pexels.com)의 무료 스톡 이미지를 사용했습니다.
+히어로의 3D 반지는 직접 디자인·모델링·텍스처링한 에셋이며, 제품 목록의 주얼리 사진은 [Pexels](https://www.pexels.com)의 무료 스톡 이미지를 사용했습니다.
 
 ## 라이선스
 
