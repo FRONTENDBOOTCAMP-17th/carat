@@ -3,6 +3,8 @@
 가상의 주얼리 브랜드 PRISME를 주제로 제작한 프론트엔드 파이널 프로젝트입니다.
 기획, 디자인, 프론트엔드 개발, 3D 에셋 디자인, 모델링, 텍스처링까지 1인으로 진행했습니다.
 
+부트캠프 조직 레포지토리이며 contributors의 나머지 두 계정은 리뷰를 담당하신 강사님 계정입니다.
+
 **Live Demo:** [project-carat.vercel.app](https://project-carat.vercel.app/)
 **발표 자료:** [PRISME-presentation.pdf](docs/PRISME-presentation.pdf)
 
